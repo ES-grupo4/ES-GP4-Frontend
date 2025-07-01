@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 
 export default function SideNavBar({ admin }: { admin: boolean }) {
     return (
@@ -6,22 +7,22 @@ export default function SideNavBar({ admin }: { admin: boolean }) {
                 <div className="h-full px-3 py-2 overflow-y-auto bg-white">
                     <ul className="space-y-2 font-medium">
                         <li>
-                            <a href="#" className="flex items-center hover:bg-gray-200 group h-15 rounded-4xl">
+                            <Link to="#" className="flex items-center hover:bg-gray-200 group h-15 rounded-4xl">
                                 <svg className="rounded-full bg-sky-800 size-5 mx-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 21"></svg>
                                 <span className="ms-3 text-black">Dashboard</span>
-                            </a>
+                            </Link>
                         </li>
                         <li>
-                            <a href="#" className="flex items-center hover:bg-gray-200 group h-15 rounded-4xl">
+                            <Link to="#" className="flex items-center hover:bg-gray-200 group h-15 rounded-4xl">
                                 <svg className="rounded-full bg-yellow-400 size-5 mx-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 21"></svg>
                                 <span className="ms-3 text-black">Relatórios</span>
-                            </a>
+                            </Link>
                         </li>
                         <li>
-                            <a href="#" className="flex items-center hover:bg-gray-200 group h-15 rounded-4xl">
+                            <Link to="#" className="flex items-center hover:bg-gray-200 group h-15 rounded-4xl">
                                 <svg className="rounded-full bg-red-700 size-5 mx-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 21"></svg>
                                 <span className="ms-3 text-black">Clientes</span>
-                            </a>
+                            </Link>
                         </li>
                     </ul>
                     {admin == true &&
@@ -33,22 +34,22 @@ export default function SideNavBar({ admin }: { admin: boolean }) {
                             </div>
                             <ul className="space-y-2 font-medium">
                                 <li>
-                                    <a href="#" className="flex items-center hover:bg-gray-200 group h-15 rounded-4xl">
+                                    <Link to="/user/admin/" className="flex items-center hover:bg-gray-200 group h-15 rounded-4xl">
                                         <svg className="rounded-full bg-purple-800 size-5 mx-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 21"></svg>
                                         <span className="ms-3 text-black">Funcionários</span>
-                                    </a>
+                                    </Link>
                                 </li>
                                 <li>
-                                    <a href="#" className="flex items-center hover:bg-gray-200 group h-15 rounded-4xl">
+                                    <Link to="#" className="flex items-center hover:bg-gray-200 group h-15 rounded-4xl">
                                         <svg className="rounded-full bg-pink-400 size-5 mx-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 21"></svg>
                                         <span className="ms-3 text-black">Histórico do Sistema</span>
-                                    </a>
+                                    </Link>
                                 </li>
                                 <li>
-                                    <a href="#" className="flex items-center hover:bg-gray-200 group h-15 rounded-4xl">
+                                    <Link to="#" className="flex items-center hover:bg-gray-200 group h-15 rounded-4xl">
                                         <svg className="rounded-full bg-cyan-400 size-5 mx-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 21"></svg>
                                         <span className="ms-3 text-black">Informações Gerais</span>
-                                    </a>
+                                    </Link>
                                 </li>
                             </ul>
                         </div>}
