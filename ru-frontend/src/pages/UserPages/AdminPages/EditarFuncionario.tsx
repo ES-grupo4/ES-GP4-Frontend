@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
+import RemoveButton from "../../../components/RemoveButton"
 
 export default function EditarFuncionario() {
 
@@ -33,6 +34,14 @@ export default function EditarFuncionario() {
         setFuncionarioData({nome:funcionarioData["nome"],email:e.target.value})
     }
 
+    const excluirFuncionario = () => {
+        console.log("Excluir Funcionario")
+    }
+
+    const salvarAlteracoes = () => {
+        console.log("Salvar Alterações")
+    }
+
     return (
         <div className="p-4 sm:ml-64">
             <div className="group flex">
@@ -40,7 +49,7 @@ export default function EditarFuncionario() {
             </div>
             <br />
             {found ?
-                <div className="bg-white mx-auto my-25 p-5 w-7/10 h-130">
+                <div className="bg-white mx-auto my-25 p-5 w-7/10 h-100 rounded-lg">
                     <span className="text-2xl"><span className="font-bold">CPF:</span> {cpf}</span>
                     <div className="mt-20 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
                         <span className="text-2xl font-bold">Nome:</span>
@@ -49,6 +58,11 @@ export default function EditarFuncionario() {
                     <div className="mt-5 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
                         <span className="text-2xl font-bold">Email: </span>
                         <input type="text" id="name" value={funcionarioData["email"]} onChange={onChangeEmail} className="bg-gray-200 border border-gray-300 text-gray-900 text-m rounded-lg block w-3/4 p-2.5" placeholder="Email do Funcionário" required />
+                    </div>
+
+                    <div className="mt-20 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+                        <button type="button" onClick={salvarAlteracoes} className="cursor-pointer bg-green-700 hover:bg-green-800 focus:ring-4 rounded-lg text-m text-white font-bold  px-5 py-2.5 me-2 mb-2">Salvar Alterações</button>
+                        <RemoveButton onClickFunction={excluirFuncionario}/>
                     </div>
                 </div>
                 :
