@@ -59,7 +59,7 @@ export default function Funcionarios() {
             </tr>)
         }
         var body = <tbody className="divide-gray-200 divide-y-3 font-semibold text-gray-900">{bodyTemp}</tbody>
-        var tableHtml = <table className="w-full text-sm text-left text-gray-500">{head}{<div className="h-2" />}{body}</table>
+        var tableHtml = <table className="w-full text-sm text-left text-gray-500">{head}{<tbody><tr className="h-2" /></tbody>}{body}</table>
         setTable({tableHtml:tableHtml,tableData:table["tableData"],showTable:true})
     }
 
