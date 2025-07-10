@@ -4,19 +4,19 @@ import RemoveButton from "../../../components/RemoveButton"
 
 export default function EditarFuncionario() {
 
-    const funcionarios = [
+    const funcionarios = [ // Lista de funcionários, abstração temporária de um banco de dados
         { cpf: "111111111-11", nome: "Kim Kitsuragi", email: "tenente.kitsuragi@gmail.com" },
         { cpf: "000000000-00", nome: "Rafael Montes Cunha", email: "guaxinim.gamer@gmail.com" }
     ]
 
-    const cpf = useParams()["cpf"]
-    const [found, setFound] = useState(false)
+    const cpf = useParams()["cpf"] //CPF tirado dos parâmetros do link
+    const [found, setFound] = useState(false) //Se o funcionário com o cpf foi encontrado
     const [funcionarioData, setFuncionarioData] = useState({ nome: "", email: "" })
     useEffect(() => {
         getFuncionarioData()
     }, [])
 
-    const getFuncionarioData = () => {
+    const getFuncionarioData = () => { //Recebe os dados do funcionário pelo cpf
         for (var i = 0; i < funcionarios.length; i++) {
             if (funcionarios[i]["cpf"] == cpf) {
                 setFuncionarioData({ nome: funcionarios[i]["nome"], email: funcionarios[i]["email"] })
