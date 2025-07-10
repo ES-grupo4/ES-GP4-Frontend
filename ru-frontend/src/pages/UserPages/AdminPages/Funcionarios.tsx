@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import EditIcon from "../../../components/EditIcon"
+import { Link } from "react-router-dom"
 
 export default function Funcionarios() {
 
@@ -52,9 +53,9 @@ export default function Funcionarios() {
                     { table["tableData"][i]["Email"]}
                 </td>
                 <td className="px-6 py-4">
-                    <button className="cursor-pointer hover:bg-gray-200 rounded-full">
+                    <Link to={`editarfuncionario/${table["tableData"][i]["CPF"]}`} className="cursor-pointer hover:bg-gray-200 rounded-full">
                         <EditIcon />
-                    </button>
+                    </Link>
                 </td>
             </tr>)
         }
