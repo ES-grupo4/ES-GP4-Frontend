@@ -8,12 +8,11 @@ function Login({
   setLogged: (logged: boolean) => void;
 }) {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
+  const [login, setLogin] = useState("");
   const [password, setPassword] = useState("");
 
   const handleSubmit = () => {
-    console.log(email, password);
-    if (email === "admin" && password === "admin") {
+    if (login === "admin" && password === "admin") {
       setLogged(true);
       navigate("/user/");
     } else {
@@ -21,8 +20,8 @@ function Login({
     }
   };
 
-  const onChangeEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(event.target.value);
+  const onChangelogin = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setLogin(event.target.value);
   };
 
   const onChangePassword = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -41,19 +40,19 @@ function Login({
           <div className="space-y-6 p-4 border border-gray-300 rounded-xl border-4">
             <div>
               <label
-                htmlFor="Email"
+                htmlFor="login"
                 className="text-sm font-medium text-gray-700"
               >
-                Email:
+                Login:
               </label>
               <input
-                id="Email"
-                name="Email"
+                id="login"
+                name="login"
                 type="text"
                 required
                 className="w-full px-3 py-2 mt-1 bg-gray-200 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                value={email}
-                onChange={onChangeEmail}
+                value={login}
+                onChange={onChangelogin}
               />
             </div>
             <div>
@@ -79,14 +78,7 @@ function Login({
                 className="w-full m-1 px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 onClick={handleSubmit}
               >
-                Entrar funcionário
-              </button>
-              <button
-                type="submit"
-                className="w-full m-1 px-4 py-2 text-sm font-medium text-white bg-yellow-300 border border-transparent rounded-md shadow-sm hover:bg-yellow-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500"
-                onClick={handleSubmit}
-              >
-                Entrar admin
+                Entrar
               </button>
             </div>
           </div>
