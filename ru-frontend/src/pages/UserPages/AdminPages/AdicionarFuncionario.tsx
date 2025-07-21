@@ -28,9 +28,6 @@ function AdicionarFuncionario(): ReactElement {
           <h1 className="text-3xl md:text-4xl font-bold text-[#3A4D6A]">
             Adicionar Funcionário
           </h1>
-          <button className="text-lg text-red-500 font-semibold hover:underline">
-            Logout
-          </button>
         </header>
 
         <main className="max-w-2xl space-y-8">
