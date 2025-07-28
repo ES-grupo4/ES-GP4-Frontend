@@ -3,6 +3,7 @@ import Funcionarios from "./Funcionarios";
 import EditarFuncionario from "./EditarFuncionario";
 import GeneralInfo from "./GeneralInfo";
 import HistorySys from "./HistorySys";
+import AdicionarFuncionario from "./AdicionarFuncionario";
 
 export default function AdminPages() {
     return (
@@ -13,6 +14,7 @@ export default function AdminPages() {
                 <Route path="/infogeral" element={<GeneralInfo/>}/>
                 <Route path="/historysys" element={<HistorySys/>}/>
 
+                <Route path="/adicionarFuncionario" element={<AdicionarFuncionario />} />
             </Routes>
         </>
     )
