@@ -5,21 +5,21 @@ import RemoveButton from "../../../components/RemoveButton"
 export default function EditarFuncionario() {
 
     const funcionarios = [ // Lista de funcionários, abstração temporária de um banco de dados
-        { cpf: "111111111-11", nome: "Kim Kitsuragi", email: "tenente.kitsuragi@gmail.com" },
-        { cpf: "000000000-00", nome: "Rafael Montes Cunha", email: "guaxinim.gamer@gmail.com" }
+        { id:1, cpf: "111111111-11", nome: "Kim Kitsuragi", email: "tenente.kitsuragi@gmail.com" },
+        { id:2, cpf: "000000000-00", nome: "Rafael Montes Cunha", email: "guaxinim.gamer@gmail.com" }
     ]
 
-    const cpf = useParams()["cpf"] //CPF tirado dos parâmetros do link
+    const id = useParams()["id"] //CPF tirado dos parâmetros do link
     const [found, setFound] = useState(false) //Se o funcionário com o cpf foi encontrado
-    const [funcionarioData, setFuncionarioData] = useState({ nome: "", email: "" })
+    const [funcionarioData, setFuncionarioData] = useState({cpf:"" ,nome: "", email: "" })
     useEffect(() => {
         getFuncionarioData()
     }, [])
 
     const getFuncionarioData = () => { //Recebe os dados do funcionário pelo cpf
         for (var i = 0; i < funcionarios.length; i++) {
-            if (funcionarios[i]["cpf"] == cpf) {
-                setFuncionarioData({ nome: funcionarios[i]["nome"], email: funcionarios[i]["email"] })
+            if (funcionarios[i]["id"].toString() == id) {
+                setFuncionarioData({cpf: funcionarios[i]["cpf"] ,nome: funcionarios[i]["nome"], email: funcionarios[i]["email"] })
                 setFound(true)
                 break
             }
@@ -27,11 +27,11 @@ export default function EditarFuncionario() {
     }
 
         const onChangeName = (e: React.ChangeEvent<any>) => {
-            setFuncionarioData({ nome: e.target.value, email: funcionarioData["email"] })
+            setFuncionarioData({ cpf: funcionarioData["cpf"],nome: e.target.value, email: funcionarioData["email"] })
         }
 
         const onChangeEmail = (e: React.ChangeEvent<any>) => {
-            setFuncionarioData({ nome: funcionarioData["nome"], email: e.target.value })
+            setFuncionarioData({ cpf: funcionarioData["cpf"],nome: funcionarioData["nome"], email: e.target.value })
         }
 
         const excluirFuncionario = () => {
@@ -50,7 +50,7 @@ export default function EditarFuncionario() {
                 <br />
                 {found ?
                     <div className="bg-white mx-auto my-25 p-5 w-7/10 h-100 rounded-lg">
-                        <span className="text-2xl"><span className="font-bold">CPF:</span> {cpf}</span>
+                        <span className="text-2xl"><span className="font-bold">CPF:</span> {funcionarioData["cpf"]}</span>
                         <div className="mt-20 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
                             <span className="text-2xl font-bold">Nome:</span>
                             <input type="text" id="name" value={funcionarioData["nome"]} onChange={onChangeName} className="bg-gray-200 border border-gray-300 text-gray-900 text-m rounded-lg block w-3/4 p-2.5" placeholder="Nome do Funcionário" required />
@@ -66,7 +66,7 @@ export default function EditarFuncionario() {
                         </div>
                     </div>
                     :
-                    <span className="text-2xl m-auto text-red-500">Não foi possível encontrar funcionário com CPF {cpf}</span>
+                    <span className="text-2xl m-auto text-red-500">Não foi possível encontrar funcionário com ID {id}</span>
                 }
 
 

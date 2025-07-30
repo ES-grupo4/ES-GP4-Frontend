@@ -14,7 +14,7 @@ export default function UserPages() { //Guarda páginas gerais de um usuário/fu
             <Routes>
                 <Route path="/" element={<Dashboard/>}/>
                 {admin == true && 
-                    <Route path="/admin/*" element={<AdminPages/>}/> //Apenas poderão ser acessadas quando o usuário for admin
+                    <Route path="/administracao/*" element={<AdminPages/>}/> //Apenas poderão ser acessadas quando o usuário for admin
                 }
             </Routes>
         </>
