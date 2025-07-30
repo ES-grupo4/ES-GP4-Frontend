@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Login from './pages/Login'
 import UserPages from './pages/UserPages/UserPages'
 import { useState } from 'react'
+import { UrlRouter } from './constants/UrlRouter'
 
 function App() {
 
@@ -12,7 +13,7 @@ function App() {
     <>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Login logged={logged} setLogged={setLogged}/>}/>
+          <Route path={UrlRouter.login} element={<Login logged={logged} setLogged={setLogged}/>}/>
           <Route path="/user/*" element={<UserPages />}/>
         </Routes>
       </BrowserRouter>
