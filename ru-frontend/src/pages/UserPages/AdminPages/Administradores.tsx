@@ -2,7 +2,7 @@ import {useState } from "react"
 import EntityTable from "../../../components/EntityTable"
 import { UrlRouter } from "../../../constants/UrlRouter"
 
-export default function Funcionarios() {
+export default function Administradores() {
 
     const [data, setData] = useState(
         [ //tableData, no futuro, irá guardar as informações dos funcionários recebidas por requisições http

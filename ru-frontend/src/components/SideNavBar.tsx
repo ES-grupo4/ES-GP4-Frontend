@@ -8,7 +8,13 @@ export default function SideNavBar({ admin }: { admin: boolean }) {
                 <div className="h-full px-3 py-2 overflow-y-auto bg-white">
                     <ul className="space-y-2 font-medium">
                         <li>
-                            <Link to="#" className="flex items-center hover:bg-gray-200 group h-15 rounded-4xl">
+                            <Link to={UrlRouter.usuario.default} className="flex items-center hover:bg-gray-200 group h-15 rounded-4xl">
+                                <svg className="rounded-full bg-orange-400 size-5 mx-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 21"></svg>
+                                <span className="ms-3 text-black">Meus Dados</span>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link to={UrlRouter.usuario.dashboard.default} className="flex items-center hover:bg-gray-200 group h-15 rounded-4xl">
                                 <svg className="rounded-full bg-sky-800 size-5 mx-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 21"></svg>
                                 <span className="ms-3 text-black">Dashboard</span>
                             </Link>
@@ -20,7 +26,7 @@ export default function SideNavBar({ admin }: { admin: boolean }) {
                             </Link>
                         </li>
                         <li>
-                            <Link to="#" className="flex items-center hover:bg-gray-200 group h-15 rounded-4xl">
+                            <Link to={UrlRouter.usuario.clientes.default} className="flex items-center hover:bg-gray-200 group h-15 rounded-4xl">
                                 <svg className="rounded-full bg-red-700 size-5 mx-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 21"></svg>
                                 <span className="ms-3 text-black">Clientes</span>
                             </Link>
@@ -41,15 +47,15 @@ export default function SideNavBar({ admin }: { admin: boolean }) {
                             </div>
                             <ul className="space-y-2 font-medium">
                                 <li>
-                                    <Link to={UrlRouter.usuario.administracao.administradores.index} className="flex items-center hover:bg-gray-200 group h-15 rounded-4xl">
-                                        <svg className="rounded-full bg-orange-400 size-5 mx-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 21"></svg>
-                                        <span className="ms-3 text-black">Administradores</span>
-                                    </Link>
-                                </li>
-                                <li>
                                     <Link to={UrlRouter.usuario.administracao.funcionarios.index} className="flex items-center hover:bg-gray-200 group h-15 rounded-4xl">
                                         <svg className="rounded-full bg-purple-800 size-5 mx-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 21"></svg>
                                         <span className="ms-3 text-black">Funcionários</span>
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link to={UrlRouter.usuario.administracao.administradores.index} className="flex items-center hover:bg-gray-200 group h-15 rounded-4xl">
+                                        <svg className="rounded-full bg-fuchsia-400 size-5 mx-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 21"></svg>
+                                        <span className="ms-3 text-black">Administradores</span>
                                     </Link>
                                 </li>
                                 <li>
