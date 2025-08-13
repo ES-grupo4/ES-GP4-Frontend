@@ -31,6 +31,8 @@ export const UrlRouter = {
         },
         clientes: {
             default: '/user/clientes',
+            adicionar: '/user/clientes/adicionar',
+            editar: '/user/clientes/editar/:id'
         },
         compras: {
             default: '/user/compras',
