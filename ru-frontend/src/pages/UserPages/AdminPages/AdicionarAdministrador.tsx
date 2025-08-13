@@ -2,15 +2,15 @@ import type { ReactElement, ChangeEvent, FormEvent } from "react";
 import { useState } from "react";
 import UploadIcon from "../../../assets/IconAddFuncionario";
 
-function AdicionarFuncionario(): ReactElement {
+function AdicionarAdministrador(): ReactElement {
   const [cpf, setCpf] = useState("");
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
 
   const handleRegisterSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log("Funcionário a ser registrado:", { cpf, nome, email });
-    alert(`Funcionário ${nome} registrado com sucesso!`);
+    console.log("Administrador a ser registrado:", { cpf, nome, email });
+    alert(`Administrador ${nome} registrado com sucesso!`);
   };
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -24,13 +24,13 @@ function AdicionarFuncionario(): ReactElement {
   return (
     <div className="p-4 sm:ml-64 min-h-screen font-sans">
       <header className="group flex">
-        <h1 className="font-semibold font-sans text-6xl text-sky-900">Adicionar Funcionário</h1>
+        <h1 className="font-semibold font-sans text-6xl text-sky-900">Adicionar Administrador</h1>
       </header>
       <div className="container md:p-8">
         <main className="max-w-2xl space-y-8">
           <div className="bg-white p-6 rounded-lg shadow-sm">
             <h2 className="text-lg font-semibold text-gray-800 mb-4">
-              Importar planilha de funcionários:
+              Importar planilha de administradores:
             </h2>
             <div>
               <label
@@ -53,7 +53,7 @@ function AdicionarFuncionario(): ReactElement {
 
           <div className="bg-white p-6 rounded-lg shadow-sm">
             <h2 className="text-lg font-semibold text-gray-800 mb-6">
-              Registrar Funcionário:
+              Registrar Administrador:
             </h2>
             <form onSubmit={handleRegisterSubmit} className="space-y-5">
               <div>
@@ -120,4 +120,4 @@ function AdicionarFuncionario(): ReactElement {
   );
 }
 
-export default AdicionarFuncionario;
+export default AdicionarAdministrador;
