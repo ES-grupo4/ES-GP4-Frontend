@@ -32,6 +32,7 @@ export const UrlRouter = {
         clientes: {
             default: '/user/clientes',
             adicionar: '/user/clientes/adicionar',
+            detalhes: '/user/clientes/detalhes/:id',
             editar: '/user/clientes/editar/:id'
         },
         compras: {
