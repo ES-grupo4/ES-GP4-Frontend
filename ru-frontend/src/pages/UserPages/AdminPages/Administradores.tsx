@@ -26,7 +26,7 @@ export default function Administradores() {
                 </Link>
             </div>
             <br />
-            <EntityTable tableData={data} columns={["id","Nome","CPF","Email"]} url={UrlRouter.usuario.administracao.administradores.editar.split(":")[0]}/>
+            <EntityTable tableData={data} columns={["id","Nome","CPF","Email"]} url={UrlRouter.usuario.administracao.administradores.editar.split(":")[0]} hasChart={false} chartUrl=""/>
             
         </div>)
 }

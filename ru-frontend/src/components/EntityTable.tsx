@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import EditIcon from "./EditIcon";
 import { Link } from "react-router-dom";
+import ChartIcon from "./ChartIcon";
 
-export default function EntityTable({ tableData, columns, url }: { tableData: any, columns: string[], url: string }) {
+export default function EntityTable({ tableData, columns, url, hasChart, chartUrl }: { tableData: any, columns: string[], url: string, 
+                                                                                    hasChart: boolean, chartUrl: string }) {
     const [table, setTable] = useState({ tableHtml: <div></div>, tableData: tableData, showTable: false })
     const [search, setSearch] = useState("")
     useEffect(() => { makeTable("") }, [])
@@ -44,7 +46,11 @@ export default function EntityTable({ tableData, columns, url }: { tableData: an
                 bodyTemp.push(
                     <tr className="bg-white divide-gray-200 divide-x-3" key={i}>
                         {tdList}
-                        <td className="px-6 py-4">
+                        <td className="flex justify-between items-center px-6 py-4">
+                            {hasChart && 
+                            <Link to={`${chartUrl}${table["tableData"][i]["id"]}`} className="cursor-pointer hover:bg-gray-200 rounded-full">
+                                <ChartIcon />
+                            </Link>}
                             <Link to={`${url}${table["tableData"][i]["id"]}`} className="cursor-pointer hover:bg-gray-200 rounded-full">
                                 <EditIcon />
                             </Link>

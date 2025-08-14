@@ -38,7 +38,8 @@ export default function Clientes() {
                 </Link>
             </div>
             <br />
-            <EntityTable tableData={data} columns={["id","Nome","CPF","Email"]} url={UrlRouter.usuario.clientes.editar.split(':')[0]}/>
+            <EntityTable tableData={data} columns={["id","Nome","CPF","Email"]} url={UrlRouter.usuario.clientes.editar.split(':')[0]} 
+            hasChart={true} chartUrl={UrlRouter.usuario.clientes.detalhes.split(':')[0]}/>
             
         </div>)
 }
