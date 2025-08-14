@@ -32,7 +32,7 @@ export default function Funcionarios() {
                 </Link>
             </div>
             <br />
-            <EntityTable tableData={data} columns={["id","Nome","CPF","Email"]} url={UrlRouter.usuario.administracao.funcionarios.editar.split(":")[0]}/>
+            <EntityTable tableData={data} columns={["id","Nome","CPF","Email"]} url={UrlRouter.usuario.administracao.funcionarios.editar.split(":")[0]} hasChart={false} chartUrl=""/>
             
         </div>)
 }

@@ -82,7 +82,7 @@ export default function DetalhesCliente() {
             </div>
             {found ?
                 <div className="flex-grow flex items-center justify-center">
-                    <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-6xl min-h-[500px] flex flex-col">
+                    <div className="bg-white mx-auto my-25 p-5 w-7/10 h-100 rounded-lg">
                         <div className="flex justify-between items-center mb-6">
                             <h2 className="text-2xl font-semibold text-gray-800">
                                 Visualizar dados do Cliente:
