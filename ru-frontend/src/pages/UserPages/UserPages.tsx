@@ -9,12 +9,13 @@ import Clientes from "./Clientes";
 import EditarCliente from "./EditarCliente";
 import AdicionarCliente from "./AdicionarCliente";
 import DetalhesCliente from "./DetalhesCliente";
-export default function UserPages() { //Guarda páginas gerais de um usuário/funcionário
+export default function UserPages({setLogged}: {setLogged: (logged: boolean) => void}) { //Guarda páginas gerais de um usuário/funcionário
+
     const [admin, setAdmin] = useState(true); //Custom Hook temporário, para fins de conveniência, com o objetivo de informar se o usuário é admin ou não
 
     return (
         <>
-            <LogoutButton/>
+            <LogoutButton setLogged={setLogged}/>
             <SideNavBar admin={admin}/>
             <Routes>
                 <Route path="/" element={<MeusDados/>}/>

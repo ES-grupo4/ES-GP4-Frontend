@@ -1,11 +1,14 @@
 import { useNavigate } from "react-router-dom";
+import { UrlRouter } from "../constants/UrlRouter";
 
-export default function LogoutButton(){
+export default function LogoutButton({setLogged}: {setLogged: (logged: boolean) => void}){
 
     const navigate = useNavigate();
 
     const logoutAction = () => {
-        navigate("/");
+        localStorage.removeItem("token");
+        setLogged(false);
+        navigate(UrlRouter.login);
     }
 
     return(

@@ -1,36 +1,41 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import api from "../services/api";
 
-function Login({
-  setLogged,
-}: {
-  logged: boolean;
-  setLogged: (logged: boolean) => void;
-}) {
+function Login({ setLogged }: { setLogged: (logged: boolean) => void }) {
   const navigate = useNavigate();
-  const [login, setLogin] = useState("");
-  const [password, setPassword] = useState("");
+  const [cpf, setCpf] = useState("");
+  const [senha, setSenha] = useState("");
 
-  const handleSubmit = () => {
-    if (login === "admin" && password === "admin") {
+  const handleSubmit = async () => {
+    try {
+      const response = await api.post("/auth/login", {
+        cpf,
+        senha,
+      });
+      const { token } = response.data;
+      localStorage.setItem("token", token);
+      api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       setLogged(true);
       navigate("/user/");
-    } else {
+    } catch (error) {
       alert("Usuário ou senha inválidos");
     }
   };
 
   const onChangelogin = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setLogin(event.target.value);
+    setCpf(event.target.value);
   };
 
   const onChangePassword = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(event.target.value);
+    setSenha(event.target.value);
   };
 
   return (
     <>
-      <h1 className="text-6xl font-bold text-center m-20 text-indigo-900">SysAdminRU</h1>
+      <h1 className="text-6xl font-bold text-center m-20 text-indigo-900">
+        SysAdminRU
+      </h1>
 
       <div className="flex items-center justify-center bg-gray-100">
         <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-xl shadow-md">
@@ -51,7 +56,7 @@ function Login({
                 type="text"
                 required
                 className="w-full px-3 py-2 mt-1 bg-gray-200 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                value={login}
+                value={cpf}
                 onChange={onChangelogin}
               />
             </div>
@@ -68,7 +73,7 @@ function Login({
                 type="password"
                 required
                 className="w-full px-3 py-2 mt-1 bg-gray-200 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                value={password}
+                value={senha}
                 onChange={onChangePassword}
               />
             </div>
