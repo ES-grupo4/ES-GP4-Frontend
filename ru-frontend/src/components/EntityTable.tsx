@@ -75,7 +75,7 @@ export default function EntityTable({ tableData, columns, url }: { tableData: an
                 <form className="flex items-center w-2/3 mx-auto">
                     <label htmlFor="simple-search" className="sr-only">Search</label>
                     <div className="relative w-full">
-                        <input type="text" onChange={onChangeSearch} id="simple-search" className="h-13 bg-white border border-gray-300 text-gray-900 text-m rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Pesquisar funcionário..." required />
+                        <input type="text" onChange={onChangeSearch} id="simple-search" className="h-13 bg-white border border-gray-300 text-gray-900 text-m rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Pesquisar..." required />
                     </div>
                     <button type="button" onClick={handleSearch} className="p-4 ms-2 text-white bg-blue-700 rounded-full border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 cursor-pointer">
                         <svg className="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">

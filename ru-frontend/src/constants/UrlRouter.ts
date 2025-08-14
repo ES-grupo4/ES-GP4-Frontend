@@ -7,12 +7,12 @@ export const UrlRouter = {
             default: '/user/administracao',
             funcionarios: {
                 index: '/user/administracao/funcionarios',
-                novo: '/user/administracao/funcionarios/novo',
+                adicionar: '/user/administracao/funcionarios/adicionar',
                 editar: '/user/administracao/funcionarios/editar/:id',
             },
             administradores: {
                 index: '/user/administracao/administradores',
-                novo: '/user/administracao/administradores/novo',
+                adicionar: '/user/administracao/administradores/adicionar',
                 editar: '/user/administracao/administradores/editar/:id',
             },
             historicoSistema: {
@@ -31,6 +31,9 @@ export const UrlRouter = {
         },
         clientes: {
             default: '/user/clientes',
+            adicionar: '/user/clientes/adicionar',
+            detalhes: '/user/clientes/detalhes/:id',
+            editar: '/user/clientes/editar/:id'
         },
         compras: {
             default: '/user/compras',
