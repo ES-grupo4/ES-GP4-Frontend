@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
+import routes from "../services/routes.ts"
 
 function Login({ setLogged }: { setLogged: (logged: boolean) => void }) {
   const navigate = useNavigate();
@@ -9,10 +10,7 @@ function Login({ setLogged }: { setLogged: (logged: boolean) => void }) {
 
   const handleSubmit = async () => {
     try {
-      const response = await api.post("/auth/login", {
-        cpf,
-        senha,
-      });
+      const response = await routes.login(cpf,senha);
       const { token } = response.data;
       localStorage.setItem("token", token);
       api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
