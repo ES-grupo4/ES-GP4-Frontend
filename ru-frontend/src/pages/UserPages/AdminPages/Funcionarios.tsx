@@ -1,12 +1,13 @@
-import {useState } from "react"
+import {useEffect, useState } from "react"
 import EntityTable from "../../../components/EntityTable"
 import { UrlRouter } from "../../../constants/UrlRouter"
 import { Link } from "react-router-dom"
+import routes from "../../../services/routes"
 
 export default function Funcionarios() {
 
-    const [data, setData] = useState(
-        [ //tableData, no futuro, irá guardar as informações dos funcionários recebidas por requisições http
+/*
+//tableData, no futuro, irá guardar as informações dos funcionários recebidas por requisições http
             {
                 id: 1,
                 Nome: "KIM KITSURAGI",
@@ -19,7 +20,18 @@ export default function Funcionarios() {
                 CPF: "000000000-00",
                 Email: "guaxinim.gamer@gmail.com"
             }
-        ])
+*/
+
+    const [data, setData] = useState([])
+
+    useEffect(() => {
+                const getAdminData = async () => {
+                    const response = await routes.getAllFuncionarios();
+                    const data = response.data.filter((func: { [x: string]: string }) => func["tipo"] == "funcionario")
+                    setData(data);
+                }
+                getAdminData();
+            },[])
 
     return (
         <div className="p-4 sm:ml-64">
@@ -32,7 +44,7 @@ export default function Funcionarios() {
                 </Link>
             </div>
             <br />
-            <EntityTable tableData={data} columns={["id","Nome","CPF","Email"]} url={UrlRouter.usuario.administracao.funcionarios.editar.split(":")[0]} hasChart={false} chartUrl=""/>
+            <EntityTable tableData={data} columns={["id","nome","cpf","email","data_entrada"]} url={UrlRouter.usuario.administracao.funcionarios.editar.split(":")[0]} hasChart={false} chartUrl=""/>
             
         </div>)
 }

@@ -7,7 +7,7 @@ export default function EntityTable({ tableData, columns, url, hasChart, chartUr
                                                                                     hasChart: boolean, chartUrl: string }) {
     const [table, setTable] = useState({ tableHtml: <div></div>, tableData: tableData, showTable: false })
     const [search, setSearch] = useState("")
-    useEffect(() => { makeTable("") }, [])
+    useEffect(() => { makeTable(""),console.log(tableData) }, [tableData])
 
     const onChangeSearch = (e: React.ChangeEvent<any>) => { // Define valor de busca antes de clicar para buscar
         setSearch(e.target.value)
@@ -34,13 +34,13 @@ export default function EntityTable({ tableData, columns, url, hasChart, chartUr
             </tr>
         </thead>
         var bodyTemp: React.JSX.Element[] = []
-        for (var i = 0; i < table["tableData"].length; i++) {
-            if (filterEntity(table["tableData"][i], filter) == true) { // Se o funcionário passa pelo filtro, é adicionado à tabela
+        for (var i = 0; i < tableData.length; i++) {
+            if (filterEntity(tableData[i], filter) == true) { // Se o funcionário passa pelo filtro, é adicionado à tabela
                 var tdList: React.JSX.Element[] = []
                 columns.forEach(col => {
                     tdList.push(
                         <td className="px-6 py-4" key={`${i}-${col}-td`}>
-                            {table["tableData"][i][col]}
+                            {tableData[i][col]}
                         </td>)
                 });
                 bodyTemp.push(
@@ -48,10 +48,10 @@ export default function EntityTable({ tableData, columns, url, hasChart, chartUr
                         {tdList}
                         <td className="flex justify-between items-center px-6 py-4">
                             {hasChart && 
-                            <Link to={`${chartUrl}${table["tableData"][i]["id"]}`} className="cursor-pointer hover:bg-gray-200 rounded-full">
+                            <Link to={`${chartUrl}${tableData[i]["id"]}`} className="cursor-pointer hover:bg-gray-200 rounded-full">
                                 <ChartIcon />
                             </Link>}
-                            <Link to={`${url}${table["tableData"][i]["id"]}`} className="cursor-pointer hover:bg-gray-200 rounded-full">
+                            <Link to={`${url}${tableData[i]["id"]}`} className="cursor-pointer hover:bg-gray-200 rounded-full">
                                 <EditIcon />
                             </Link>
                         </td>
@@ -60,7 +60,7 @@ export default function EntityTable({ tableData, columns, url, hasChart, chartUr
         }
         var body = <tbody className="divide-gray-200 divide-y-3 font-semibold text-gray-900">{bodyTemp}</tbody>
         var tableHtml = <table className="w-full text-sm text-left text-gray-500">{head}{<tbody><tr className="h-2" /></tbody>}{body}</table>
-        setTable({ tableHtml: tableHtml, tableData: table["tableData"], showTable: true })
+        setTable({ tableHtml: tableHtml, tableData: tableData, showTable: true })
     }
 
     const filterEntity = (entidade: any, filter: string) => { // Decide se o funcionário passa pelo filtro
