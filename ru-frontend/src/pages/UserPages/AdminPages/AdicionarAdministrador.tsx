@@ -1,16 +1,30 @@
 import type { ReactElement, ChangeEvent, FormEvent } from "react";
 import { useState } from "react";
 import UploadIcon from "../../../assets/IconAddFuncionario";
+import routes from "../../../services/routes";
+import validarCPF from "../../../utils/validarCpf";
 
 function AdicionarAdministrador(): ReactElement {
   const [cpf, setCpf] = useState("");
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
 
-  const handleRegisterSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleRegisterSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log("Administrador a ser registrado:", { cpf, nome, email });
-    alert(`Administrador ${nome} registrado com sucesso!`);
+    console.log("Administrador a ser registrado:", { cpf, nome, email, senha });
+    if (cpf == "" || nome == "" || email == "" || senha == "") {
+      alert("Preencha todos os campos!")
+    } else if (!validarCPF(cpf)){
+      alert("Insira um CPF válido")
+    } else {
+      const status = await addAdmin({ cpf: cpf, nome: nome, email: email, senha: senha })
+      if (status) {
+        alert(`Administrador ${nome} registrado com sucesso!`);
+      } else {
+        alert(`Ocorreu um erro ao criar o administrador`);
+      }
+    }
   };
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -20,6 +34,15 @@ function AdicionarAdministrador(): ReactElement {
       alert(`Planilha "${fileName}" importada!`);
     }
   };
+
+  const addAdmin = async (data: { cpf: string, nome: string, email: string, senha: string }) => {
+    console.log({...data,tipo:"admin"})
+    const response = await routes.createAdmin(data);
+    if (response.status == 200) {
+      return true;
+    }
+    return false;
+  }
 
   return (
     <div className="p-4 sm:ml-64 min-h-screen font-sans">
@@ -100,6 +123,22 @@ function AdicionarAdministrador(): ReactElement {
                   id="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  className="w-full p-3 bg-gray-100 border border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="password"
+                  className="block text-md font-medium text-gray-700 mb-1"
+                >
+                  Senha:
+                </label>
+                <input
+                  type="password"
+                  id="password"
+                  value={senha}
+                  onChange={(e) => setSenha(e.target.value)}
                   className="w-full p-3 bg-gray-100 border border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />

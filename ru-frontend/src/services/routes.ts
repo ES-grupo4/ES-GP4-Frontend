@@ -7,6 +7,30 @@ const login = (cpf : String,senha : String) => {
       });
 }
 
+const createAdmin = (adminData:{}) => {
+    return api.post(`/funcionario/`,{...adminData,tipo:"admin",data_entrada:new Date().toISOString().slice(0, 10)});
+}
+
+const createFuncionario = (funcData:{}) => {
+    return api.post(`/funcionario/`,{...funcData,tipo:"funcionario",data_entrada:new Date().toISOString().slice(0, 10)});
+}
+
+const updateFuncionario = (id : String,funcData : {}) => {
+    return api.put(`/funcionario/${id}`,funcData);
+}
+
+const getAllFuncionarios = (page:number) => {
+    return api.get(`/funcionario/?page=${page}`);
+}
+
+const getFuncionarioById = (id : String) => {
+    return api.get(`/funcionario/?id=${id}`);
+}
 export default {
-    login
+    login,
+    getAllFuncionarios,
+    getFuncionarioById,
+    updateFuncionario,
+    createFuncionario,
+    createAdmin
 }

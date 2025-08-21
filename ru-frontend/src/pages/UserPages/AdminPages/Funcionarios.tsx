@@ -1,25 +1,36 @@
-import {useState } from "react"
+import { useEffect, useState } from "react"
 import EntityTable from "../../../components/EntityTable"
 import { UrlRouter } from "../../../constants/UrlRouter"
 import { Link } from "react-router-dom"
+import routes from "../../../services/routes"
 
 export default function Funcionarios() {
 
-    const [data, setData] = useState(
-        [ //tableData, no futuro, irá guardar as informações dos funcionários recebidas por requisições http
-            {
-                id: 1,
-                Nome: "KIM KITSURAGI",
-                CPF: "111111111-11",
-                Email: "tenente.kitsuragi@gmail.com"
-            },
-            {
-                id: 2,
-                Nome: "RAFAEL MONTES CUNHA",
-                CPF: "000000000-00",
-                Email: "guaxinim.gamer@gmail.com"
-            }
-        ])
+    const [data, setData] = useState([])
+    const [page, setPage] = useState(1)
+    const [pageQtd, setPageQtd] = useState(1)
+
+    const next = () => {
+        if (page === pageQtd) return;
+
+        setPage(page + 1);
+    };
+
+    const prev = () => {
+        if (page === 1) return;
+
+        setPage(page - 1);
+    };
+    useEffect(() => {
+        const getFuncionarioData = async () => {
+            const response = await routes.getAllFuncionarios(page);
+            console.log(response)
+            const data = response.data["items"].filter((func: { [x: string]: string }) => func["tipo"] == "funcionario")
+            setPageQtd(response.data["total_pages"]);
+            setData(data);
+        }
+        getFuncionarioData();
+    }, [page])
 
     return (
         <div className="p-4 sm:ml-64">
@@ -32,7 +43,8 @@ export default function Funcionarios() {
                 </Link>
             </div>
             <br />
-            <EntityTable tableData={data} columns={["id","Nome","CPF","Email"]} url={UrlRouter.usuario.administracao.funcionarios.editar.split(":")[0]} hasChart={false} chartUrl=""/>
-            
+            <EntityTable tableData={data} columns={["id", "nome", "cpf", "email", "data_entrada"]} url={UrlRouter.usuario.administracao.funcionarios.editar.split(":")[0]} hasChart={false} chartUrl="" 
+            page={page} total_pages={pageQtd} prev={prev} next={next}/>
+
         </div>)
 }
