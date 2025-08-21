@@ -1,4 +1,4 @@
-import {useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import EntityTable from "../../../components/EntityTable"
 import { UrlRouter } from "../../../constants/UrlRouter"
 import { Link } from "react-router-dom"
@@ -7,15 +7,30 @@ import routes from "../../../services/routes"
 export default function Administradores() {
 
     const [data, setData] = useState([])
-    
-        useEffect(() => {
-            const getAdminData = async () => {
-                const response = await routes.getAllFuncionarios();
-                const data = response.data.filter((func: { [x: string]: string }) => func["tipo"] == "admin")
-                setData(data);
-            }
-            getAdminData();
-        },[])
+    const [page, setPage] = useState(1)
+    const [pageQtd, setPageQtd] = useState(1)
+
+    useEffect(() => {
+        const getAdminData = async () => {
+            const response = await routes.getAllFuncionarios(page);
+            const data = response.data["items"].filter((func: { [x: string]: string }) => func["tipo"] == "admin");
+            setPageQtd(response.data["total_pages"]);
+            setData(data);
+        }
+        getAdminData();
+    }, [page])
+
+    const next = () => {
+        if (page === pageQtd) return;
+
+        setPage(page + 1);
+    };
+
+    const prev = () => {
+        if (page === 1) return;
+
+        setPage(page - 1);
+    };
 
     return (
         <div className="p-4 sm:ml-64">
@@ -28,7 +43,8 @@ export default function Administradores() {
                 </Link>
             </div>
             <br />
-            <EntityTable tableData={data} columns={["id","nome","cpf","email","data_entrada"]} url={UrlRouter.usuario.administracao.administradores.editar.split(":")[0]} hasChart={false} chartUrl=""/>
-            
+            <EntityTable tableData={data} columns={["id", "nome", "cpf", "email", "data_entrada"]} url={UrlRouter.usuario.administracao.administradores.editar.split(":")[0]} hasChart={false} chartUrl=""
+                page={page} total_pages={pageQtd} prev={prev} next={next} />
+
         </div>)
 }

@@ -17,7 +17,7 @@ export default function EditarAdministrador() {
     const getAdministradorData = async () => { //Recebe os dados do funcionário pelo cpf
         if (id != null) {
             const response = await routes.getFuncionarioById(id);
-            const administradores = response.data;
+            const administradores = response.data.items;
             console.log(administradores)
             if (administradores.length != 0) {
                 setAdministradorData({ cpf: administradores[0]["cpf"], nome: administradores[0]["nome"], email: administradores[0]["email"] })

@@ -3,11 +3,13 @@ import EditIcon from "./EditIcon";
 import { Link } from "react-router-dom";
 import ChartIcon from "./ChartIcon";
 
-export default function EntityTable({ tableData, columns, url, hasChart, chartUrl }: { tableData: any, columns: string[], url: string, 
-                                                                                    hasChart: boolean, chartUrl: string }) {
+export default function EntityTable({ tableData, columns, url, hasChart, chartUrl, page, total_pages, prev, next }: {
+    tableData: any, columns: string[], url: string,
+    hasChart: boolean, chartUrl: string, page:number,total_pages:number, prev: () => void, next: () => void
+}) {
     const [table, setTable] = useState({ tableHtml: <div></div>, tableData: tableData, showTable: false })
     const [search, setSearch] = useState("")
-    useEffect(() => { makeTable(""),console.log(tableData) }, [tableData])
+    useEffect(() => { makeTable(""), console.log(tableData) }, [tableData])
 
     const onChangeSearch = (e: React.ChangeEvent<any>) => { // Define valor de busca antes de clicar para buscar
         setSearch(e.target.value)
@@ -47,10 +49,10 @@ export default function EntityTable({ tableData, columns, url, hasChart, chartUr
                     <tr className="bg-white divide-gray-200 divide-x-3" key={i}>
                         {tdList}
                         <td className="flex justify-between items-center px-6 py-4">
-                            {hasChart && 
-                            <Link to={`${chartUrl}${tableData[i]["id"]}`} className="cursor-pointer hover:bg-gray-200 rounded-full">
-                                <ChartIcon />
-                            </Link>}
+                            {hasChart &&
+                                <Link to={`${chartUrl}${tableData[i]["id"]}`} className="cursor-pointer hover:bg-gray-200 rounded-full">
+                                    <ChartIcon />
+                                </Link>}
                             <Link to={`${url}${tableData[i]["id"]}`} className="cursor-pointer hover:bg-gray-200 rounded-full">
                                 <EditIcon />
                             </Link>
@@ -95,7 +97,24 @@ export default function EntityTable({ tableData, columns, url, hasChart, chartUr
                     {table["showTable"] && table["tableHtml"]}
                 </div>
             </div>
+            <div className="flex flex-col items-center mt-5">
+                <span className="text-sm text-gray-700">
+                    Mostrando <span className="font-semibold text-gray-900">{page}</span> de <span className="font-semibold text-gray-900">{total_pages}</span> Páginas
+                </span>
+                <div className="inline-flex mt-2 xs:mt-0">
+                    <button className="flex items-center justify-center px-4 h-10 text-base font-medium text-white bg-sky-600 rounded-s disabled:bg-gray-400 hover:bg-gray-700 cursor-pointer disabled:cursor-not-allowed"
+                    onClick={prev}
+                    disabled={page==1}>
+                        Anterior
+                    </button>
+                    <button className="flex items-center justify-center px-4 h-10 text-base font-medium text-white bg-sky-600 disabled:bg-gray-400 border-0 border-s border-gray-700 rounded-e hover:bg-gray-700 cursor-pointer disabled:cursor-not-allowed"
+                    onClick={next}
+                    disabled={page==total_pages}>
+                        Próxima
+                    </button>
+                </div>
+            </div>
         </div>
-    )
+        )
 
 }

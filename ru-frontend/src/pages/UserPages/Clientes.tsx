@@ -1,4 +1,4 @@
-import {useState } from "react"
+import { useState } from "react"
 import EntityTable from "../../components/EntityTable"
 import { UrlRouter } from "../../constants/UrlRouter"
 import { Link } from "react-router-dom"
@@ -26,6 +26,20 @@ export default function Clientes() {
                 Email: "susie.fancluber@gmail.com"
             },
         ])
+    const [page, setPage] = useState(1)
+    const [pageQtd, setPageQtd] = useState(1)
+
+    const next = () => {
+        if (page === pageQtd) return;
+
+        setPage(page + 1);
+    };
+
+    const prev = () => {
+        if (page === 1) return;
+
+        setPage(page - 1);
+    };
 
     return (
         <div className="p-4 sm:ml-64">
@@ -38,8 +52,9 @@ export default function Clientes() {
                 </Link>
             </div>
             <br />
-            <EntityTable tableData={data} columns={["id","Nome","CPF","Email"]} url={UrlRouter.usuario.clientes.editar.split(':')[0]} 
-            hasChart={true} chartUrl={UrlRouter.usuario.clientes.detalhes.split(':')[0]}/>
-            
+            <EntityTable tableData={data} columns={["id", "Nome", "CPF", "Email"]} url={UrlRouter.usuario.clientes.editar.split(':')[0]}
+                hasChart={true} chartUrl={UrlRouter.usuario.clientes.detalhes.split(':')[0]}
+                page={page} total_pages={pageQtd} prev={prev} next={next}/>
+
         </div>)
 }
