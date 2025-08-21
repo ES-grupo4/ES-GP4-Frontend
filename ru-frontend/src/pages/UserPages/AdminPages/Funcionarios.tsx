@@ -6,22 +6,6 @@ import routes from "../../../services/routes"
 
 export default function Funcionarios() {
 
-    /*
-    //tableData, no futuro, irá guardar as informações dos funcionários recebidas por requisições http
-                {
-                    id: 1,
-                    Nome: "KIM KITSURAGI",
-                    CPF: "111111111-11",
-                    Email: "tenente.kitsuragi@gmail.com"
-                },
-                {
-                    id: 2,
-                    Nome: "RAFAEL MONTES CUNHA",
-                    CPF: "000000000-00",
-                    Email: "guaxinim.gamer@gmail.com"
-                }
-    */
-
     const [data, setData] = useState([])
     const [page, setPage] = useState(1)
     const [pageQtd, setPageQtd] = useState(1)
@@ -38,13 +22,15 @@ export default function Funcionarios() {
         setPage(page - 1);
     };
     useEffect(() => {
-        const getAdminData = async () => {
+        const getFuncionarioData = async () => {
             const response = await routes.getAllFuncionarios(page);
+            console.log(response)
             const data = response.data["items"].filter((func: { [x: string]: string }) => func["tipo"] == "funcionario")
+            setPageQtd(response.data["total_pages"]);
             setData(data);
         }
-        getAdminData();
-    }, [])
+        getFuncionarioData();
+    }, [page])
 
     return (
         <div className="p-4 sm:ml-64">

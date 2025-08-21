@@ -2,6 +2,7 @@ import type { ReactElement, ChangeEvent, FormEvent } from "react";
 import { useState } from "react";
 import UploadIcon from "../../../assets/IconAddFuncionario";
 import routes from "../../../services/routes";
+import validarCPF from "../../../utils/validarCpf";
 
 function AdicionarAdministrador(): ReactElement {
   const [cpf, setCpf] = useState("");
@@ -14,6 +15,8 @@ function AdicionarAdministrador(): ReactElement {
     console.log("Administrador a ser registrado:", { cpf, nome, email, senha });
     if (cpf == "" || nome == "" || email == "" || senha == "") {
       alert("Preencha todos os campos!")
+    } else if (!validarCPF(cpf)){
+      alert("Insira um CPF válido")
     } else {
       const status = await addAdmin({ cpf: cpf, nome: nome, email: email, senha: senha })
       if (status) {
