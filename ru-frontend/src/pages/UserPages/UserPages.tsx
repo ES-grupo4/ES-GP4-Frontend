@@ -12,8 +12,8 @@ export default function UserPages() { //Guarda páginas gerais de um usuário/fu
             <LogoutButton/>
             <SideNavBar admin={admin}/>
             <Routes>
-                <Route path="/" element={<Dashboard/>}/>
-                {admin == true && 
+                <Route path="/dashboard/" element={<Dashboard/>}/>
+                {admin && 
                     <Route path="/admin/*" element={<AdminPages/>}/> //Apenas poderão ser acessadas quando o usuário for admin
                 }
             </Routes>

@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Login from './pages/Login'
 import UserPages from './pages/UserPages/UserPages'
 import { useState } from 'react'
+import Dashboard from './pages/UserPages/Dashboard'
 
 function App() {
 

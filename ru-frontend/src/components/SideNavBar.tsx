@@ -7,7 +7,7 @@ export default function SideNavBar({ admin }: { admin: boolean }) {
                 <div className="h-full px-3 py-2 overflow-y-auto bg-white">
                     <ul className="space-y-2 font-medium">
                         <li>
-                            <Link to="#" className="flex items-center hover:bg-gray-200 group h-15 rounded-4xl">
+                            <Link to="/user/dashboard/" className="flex items-center hover:bg-gray-200 group h-15 rounded-4xl">
                                 <svg className="rounded-full bg-sky-800 size-5 mx-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 21"></svg>
                                 <span className="ms-3 text-black">Dashboard</span>
                             </Link>
