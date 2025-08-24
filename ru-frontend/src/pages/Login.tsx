@@ -11,8 +11,10 @@ function Login({ setLogged }: { setLogged: (logged: boolean) => void }) {
   const handleSubmit = async () => {
     try {
       const response = await routes.login(cpf,senha);
-      const { token } = response.data;
+      const { token} = response.data;
+      //const { token, tipo} = response.data;
       localStorage.setItem("token", token);
+      //localStorage.setItem("tipo", tipo);
       api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       setLogged(true);
       navigate("/user/");

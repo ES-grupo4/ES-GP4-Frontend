@@ -22,6 +22,10 @@ const updateFuncionario = (id : String,funcData : {}) => {
 const getAllFuncionarios = (page:number) => {
     return api.get(`/funcionario/?page=${page}`);
 }
+const getAllAdministradores = (page:number) => {
+    return api.get(`/funcionario/admin/?page=${page}`);
+}
+
 
 const getFuncionarioById = (id : String) => {
     return api.get(`/funcionario/?id=${id}`);
@@ -32,5 +36,6 @@ export default {
     getFuncionarioById,
     updateFuncionario,
     createFuncionario,
-    createAdmin
+    createAdmin,
+    getAllAdministradores
 }
