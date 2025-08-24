@@ -14,11 +14,11 @@ export default function DetalhesCliente() {
         setMonth(newMonth);
     };
 
-    const [highlights,setHighlights] = useState<Record<string,string>>({
-                                    '2025-06-05': 'yellow',
-                                    '2025-06-10': 'green',
-                                    '2025-06-15': 'blue'
-                                })
+    const [highlights, setHighlights] = useState<Record<string, string>>({
+        '2025-06-05': 'yellow',
+        '2025-06-10': 'green',
+        '2025-06-15': 'blue'
+    })
 
     const [data, setData] = useState(
         [ //tableData, no futuro, irá guardar as informações dos funcionários recebidas por requisições http
@@ -104,7 +104,7 @@ export default function DetalhesCliente() {
                             </div>
                         </div>
                         <hr className="my-1 h-0.5 border-t-0 bg-neutral-100" />
-                        <div className="flex justify-between items-center mb-6">
+                        <div className="flex justify-between items-center mb-6 gap-5">
                             <div className="text-2xl grid grid-cols-1">
                                 <h1><span className="font-bold">Nome: </span>{clienteData["nome"]}</h1>
                                 <h1><span className="font-bold">CPF: </span>{clienteData["cpf"]}</h1>
@@ -115,8 +115,24 @@ export default function DetalhesCliente() {
                                 <br />
                                 <h1><span className="font-bold">Gasto total mensal: </span>{clienteData["totalMensal"]}</h1>
                             </div>
+        
                             <div className="w-100">
                                 <SingleMonthCalendar year={year} month={month} highlights={highlights} />
+                            </div>
+
+                            <div className="flex flex-col gap-2">
+                                <div key={1} className="flex items-center gap-2">
+                                    <span className="w-4 h-4 rounded-full bg-yellow-500"></span>
+                                    <span className="font-bold text-black">Refeição Manhã</span>
+                                </div>
+                                <div key={2} className="flex items-center gap-2">
+                                    <span className="w-4 h-4 rounded-full bg-blue-700"></span>
+                                    <span className="font-bold text-black">Refeição Noite</span>
+                                </div>
+                                <div key={3} className="flex items-center gap-2">
+                                    <span className="w-4 h-4 rounded-full bg-green-600"></span>
+                                    <span className="font-bold text-black">Ambas Refeições</span>
+                                </div>
                             </div>
                         </div>
 

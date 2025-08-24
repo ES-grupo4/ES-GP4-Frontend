@@ -12,7 +12,7 @@ export default function Administradores() {
 
     useEffect(() => {
         const getAdminData = async () => {
-            const response = await routes.getAllFuncionarios(page);
+            const response = await routes.getAllAdministradores(page);
             const data = response.data["items"].filter((func: { [x: string]: string }) => func["tipo"] == "admin");
             setPageQtd(response.data["total_pages"]);
             setData(data);
