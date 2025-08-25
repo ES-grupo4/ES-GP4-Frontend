@@ -13,6 +13,7 @@ function Login({ setLogged }: { setLogged: (logged: boolean) => void }) {
       const response = await routes.login(cpf,senha);
       const { token} = response.data;
       localStorage.setItem("token", token);
+      localStorage.setItem("cpf",cpf.replace(/\D/g, ""));
       api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       setLogged(true);
       navigate("/user/");

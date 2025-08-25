@@ -22,8 +22,7 @@ export default function UserPages({setLogged,admin}: {setLogged: (logged: boolea
                 <Route path="/clientes/editar/:id" element={<EditarCliente/>}/>
                 <Route path="/clientes/adicionar" element={<AdicionarCliente/>}/>
                 <Route path="/clientes/detalhes/:id" element={<DetalhesCliente/>}/>
-                <Route path="/administracao/*"element={admin ? <AdminPages /> : <Navigate to={UrlRouter.usuario.default} />}/>
-                    <Route path="/administracao/*" element={<AdminPages/>}/> //Apenas poderão ser acessadas quando o usuário for admin
+                <Route path="/administracao/*"element={admin ? <AdminPages setLogged={setLogged} /> : <Navigate to={UrlRouter.usuario.default} />}/>
             </Routes>
         </>
     )
