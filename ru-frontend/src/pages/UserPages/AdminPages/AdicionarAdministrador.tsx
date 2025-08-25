@@ -1,10 +1,10 @@
 import type { ReactElement, ChangeEvent, FormEvent } from "react";
 import { useState } from "react";
 import UploadIcon from "../../../assets/IconAddFuncionario";
-import validarCPF from "../../../utils/validarCpf";
 import routes from "../../../services/routes";
+import validarCPF from "../../../utils/validarCpf";
 
-function AdicionarFuncionario(): ReactElement {
+function AdicionarAdministrador(): ReactElement {
   const [cpf, setCpf] = useState("");
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
@@ -12,7 +12,7 @@ function AdicionarFuncionario(): ReactElement {
 
   const handleRegisterSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log("Funcionario a ser registrado:", { cpf, nome, email, senha });
+    console.log("Administrador a ser registrado:", { cpf, nome, email, senha });
     if (cpf == "" || nome == "" || email == "" || senha == "") {
       alert("Preencha todos os campos!")
     } else if (!validarCPF(cpf)){
@@ -20,9 +20,9 @@ function AdicionarFuncionario(): ReactElement {
     } else {
       const status = await addAdmin({ cpf: cpf, nome: nome, email: email, senha: senha })
       if (status) {
-        alert(`Funcionário ${nome} registrado com sucesso!`);
+        alert(`Administrador ${nome} registrado com sucesso!`);
       } else {
-        alert(`Ocorreu um erro ao criar o funcionário`);
+        alert(`Ocorreu um erro ao criar o administrador`);
       }
     }
   };
@@ -37,7 +37,7 @@ function AdicionarFuncionario(): ReactElement {
 
   const addAdmin = async (data: { cpf: string, nome: string, email: string, senha: string }) => {
     console.log({...data,tipo:"admin"})
-    const response = await routes.createFuncionario(data);
+    const response = await routes.createAdmin(data);
     if (response.status == 200) {
       return true;
     }
@@ -47,13 +47,13 @@ function AdicionarFuncionario(): ReactElement {
   return (
     <div className="p-4 sm:ml-64 min-h-screen font-sans">
       <header className="group flex">
-        <h1 className="font-semibold font-sans text-6xl text-sky-900">Adicionar Funcionário</h1>
+        <h1 className="font-semibold font-sans text-6xl text-sky-900">Adicionar Administrador</h1>
       </header>
       <div className="container md:p-8">
         <main className="max-w-2xl space-y-8">
           <div className="bg-white p-6 rounded-lg shadow-sm">
             <h2 className="text-lg font-semibold text-gray-800 mb-4">
-              Importar planilha de funcionarios:
+              Importar planilha de administradores:
             </h2>
             <div>
               <label
@@ -76,7 +76,7 @@ function AdicionarFuncionario(): ReactElement {
 
           <div className="bg-white p-6 rounded-lg shadow-sm">
             <h2 className="text-lg font-semibold text-gray-800 mb-6">
-              Registrar Funcionario:
+              Registrar Administrador:
             </h2>
             <form onSubmit={handleRegisterSubmit} className="space-y-5">
               <div>
@@ -159,4 +159,4 @@ function AdicionarFuncionario(): ReactElement {
   );
 }
 
-export default AdicionarFuncionario;
+export default AdicionarAdministrador;
