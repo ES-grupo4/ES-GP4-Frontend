@@ -5,6 +5,7 @@ import UserPages from './pages/UserPages/UserPages'
 import { useEffect, useState } from 'react'
 import { UrlRouter } from './constants/UrlRouter'
 import api from './services/api'
+import Dashboard from './pages/UserPages/Dashboard'
 
 function App() {
 
