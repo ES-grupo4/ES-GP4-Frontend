@@ -26,9 +26,16 @@ const getAllAdministradores = (page:number) => {
     return api.get(`/funcionario/admin/?page=${page}`);
 }
 
-
 const getFuncionarioById = (id : String) => {
     return api.get(`/funcionario/?id=${id}`);
+}
+
+const getAdministradorById = (id : String) => {
+    return api.get(`/funcionario/admin/?id=${id}`);
+}
+
+const removeFuncionarioByCpf = (cpf : String) => {
+    return api.post(`/funcionario/${cpf}/desativar/?data_saida=${ new Date().toISOString().slice(0, 10)}`)
 }
 export default {
     login,
@@ -37,5 +44,7 @@ export default {
     updateFuncionario,
     createFuncionario,
     createAdmin,
-    getAllAdministradores
+    getAllAdministradores,
+    removeFuncionarioByCpf,
+    getAdministradorById
 }

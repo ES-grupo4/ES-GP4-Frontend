@@ -14,6 +14,7 @@ function Login({ setLogged }: { setLogged: (logged: boolean) => void }) {
       const { token} = response.data;
       //const { token, tipo} = response.data;
       localStorage.setItem("token", token);
+      localStorage.setItem("cpf",cpf.replace(/\D/g, ""));
       //localStorage.setItem("tipo", tipo);
       api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       setLogged(true);
