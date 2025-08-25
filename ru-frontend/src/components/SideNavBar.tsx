@@ -25,9 +25,15 @@ export default function SideNavBar({ admin }: { admin: boolean }) {
                             </Link>
                         </li>
                         <li>
-                            <Link to="#" className="flex items-center hover:bg-gray-200 group h-15 rounded-4xl">
+                            <Link to="/user/compras/" className="flex items-center hover:bg-gray-200 group h-15 rounded-4xl">
                                 <svg className="rounded-full bg-green-600 size-5 mx-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 21"></svg>
                                 <span className="ms-3 text-black">Compras</span>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link to="/user/meusdados/" className="flex items-center hover:bg-gray-200 group h-15 rounded-4xl">
+                                <svg className="rounded-full bg-orange-600 size-5 mx-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 21"></svg>
+                                <span className="ms-3 text-black">Meus dados</span>
                             </Link>
                         </li>
                     </ul>

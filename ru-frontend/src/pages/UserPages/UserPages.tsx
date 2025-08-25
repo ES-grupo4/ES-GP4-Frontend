@@ -4,6 +4,9 @@ import AdminPages from "./AdminPages/AdminPages"
 import SideNavBar from "../../components/SideNavBar";
 import Dashboard from "./Dashboard";
 import LogoutButton from "../../components/LogoutButton";
+import MeusDados from "./MeusDados";
+import Compras from "./Compras";
+
 export default function UserPages() { //Guarda páginas gerais de um usuário/funcionário
     const [admin, setAdmin] = useState(true); //Custom Hook temporário, para fins de conveniência, com o objetivo de informar se o usuário é admin ou não
 
@@ -13,6 +16,9 @@ export default function UserPages() { //Guarda páginas gerais de um usuário/fu
             <SideNavBar admin={admin}/>
             <Routes>
                 <Route path="/" element={<Dashboard/>}/>
+                <Route path="/meusdados" element={<MeusDados/>}/>
+                <Route path="/compras" element={<Compras/>}/>
+
                 {admin == true && 
                     <Route path="/admin/*" element={<AdminPages/>}/> //Apenas poderão ser acessadas quando o usuário for admin
                 }
