@@ -3,6 +3,7 @@ import { useState } from "react";
 import UploadIcon from "../../../assets/IconAddFuncionario";
 import validarCPF from "../../../utils/validarCpf";
 import routes from "../../../services/routes";
+import { readExcelFile, type RowData } from "../../../utils/lerPlanilha";
 
 function AdicionarFuncionario(): ReactElement {
   const [cpf, setCpf] = useState("");
@@ -15,11 +16,11 @@ function AdicionarFuncionario(): ReactElement {
     console.log("Funcionario a ser registrado:", { cpf, nome, email, senha });
     if (cpf == "" || nome == "" || email == "" || senha == "") {
       alert("Preencha todos os campos!")
-    } else if (!validarCPF(cpf)){
+    } else if (!validarCPF(cpf)) {
       alert("Insira um CPF válido")
     } else {
-      const status = await addAdmin({ cpf: cpf, nome: nome, email: email, senha: senha })
-      if (status) {
+      const response = await addFuncionario({ cpf: cpf, nome: nome, email: email, senha: senha })
+      if (response.status == 200) {
         alert(`Funcionário ${nome} registrado com sucesso!`);
       } else {
         alert(`Ocorreu um erro ao criar o funcionário`);
@@ -27,21 +28,67 @@ function AdicionarFuncionario(): ReactElement {
     }
   };
 
-  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files.length > 0) {
-      const fileName = event.target.files[0].name;
-      console.log("Planilha selecionada:", fileName);
-      alert(`Planilha "${fileName}" importada!`);
+  const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      const jsonData = await readExcelFile(file);
+      await addFuncionarioJson(jsonData);
+    } catch (err) {
+      console.error("Erro ao ler planilha:", err);
     }
   };
 
-  const addAdmin = async (data: { cpf: string, nome: string, email: string, senha: string }) => {
-    console.log({...data,tipo:"admin"})
-    const response = await routes.createFuncionario(data);
-    if (response.status == 200) {
-      return true;
+  const addFuncionarioJson = async (jsonData: RowData[]) => {
+    const errors: string[] = [];
+
+    for (const admin of jsonData) {
+      const msg = verifyFuncionario(admin);
+
+      if (msg === "OK") {
+        const response = await addFuncionario({
+          cpf: admin["cpf"],
+          nome: admin["nome"],
+          email: admin["email"],
+          senha: admin["senha"]
+        });
+
+        console.log(response);
+
+        if (response.status !== 200) {
+          console.log(response.response.data["detail"]);
+          errors.push(`${admin["cpf"]}: ${response.response.data["detail"]}`);
+        }
+      } else {
+        errors.push(`${admin["cpf"]}: ${msg}`);
+      }
     }
-    return false;
+
+    console.log(errors);
+
+    if (errors.length > 0) {
+      alert("Alguns funcionários não foram cadastrados:\n" + errors.join("\n"));
+    } else {
+      alert("Todos os funcionários foram adicionados com sucesso!");
+    }
+  };
+
+  const verifyFuncionario = (adminData: Record<string, unknown>) => {
+    if (adminData["cpf"] == undefined || adminData["nome"] == undefined || adminData["email"] == undefined || adminData["senha"] == undefined) {
+      return "Campos obrigatórios faltando!";
+    } else if (typeof adminData["cpf"] === "string" && !validarCPF(adminData["cpf"])) {
+      return "CPF inválido";
+    }
+    return "OK";
+  }
+
+  const addFuncionario = async (data: { cpf: string, nome: string, email: string, senha: string }): Promise<any> => {
+    try {
+      const response = await routes.createFuncionario(data);
+      return response;
+    } catch (e) {
+      return e;
+    }
   }
 
   return (
@@ -69,7 +116,7 @@ function AdicionarFuncionario(): ReactElement {
                 type="file"
                 className="sr-only"
                 onChange={handleFileChange}
-                accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                accept=".xlsx, .xls, .csv"
               />
             </div>
           </div>
