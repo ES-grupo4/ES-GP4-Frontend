@@ -16,8 +16,8 @@ export default function EditarCliente() {
     const getAdministradorData = async () => { //Recebe os dados do funcionário pelo cpf
         if (id != null) {
             const response = await routes.getClienteById(id);
-            const clientes = response.data.items;
-            console.log(clientes)
+            const clientes = [response.data];
+            console.log(response)
 
             var tipoGradTemp = "";
 
@@ -86,8 +86,18 @@ export default function EditarCliente() {
         })
     }
 
-    const excluirCliente = () => {
-        console.log("Excluir Cliente")
+    const excluirCliente = async () => {
+        if(id != null){
+            try{
+                const response = await routes.apagarCliente(id);
+                console.log(response)
+                alert("Cliente apagado com sucesso!");
+                navigate(-1);
+            } catch(e){
+                console.log(e);
+                alert("Um erro ocorreu ao apagar o cliente: " + e)
+            }
+        }
     }
 
     const salvarAlteracoes = async () => {
@@ -127,7 +137,7 @@ export default function EditarCliente() {
             }
             console.log("DATA")
             console.log(data)
-            const response = await routes.updateCliente(clienteData["cpf"], data); //const response = await routes.updateCliente(id, data);
+            const response = await routes.updateCliente(id, data); //const response = await routes.updateCliente(id, data);
             if (response.status == 200) {
                 alert("Cliente atualizado com sucesso!");
             } else {
@@ -218,7 +228,7 @@ export default function EditarCliente() {
                     </div>
                 </div>
                 :
-                <span className="text-2xl m-auto text-red-500">Não foi possível encontrar funcionário com ID {id}</span>
+                <span className="text-2xl m-auto text-red-500">Não foi possível encontrar Cliente com ID {id}</span>
             }
 
 

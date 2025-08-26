@@ -3,6 +3,7 @@ import { useState } from "react";
 import UploadIcon from "../../assets/IconAddFuncionario";
 import validarCPF from "../../utils/validarCpf";
 import routes from "../../services/routes";
+import { readExcelFile, type RowData } from "../../utils/lerPlanilha";
 
 export default function AdicionarCliente(): ReactElement {
   const [cpf, setCpf] = useState("");
@@ -35,6 +36,18 @@ export default function AdicionarCliente(): ReactElement {
     }
   };
 
+  const verifyCliente = (clienteData: Record<string, unknown>) => {
+    if (clienteData["cpf"] == undefined || clienteData["nome"] == undefined || clienteData["matricula"] == undefined || clienteData["tipo"] == undefined
+      || clienteData["tipoGraduacao"] == undefined || clienteData["bolsista"] == undefined) {
+      return "Campos obrigatórios faltando!";
+    } else if (typeof clienteData["cpf"] === "string" && !validarCPF(clienteData["cpf"])) {
+      return "CPF inválido";
+    } else if (typeof clienteData["matricula"] === "string" && clienteData["matricula"].length != 9) {
+      return "Matrícula inválida";
+    }
+    return "OK";
+  }
+
   const addCliente = async (data: {
     cpf: string; nome: string; matricula: string; tipo: string; graduando: boolean;
     pos_graduando: boolean; bolsista: boolean
@@ -47,11 +60,54 @@ export default function AdicionarCliente(): ReactElement {
     }
   }
 
-  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files.length > 0) {
-      const fileName = event.target.files[0].name;
-      console.log("Planilha selecionada:", fileName);
-      alert(`Planilha "${fileName}" importada!`);
+  const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      const jsonData = await readExcelFile(file);
+      await addClienteJson(jsonData);
+    } catch (err) {
+      console.error("Erro ao ler planilha:", err);
+    }
+  };
+
+  const addClienteJson = async (jsonData: RowData[]) => {
+    const errors: string[] = [];
+
+    for (const cliente of jsonData) {
+      const msg = verifyCliente(cliente);
+
+      if (msg === "OK") {
+        const graduando = cliente["tipoGraduacao"].toLowerCase() === "graduação" || cliente["tipoGraduacao"].toLowerCase() === "graduação e pós" ? true : false;
+        const pos_graduando = cliente["tipoGraduacao"].toLowerCase() === "pós graduação" || cliente["tipoGraduacao"].toLowerCase() === "graduação e pós" ? true : false;
+        const bolsa = cliente["bolsista"].toLowerCase() === "sim" ? true : false;
+        const response = await addCliente({
+          cpf: cliente["cpf"],
+          nome: cliente["nome"],
+          matricula: cliente["matricula"],
+          tipo: cliente["tipo"].toLowerCase(),
+          graduando: graduando,
+          pos_graduando : pos_graduando,
+          bolsista: bolsa
+        });
+
+        console.log(response);
+
+        if (response.status !== 201) {
+          console.log(response.response.data["detail"]);
+          errors.push(`${cliente["cpf"]}: ${response.response.data["detail"]}`);
+        }
+      } else {
+        errors.push(`${cliente["cpf"]}: ${msg}`);
+      }
+    }
+
+    console.log(errors);
+
+    if (errors.length > 0) {
+      alert("Alguns administradores não foram cadastrados:\n" + errors.join("\n"));
+    } else {
+      alert("Todos os administradores foram adicionados com sucesso!");
     }
   };
 
