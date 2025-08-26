@@ -100,14 +100,14 @@ function AdicionarFuncionario(): ReactElement {
         <main className="max-w-2xl space-y-8">
           <div className="bg-white p-6 rounded-lg shadow-sm">
             <h2 className="text-lg font-semibold text-gray-800 mb-4">
-              Importar planilha de funcionarios:
+              Importar planilha de funcionários:
             </h2>
             <div>
               <label
                 htmlFor="file-upload"
                 className="cursor-pointer bg-gray-100 border border-gray-300 rounded-md p-3 flex items-center justify-between text-gray-500 hover:bg-gray-200 transition-colors"
               >
-                <span>Inserir planilha</span>
+                <span>Inserir planilha (.xlsx, .csv)</span>
                 <UploadIcon />
               </label>
               <input

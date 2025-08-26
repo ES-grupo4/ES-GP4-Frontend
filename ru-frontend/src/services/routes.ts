@@ -7,6 +7,8 @@ const login = (cpf : String,senha : String) => {
       });
 }
 
+//Admin e Funcionário
+
 const createAdmin = (adminData:{}) => {
     return api.post(`/funcionario/`,{...adminData,tipo:"admin",data_entrada:new Date().toISOString().slice(0, 10)});
 }
@@ -37,6 +39,17 @@ const getAdministradorById = (id : String) => {
 const removeFuncionarioByCpf = (cpf : String) => {
     return api.post(`/funcionario/${cpf}/desativar/?data_saida=${ new Date().toISOString().slice(0, 10)}`)
 }
+
+//Cliente
+
+const criarCliente = (clienteData : {}) => {
+    return api.post(`/cliente`,clienteData);
+}
+
+const getAllClientes = (page:number) => {
+    return api.get(`/cliente/?page=${page}`);
+}
+
 export default {
     login,
     getAllFuncionarios,
@@ -46,5 +59,7 @@ export default {
     createAdmin,
     getAllAdministradores,
     removeFuncionarioByCpf,
-    getAdministradorById
+    getAdministradorById,
+    criarCliente,
+    getAllClientes
 }
