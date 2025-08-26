@@ -50,9 +50,9 @@ export default function EditarAdministrador({setLogged}: {setLogged: (logged: bo
         const localCpf = localStorage.getItem("cpf");
         const confirmationRequired = localCpf === administradorData["cpf"];
         var confirmation = confirmationRequired ? confirm("O usuário a ser deletado é o mesmo que está logado. Prosseguir?") : false;
-        if (confirmationRequired == false || (confirmationRequired && confirmation)) {
+        if ((confirmationRequired == false || (confirmationRequired && confirmation)) && id != null) {
             try {
-                const response = await routes.removeFuncionarioByCpf(administradorData["cpf"]);
+                const response = await routes.removeFuncionarioById(id);
                 console.log(response); 
                 if (confirmationRequired) {
                     alert("Usuário atual excluído!");

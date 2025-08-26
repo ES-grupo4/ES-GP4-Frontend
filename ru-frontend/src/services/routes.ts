@@ -55,8 +55,8 @@ const getAdministradorById = (id : String) => {
     return api.get(`/funcionario/admin/?id=${id}`);
 }
 
-const removeFuncionarioByCpf = (cpf : String) => {
-    return api.post(`/funcionario/${cpf}/desativar/?data_saida=${ new Date().toISOString().slice(0, 10)}`)
+const removeFuncionarioById = (id : String) => {
+    return api.post(`/funcionario/${id}/anonimizar/?data_saida=${ new Date().toISOString().slice(0, 10)}`)
 }
 
 //Cliente
@@ -70,11 +70,15 @@ const getAllClientes = (page:number) => {
 }
 
 const getClienteById = (id:String) => {
-    return api.get(`/cliente/?id=${id}`);
+    return api.get(`/cliente/id/${id}`);
 }
 
 const updateCliente = (id:String, clienteData: {}) => {
-    return api.put(`/cliente/${id}`,clienteData); //return api.put(`/cliente/?id=${id}`,clienteData);
+    return api.put(`/cliente/id/${id}`,clienteData); //return api.put(`/cliente/?id=${id}`,clienteData);
+}
+
+const apagarCliente = (id:String) => {
+    return api.delete(`/cliente/${id}`)
 }
 
 export default {
@@ -85,12 +89,13 @@ export default {
   createFuncionario,
   createAdmin,
   getAllAdministradores,
-    removeFuncionarioByCpf,
+    removeFuncionarioById,
     getAdministradorById,
     criarCliente,
     getAllClientes,
     getClienteById,
     updateCliente,
+    apagarCliente,
   getHistorico,
   getCompras,
 };
