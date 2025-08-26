@@ -186,7 +186,7 @@ export default function AdicionarCliente(): ReactElement {
                     Bolsista:
                   </label>
                   <select
-                    value={tipoGraduacao}
+                    value={bolsista}
                     onChange={(e) => setBolsista(e.target.value)}
                     className="block w-full px-4 py-2 pr-8 text-gray-700 bg-white border border-gray-300 rounded shadow-md appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   >

@@ -80,7 +80,7 @@ export default function EntityTable({ tableData, columns, url, hasChart, chartUr
     return (
         <div>
             <div>
-                <form className="flex items-center w-2/3 mx-auto">
+                <form className="flex items-center w-4/5 mx-auto">
                     <label htmlFor="simple-search" className="sr-only">Search</label>
                     <div className="relative w-full">
                         <input type="text" onChange={onChangeSearch} id="simple-search" className="h-13 bg-white border border-gray-300 text-gray-900 text-m rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Pesquisar..." required />
@@ -93,7 +93,7 @@ export default function EntityTable({ tableData, columns, url, hasChart, chartUr
                     </button>
                 </form>
                 <br />
-                <div className="relative overflow-x-auto flex items-center w-2/3 mx-auto">
+                <div className="relative overflow-x-auto flex items-center w-4/5 mx-auto">
                     {table["showTable"] && table["tableHtml"]}
                 </div>
             </div>
