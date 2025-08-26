@@ -42,7 +42,7 @@ export default function EntityTable({ tableData, columns, url, hasChart, chartUr
                 columns.forEach(col => {
                     tdList.push(
                         <td className="px-6 py-4" key={`${i}-${col}-td`}>
-                            {tableData[i][col]}
+                            {typeof tableData[i][col] == "boolean" ? tableData[i][col] == true ? "Sim" : "Não" : tableData[i][col]}
                         </td>)
                 });
                 bodyTemp.push(
