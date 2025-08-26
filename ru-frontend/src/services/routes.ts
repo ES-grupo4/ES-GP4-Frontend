@@ -50,6 +50,14 @@ const getAllClientes = (page:number) => {
     return api.get(`/cliente/?page=${page}`);
 }
 
+const getClienteById = (id:String) => {
+    return api.get(`/cliente/?id=${id}`);
+}
+
+const updateCliente = (id:String, clienteData: {}) => {
+    return api.put(`/cliente/${id}`,clienteData); //return api.put(`/cliente/?id=${id}`,clienteData);
+}
+
 export default {
     login,
     getAllFuncionarios,
@@ -61,5 +69,7 @@ export default {
     removeFuncionarioByCpf,
     getAdministradorById,
     criarCliente,
-    getAllClientes
+    getAllClientes,
+    getClienteById,
+    updateCliente
 }
