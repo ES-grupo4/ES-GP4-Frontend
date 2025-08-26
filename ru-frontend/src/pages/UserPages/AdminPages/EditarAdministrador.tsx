@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react"
-import { useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import RemoveButton from "../../../components/RemoveButton"
 import routes from "../../../services/routes"
+import { UrlRouter } from "../../../constants/UrlRouter";
 
-export default function EditarAdministrador() {
-
+export default function EditarAdministrador({setLogged}: {setLogged: (logged: boolean) => void}) {
+    const navigate = useNavigate();
     const id = useParams()["id"] //CPF tirado dos parâmetros do link
     const [found, setFound] = useState(false) //Se o funcionário com o cpf foi encontrado
     const [administradorData, setAdministradorData] = useState({ cpf: "", nome: "", email: "" })
@@ -16,7 +17,7 @@ export default function EditarAdministrador() {
 
     const getAdministradorData = async () => { //Recebe os dados do funcionário pelo cpf
         if (id != null) {
-            const response = await routes.getFuncionarioById(id);
+            const response = await routes.getAdministradorById(id);
             const administradores = response.data.items;
             console.log(administradores)
             if (administradores.length != 0) {
@@ -45,27 +46,48 @@ export default function EditarAdministrador() {
         setChangeSenha(!changeSenha);
     }
 
-    const excluirAdministrador = () => {
-        console.log("Excluir Administrador");
+    const excluirAdministrador = async () => {
+        const localCpf = localStorage.getItem("cpf");
+        const confirmationRequired = localCpf === administradorData["cpf"];
+        var confirmation = confirmationRequired ? confirm("O usuário a ser deletado é o mesmo que está logado. Prosseguir?") : false;
+        if ((confirmationRequired == false || (confirmationRequired && confirmation)) && id != null) {
+            try {
+                const response = await routes.removeFuncionarioById(id);
+                console.log(response); 
+                if (confirmationRequired) {
+                    alert("Usuário atual excluído!");
+                    localStorage.removeItem("token");
+                    setLogged(false);
+                    navigate(UrlRouter.login);
+                } else {
+                    alert("Administrador excluído!");
+                    navigate(-1);
+                }
+            } catch (e) {
+                console.log(e);
+                alert(`Ocorreu o seguinte problema ao excluir o administrador:\n
+                ${e}`);
+            }
+        }
     }
 
     const salvarAlteracoes = async () => {
         if (id != null) {
             console.log("Salvar Alterações")
             var data = {}
-            if(administradorData["nome"] != ""){
-                data = {...data,nome:administradorData["nome"]}
+            if (administradorData["nome"] != "") {
+                data = { ...data, nome: administradorData["nome"] }
             }
-            if(administradorData["email"] != ""){
-                data = {...data,email:administradorData["email"]}
+            if (administradorData["email"] != "") {
+                data = { ...data, email: administradorData["email"] }
             }
             if (changeSenha && novaSenha != "") {
                 data = { ...data, senha: novaSenha };
             }
             const response = await routes.updateFuncionario(id, data);
-            if(response.status == 200){
+            if (response.status == 200) {
                 alert("Administrador atualizado com sucesso!");
-            } else{
+            } else {
                 alert("Ocorreu um erro ao atualizar o administrador")
             }
             console.log(response);

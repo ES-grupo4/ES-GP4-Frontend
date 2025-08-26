@@ -7,6 +7,8 @@ const login = (cpf : String,senha : String) => {
       });
 }
 
+//Admin e Funcionário
+
 const createAdmin = (adminData:{}) => {
     return api.post(`/funcionario/`,{...adminData,tipo:"admin",data_entrada:new Date().toISOString().slice(0, 10)});
 }
@@ -26,10 +28,40 @@ const getAllAdministradores = (page:number) => {
     return api.get(`/funcionario/admin/?page=${page}`);
 }
 
-
 const getFuncionarioById = (id : String) => {
     return api.get(`/funcionario/?id=${id}`);
 }
+
+const getAdministradorById = (id : String) => {
+    return api.get(`/funcionario/admin/?id=${id}`);
+}
+
+const removeFuncionarioById = (id : String) => {
+    return api.post(`/funcionario/${id}/anonimizar/?data_saida=${ new Date().toISOString().slice(0, 10)}`)
+}
+
+//Cliente
+
+const criarCliente = (clienteData : {}) => {
+    return api.post(`/cliente`,clienteData);
+}
+
+const getAllClientes = (page:number) => {
+    return api.get(`/cliente/?page=${page}`);
+}
+
+const getClienteById = (id:String) => {
+    return api.get(`/cliente/id/${id}`);
+}
+
+const updateCliente = (id:String, clienteData: {}) => {
+    return api.put(`/cliente/id/${id}`,clienteData); //return api.put(`/cliente/?id=${id}`,clienteData);
+}
+
+const apagarCliente = (id:String) => {
+    return api.delete(`/cliente/${id}`)
+}
+
 export default {
     login,
     getAllFuncionarios,
@@ -37,5 +69,12 @@ export default {
     updateFuncionario,
     createFuncionario,
     createAdmin,
-    getAllAdministradores
+    getAllAdministradores,
+    removeFuncionarioById,
+    getAdministradorById,
+    criarCliente,
+    getAllClientes,
+    getClienteById,
+    updateCliente,
+    apagarCliente
 }
