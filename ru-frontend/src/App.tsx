@@ -16,6 +16,8 @@ function App() {
       api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       setLogged(true);
       //setAdmin(localStorage.getItem("tipo") == "admin")
+    } else{
+      setLogged(false)
     }
   }, [logged,admin]);
 
