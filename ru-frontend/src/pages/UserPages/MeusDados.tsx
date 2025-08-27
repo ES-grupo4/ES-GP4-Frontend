@@ -7,13 +7,13 @@ const dadosUsuario = {
 
 export default function MeusDados() {
     return (
-        <div className="p-4 sm:ml-64 flex flex-col min-h-screen relative">
+        <div className="p-4 sm:ml-64">
             
-            <div className="group flex justify-between items-center mb-8">
+            <div className="group flex">
                 <h1 className="font-semibold font-sans text-6xl text-sky-900">Meus Dados</h1>
             </div>
 
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white p-8 shadow-2xl rounded-lg w-full max-w-lg">
+            <div className="bg-white mx-auto my-25 p-8 w-5/10 rounded-lg">
                 
                 <div className="space-y-4 text-gray-700">
                     <p className="text-lg"><span className="font-bold">NOME:</span> {dadosUsuario.nome}</p>
