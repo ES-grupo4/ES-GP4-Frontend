@@ -86,7 +86,7 @@ export default function EditarCliente() {
         })
     }
 
-    const excluirCliente = async () => {
+    /*const excluirCliente = async () => {
         if(id != null){
             try{
                 const response = await routes.apagarCliente(id);
@@ -98,7 +98,7 @@ export default function EditarCliente() {
                 alert("Um erro ocorreu ao apagar o cliente: " + e)
             }
         }
-    }
+    }*/
 
     const salvarAlteracoes = async () => {
         if (id != null) {
@@ -154,7 +154,7 @@ export default function EditarCliente() {
             </div>
             <br />
             {found ?
-                <div className="bg-white mx-auto my-25 p-5 w-7/10 h-110 rounded-lg">
+                <div className="bg-white mx-auto my-25 p-5 w-7/10 h-100 rounded-lg">
                     <span className="text-2xl"><span className="font-bold">CPF:</span> {clienteData["cpf"]}</span>
                     <div className="mt-20 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
                         <span className="text-2xl font-bold">Nome:</span>
@@ -221,10 +221,8 @@ export default function EditarCliente() {
                             <div className="pointer-events-none absolute mt-8 inset-y-0 right-0 flex items-center px-2 text-gray-700">▼</div>
                         </div>
                     </div>
-
-                    <div className="mt-10 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+                    <div className="mt-20 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
                         <button type="button" onClick={salvarAlteracoes} className="cursor-pointer bg-green-700 hover:bg-green-800 focus:ring-4 rounded-lg text-m text-white font-bold  px-5 py-2.5 me-2 mb-2">Salvar Alterações</button>
-                        <RemoveButton onClickFunction={excluirCliente} />
                     </div>
                 </div>
                 :

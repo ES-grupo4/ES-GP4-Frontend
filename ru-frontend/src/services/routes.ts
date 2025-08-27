@@ -36,8 +36,8 @@ const getAdministradorById = (id : String) => {
     return api.get(`/funcionario/admin/?id=${id}`);
 }
 
-const removeFuncionarioById = (id : String) => {
-    return api.post(`/funcionario/${id}/anonimizar/?data_saida=${ new Date().toISOString().slice(0, 10)}`)
+const desativarFuncionarioByCpf = (cpf : String) => {
+    return api.post(`/funcionario/${cpf}/desativar/?data_saida=${ new Date().toISOString().slice(0, 10)}`)
 }
 
 //Cliente
@@ -70,7 +70,7 @@ export default {
     createFuncionario,
     createAdmin,
     getAllAdministradores,
-    removeFuncionarioById,
+    removeFuncionarioByCpf: desativarFuncionarioByCpf,
     getAdministradorById,
     criarCliente,
     getAllClientes,

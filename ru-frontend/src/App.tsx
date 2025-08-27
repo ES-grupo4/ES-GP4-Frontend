@@ -1,5 +1,5 @@
 import './App.css'
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Navigate, Route, Routes, useNavigate } from 'react-router-dom'
 import Login from './pages/Login'
 import UserPages from './pages/UserPages/UserPages'
 import { useEffect, useState } from 'react'
@@ -7,7 +7,6 @@ import { UrlRouter } from './constants/UrlRouter'
 import api from './services/api'
 
 function App() {
-
   const [logged, setLogged] = useState(false)
   const [admin, setAdmin] = useState(true) //useState(false)
 

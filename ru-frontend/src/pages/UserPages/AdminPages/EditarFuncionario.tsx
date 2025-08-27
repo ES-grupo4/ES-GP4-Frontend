@@ -49,23 +49,23 @@ export default function EditarFuncionario({ setLogged }: { setLogged: (logged: b
     const excluirFuncionario = async () => {
         const localCpf = localStorage.getItem("cpf");
         const confirmationRequired = localCpf === funcionarioData["cpf"];
-        var confirmation = confirmationRequired ? confirm("O usuário a ser deletado é o mesmo que está logado. Prosseguir?") : false;
+        var confirmation = confirmationRequired ? confirm("O usuário a ser desativado é o mesmo que está logado. Prosseguir?") : false;
         if ((confirmationRequired == false || (confirmationRequired && confirmation)) && id != null) {
             try {
-                const response = await routes.removeFuncionarioById(id);
+                const response = await routes.removeFuncionarioByCpf(funcionarioData["cpf"]);
                 console.log(response);
                 if (confirmationRequired) {
-                    alert("Usuário atual excluído!");
+                    alert("Usuário atual desativado!");
                     localStorage.removeItem("token");
                     setLogged(false);
                     navigate(UrlRouter.login);
                 } else {
-                    alert("Funcionário excluído!");
+                    alert("Funcionário desativado!");
                     navigate(-1);
                 }
             } catch (e) {
                 console.log(e);
-                alert(`Ocorreu o seguinte problema ao excluir o funcionário:\n
+                alert(`Ocorreu o seguinte problema ao desativar o funcionário:\n
                        ${e}`);
             }
         }
@@ -122,7 +122,7 @@ export default function EditarFuncionario({ setLogged }: { setLogged: (logged: b
                     </div>
                     <div className="mt-20 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
                         <button type="button" onClick={salvarAlteracoes} className="cursor-pointer bg-green-700 hover:bg-green-800 focus:ring-4 rounded-lg text-m text-white font-bold  px-5 py-2.5 me-2 mb-2">Salvar Alterações</button>
-                        <RemoveButton onClickFunction={excluirFuncionario} />
+                        <RemoveButton onClickFunction={excluirFuncionario} nomeEntidade={"funcionário"} />
                     </div>
                 </div>
                 :
