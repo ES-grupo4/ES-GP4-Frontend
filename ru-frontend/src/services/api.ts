@@ -11,7 +11,9 @@ const api = axios.create({
         const originalRequest = error.config;
         if (error.response && (error.response.status === 401 || error.response.status === 403)) {
           alert("Sessão expirada! Realize o login novamente!")
-          localStorage.removeItem('token'); 
+          localStorage.removeItem('token');
+          localStorage.removeItem('cpf');
+          localStorage.removeItem('tipo');   
           window.location.href = UrlRouter.login;
           return Promise.reject('Unauthorized');
         }
