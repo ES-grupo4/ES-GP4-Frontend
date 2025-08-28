@@ -26,8 +26,8 @@ export const UrlRouter = {
         dashboard: {
             default: '/user/dashboard',
         },
-        relatorio: {
-            default: '/user/relatorio',
+        relatorios: {
+            default: '/user/relatorios',
         },
         clientes: {
             default: '/user/clientes',

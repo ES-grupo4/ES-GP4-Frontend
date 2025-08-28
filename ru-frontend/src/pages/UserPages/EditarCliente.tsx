@@ -180,7 +180,6 @@ export default function EditarCliente() {
                                 <option key={0} value={"aluno"}>Aluno</option>
                                 <option key={1} value={"professor"}>Professor</option>
                                 <option key={2} value={"tecnico"}>Técnico</option>
-                                <option key={3} value={"externo"}>Externo</option>
                             </select>
                             <div className="pointer-events-none absolute mt-8 inset-y-0 right-0 flex items-center px-2 text-gray-700">▼</div>
                         </div>

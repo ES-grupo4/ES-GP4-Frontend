@@ -47,10 +47,10 @@ export default function Dashboard() {
     <div className="p-4 sm:ml-64">
       <div className="group flex">
         <h1 className="font-semibold font-sans text-6xl text-sky-900">
-          Histórico do Sistema
+          Dashboard
         </h1>
       </div>
-
+      <br/>
       <div className="w-full grid grid-cols-2 gap-6 mb-5">
         <MetricCard
           title="Total de Usuários"

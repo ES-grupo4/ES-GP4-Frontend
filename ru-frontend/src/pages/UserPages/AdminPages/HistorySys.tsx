@@ -6,7 +6,7 @@ export default function HistorySys() {
     const currentDate = new Date();
 
     const [year, setYear] = useState<number>(new Date().getFullYear());
-        const [month, setMonth] = useState<number>(new Date().getMonth());
+    const [month, setMonth] = useState<number>(new Date().getMonth());
 
     for (let i = 0; i < 12; i++) {
         const date = new Date(currentDate);
@@ -23,10 +23,9 @@ export default function HistorySys() {
 
     return (
         <div className="p-4 sm:ml-64 flex flex-col min-h-screen">
-            <div className="group flex">
+            <div className="group flex mb-6">
                 <h1 className="font-semibold font-sans text-6xl text-sky-900">Histórico do Sistema</h1>
             </div>
-
             <div className="flex-grow flex items-center justify-center">
                 <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-7xl min-h-[700px] flex flex-col">
 
@@ -37,11 +36,11 @@ export default function HistorySys() {
 
                         <div className="flex items-center gap-4">
                             <MonthYearDropdown
-                                        selectedYear={year}
-                                        selectedMonth={month}
-                                        onChange={handleChange}
-                                        startYear={2000}
-                                    />
+                                selectedYear={year}
+                                selectedMonth={month}
+                                onChange={handleChange}
+                                startYear={2000}
+                            />
 
                             <button
                                 type="button"
