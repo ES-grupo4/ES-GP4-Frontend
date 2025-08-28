@@ -41,7 +41,7 @@ const RelatorioTemplate = ({ data }: { data: any }) => (
         <Document title={`RelatorioRU-[mesSelecionado][anoSelecionado].pdf`}>
             <Page size="A4" style={styles.page}>
                 <Text style={styles.header}>Relatório – Restaurante Universitário</Text>
-                
+
                 <View style={styles.section}>
                     <Text style={styles.title}>Informações Gerais</Text>
                     <View style={styles.row}>
@@ -54,22 +54,25 @@ const RelatorioTemplate = ({ data }: { data: any }) => (
                     <Text style={styles.title}>Dados do Relatório</Text>
                     <View style={styles.row}>
                         <Text>Relatório referente ao período de:</Text>
-                        <Text>{"[mês e ano selecionados]"}</Text>
+                        <Text>{data["periodStr"]}</Text>
                     </View>
                     <View style={styles.row}>
                         <Text>Relatório gerado em:</Text>
                         <Text>
-                            {new Date().toLocaleDateString("pt-BR", {
+                            {new Date().toLocaleString("pt-BR", {
                                 weekday: "long",
                                 year: "numeric",
                                 month: "long",
                                 day: "numeric",
+                                hour: "2-digit",
+                                minute: "2-digit"
                             })}
+
                         </Text>
                     </View>
                     <View style={styles.row}>
                         <Text>Relatório gerado através do funcionário de CPF:</Text>
-                        <Text>{"CPF"}</Text>
+                        <Text>{data["cpf"]}</Text>
                     </View>
                 </View>
 
@@ -199,7 +202,7 @@ const RelatorioTemplate = ({ data }: { data: any }) => (
                         <Text>- Externos:</Text>
                         <Text>{"null"}</Text>
                     </View>
-                
+
                 </View>
             </Page>
         </Document>

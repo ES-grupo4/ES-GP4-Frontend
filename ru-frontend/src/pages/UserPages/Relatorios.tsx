@@ -6,9 +6,12 @@ export default function Relatorios() {
 
     const [year, setYear] = useState<number>(new Date().getFullYear());
     const [month, setMonth] = useState<number>(new Date().getMonth());
+    const [data, setData] = useState({cpf:localStorage.getItem('cpf'), periodStr:`${month}/${year}`});
 
-    function handleChange(year: number, month: number): void {
-        throw new Error("Function not implemented.");
+    function handleChange(yearNew: number, monthNew: number): void {
+        setData({...data, periodStr: `${monthNew}/${yearNew}`})
+        setYear(yearNew);
+        setMonth(monthNew);
     }
     return (
         <div className="p-4 sm:ml-64">
@@ -34,7 +37,7 @@ export default function Relatorios() {
                         </div>
                     </div>
                     <div>
-                        <RelatorioTemplate data={{}}/>
+                        <RelatorioTemplate data={data}/>
                     </div>
                 </div>
             </div>
