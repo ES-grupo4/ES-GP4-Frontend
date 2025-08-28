@@ -139,10 +139,10 @@ export default function Dashboard() {
     <div className="p-4 sm:ml-64">
       <div className="group flex">
         <h1 className="font-semibold font-sans text-6xl text-sky-900">
-          Histórico do Sistema
+          Dashboard
         </h1>
       </div>
-
+      <br/>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <MetricCard
           title="Total de Usuários"
