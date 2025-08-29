@@ -9,8 +9,8 @@ function AdicionarCliente(): ReactElement {
 
   const handleRegisterSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log("Funcionário a ser registrado:", { cpf, nome, email });
-    alert(`Funcionário ${nome} registrado com sucesso!`);
+    console.log("Cliente a ser registrado:", { cpf, nome, email });
+    alert(`Cliente ${nome} registrado com sucesso!`);
   };
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
