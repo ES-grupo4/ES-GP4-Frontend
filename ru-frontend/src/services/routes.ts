@@ -59,6 +59,14 @@ const desativarFuncionarioByCpf = (cpf : String) => {
     return api.post(`/funcionario/${cpf}/desativar/?data_saida=${ new Date().toISOString().slice(0, 10)}`)
 }
 
+const getFuncionarioByCpf = (cpf: String) => {
+    return api.get(`/funcionario/?cpf=${cpf}`);
+}
+
+const getAdministradorByCpf = (cpf: String) => {
+    return api.get(`/funcionario/admin/?cpf=${cpf}`);
+}
+
 //Cliente
 
 const criarCliente = (clienteData : {}) => {
@@ -91,6 +99,8 @@ export default {
   getAllAdministradores,
     removeFuncionarioByCpf: desativarFuncionarioByCpf,
     getAdministradorById,
+    getFuncionarioByCpf,
+    getAdministradorByCpf,
     criarCliente,
     getAllClientes,
     getClienteById,
