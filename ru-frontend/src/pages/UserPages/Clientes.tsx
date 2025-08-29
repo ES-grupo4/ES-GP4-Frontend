@@ -1,33 +1,35 @@
-import { useState } from "react"
 import EntityTable from "../../components/EntityTable"
 import { UrlRouter } from "../../constants/UrlRouter"
 import { Link } from "react-router-dom"
+import { getClientes } from "../../services/ClienteService"
+import { useState, useEffect } from "react"
 
 export default function Clientes() {
 
-    const [data, setData] = useState(
-        [ //tableData, no futuro, irá guardar as informações dos funcionários recebidas por requisições http
-            {
-                id: 4,
-                Nome: "DESS HOLIDAY",
-                CPF: "122512250-12",
-                Email: "roaring.knight@gmail.com"
-            },
-            {
-                id: 5,
-                Nome: "ASGORE DREEMUR",
-                CPF: "999999999-99",
-                Email: "truck@gmail.com"
-            },
-            {
-                id: 6,
-                Nome: "NOELLE HOLLIDAY",
-                CPF: "121212120-12",
-                Email: "susie.fancluber@gmail.com"
-            },
-        ])
+    const [data, setData] = useState<any[]>([]);
     const [page, setPage] = useState(1)
     const [pageQtd, setPageQtd] = useState(1)
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await getClientes(page, 10);
+
+                const formattedData = response.items.map(cliente => ({
+                    id: cliente.id,
+                    Nome: cliente.nome,
+                    Matrícula: cliente.matricula
+                }));
+
+                setData(formattedData);
+                setPageQtd(response.total_pages);
+            } catch (error) {
+                console.error("Erro ao buscar clientes:", error);
+            }
+        };
+
+        fetchData();
+    }, [page]);
 
     const next = () => {
         if (page === pageQtd) return;
@@ -52,7 +54,7 @@ export default function Clientes() {
                 </Link>
             </div>
             <br />
-            <EntityTable tableData={data} columns={["id", "Nome", "CPF", "Email"]} url={UrlRouter.usuario.clientes.editar.split(':')[0]}
+            <EntityTable tableData={data} columns={["id", "Nome", "Natrícula"]} url={UrlRouter.usuario.clientes.editar.split(':')[0]}
                 hasChart={true} chartUrl={UrlRouter.usuario.clientes.detalhes.split(':')[0]}
                 page={page} total_pages={pageQtd} prev={prev} next={next}/>
 
