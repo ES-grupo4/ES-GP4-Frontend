@@ -7,34 +7,42 @@ import routes from "../../services/routes"
 export default function Clientes() {
 
     const [data, setData] = useState([])
+    const [filter, setFilter] = useState("")
+    const [categoria, setCategoria] = useState(""); // começa vazio
     const [page, setPage] = useState(1)
     const [pageQtd, setPageQtd] = useState(1)
 
     useEffect(() => {
         const getAdminData = async () => {
-            const response = await routes.getAllClientes(page);
+            console.log("CATEGORIA:" + categoria)
+            const response = await routes.getAllClientes(page, filter, categoria);
             var data = response.data["items"]
             console.log(response)
-            data.forEach((cliente: { [x: string]: string | boolean}) => {
-                if(cliente["graduando"] == true && cliente["pos_graduando"] == true){
+            data.forEach((cliente: { [x: string]: string | boolean }) => {
+                if (cliente["graduando"] == true && cliente["pos_graduando"] == true) {
                     cliente["tipo_graduacao"] = "Graduação e Pós"
-                } else if (cliente["graduando"] == true){
+                } else if (cliente["graduando"] == true) {
                     cliente["tipo_graduacao"] = "Graduação"
-                } else if (cliente["pos_graduando"] == true){
+                } else if (cliente["pos_graduando"] == true) {
                     cliente["tipo_graduacao"] = "Pós Graduação"
-                } else{
+                } else {
                     cliente["tipo_graduacao"] = "Nenhuma"
                 }
-                if(typeof cliente["tipo"] === "string"){
+                if (typeof cliente["tipo"] === "string") {
                     cliente["tipo"] = cliente["tipo"].charAt(0).toUpperCase() + cliente["tipo"].slice(1);
                 }
-                
+
             });
-            setPageQtd(response.data["total_pages"]);
+            if (response.data["items"].length == 0) {
+                setPageQtd(1);
+            } else {
+                setPageQtd(response.data["total_pages"]);
+            }
             setData(data);
         }
         getAdminData();
-    }, [page])
+    }, [page, filter, categoria])
+
 
     const next = () => {
         if (page === pageQtd) return;
@@ -58,10 +66,11 @@ export default function Clientes() {
                     </svg>
                 </Link>
             </div>
+            
             <br />
             <EntityTable tableData={data} columns={["id", "nome", "cpf", "matricula", "tipo", "tipo_graduacao", "bolsista"]} url={UrlRouter.usuario.clientes.editar.split(':')[0]}
                 hasChart={true} chartUrl={UrlRouter.usuario.clientes.detalhes.split(':')[0]}
-                page={page} total_pages={pageQtd} prev={prev} next={next} />
+                page={page} total_pages={pageQtd} prev={prev} next={next} setFilter={setFilter} categoria={categoria} setCategoria={setCategoria} />
 
         </div>)
 }

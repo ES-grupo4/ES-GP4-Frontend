@@ -21,11 +21,11 @@ const updateFuncionario = (id : String,funcData : {}) => {
     return api.put(`/funcionario/${id}`,funcData);
 }
 
-const getAllFuncionarios = (page:number) => {
-    return api.get(`/funcionario/?page=${page}`);
+const getAllFuncionarios = (page:number, busca: string) => {
+    return api.get(`/funcionario/admins?page=${page}&tipo_funcionario=funcionario&busca=${busca}&desativados=${false}`);
 }
-const getAllAdministradores = (page:number) => {
-    return api.get(`/funcionario/admin/?page=${page}`);
+const getAllAdministradores = (page:number, busca: string) => {
+    return api.get(`/funcionario/admins?page=${page}&tipo_funcionario=admin&busca=${busca}&desativados=${false}`);
 }
 
 const getFuncionarioById = (id : String) => {
@@ -54,8 +54,11 @@ const criarCliente = (clienteData : {}) => {
     return api.post(`/cliente`,clienteData);
 }
 
-const getAllClientes = (page:number) => {
-    return api.get(`/cliente/?page=${page}`);
+const getAllClientes = (page:number, busca:string, tipo:string) => {
+    if(tipo !== ""){
+        return api.get(`/cliente/buscar-clientes-todos-campos/?page=${page}&search_term=${busca}&tipo=${tipo}`);
+    }
+    return api.get(`/cliente/buscar-clientes-todos-campos/?page=${page}&search_term=${busca}`);
 }
 
 const getClienteById = (id:String) => {
@@ -68,6 +71,12 @@ const updateCliente = (id:String, clienteData: {}) => {
 
 const apagarCliente = (id:String) => {
     return api.delete(`/cliente/${id}`)
+}
+
+// Relatorio
+
+const getRelatorio = (month:number,year:number) => {
+    return api.get(`/relatorio/${year}/${month}`)
 }
 
 export default {
@@ -86,5 +95,6 @@ export default {
     getAllClientes,
     getClienteById,
     updateCliente,
-    apagarCliente
+    apagarCliente,
+    getRelatorio
 }

@@ -7,6 +7,7 @@ import routes from "../../../services/routes"
 export default function Funcionarios() {
 
     const [data, setData] = useState([])
+    const [filter,setFilter] = useState("")
     const [page, setPage] = useState(1)
     const [pageQtd, setPageQtd] = useState(1)
 
@@ -23,14 +24,18 @@ export default function Funcionarios() {
     };
     useEffect(() => {
         const getFuncionarioData = async () => {
-            const response = await routes.getAllFuncionarios(page);
+            const response = await routes.getAllFuncionarios(page, filter);
             console.log(response)
             const data = response.data["items"].filter((func: { [x: string]: string }) => func["tipo"] == "funcionario")
-            setPageQtd(response.data["total_pages"]);
+            if(response.data["items"].length == 0){
+                setPageQtd(1);
+            } else{
+                setPageQtd(response.data["total_pages"]);
+            }
             setData(data);
         }
         getFuncionarioData();
-    }, [page])
+    }, [page, filter])
 
     return (
         <div className="p-4 sm:ml-64">
@@ -44,7 +49,7 @@ export default function Funcionarios() {
             </div>
             <br />
             <EntityTable tableData={data} columns={["id", "nome", "cpf", "email", "data_entrada"]} url={UrlRouter.usuario.administracao.funcionarios.editar.split(":")[0]} hasChart={false} chartUrl="" 
-            page={page} total_pages={pageQtd} prev={prev} next={next}/>
+            page={page} total_pages={pageQtd} prev={prev} next={next} setFilter={setFilter}/>
 
         </div>)
 }

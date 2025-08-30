@@ -75,7 +75,7 @@ export default function MeusDados() {
                     <p className="text-lg"><span className="font-bold">NOME:</span> {userData?.nome}</p>
                     <p className="text-lg"><span className="font-bold">CPF:</span> {userData?.cpf}</p>
                     <p className="text-lg"><span className="font-bold">E-MAIL:</span> {userData?.email}</p>
-                    <p className="text-lg uppercase"><span className="font-bold">CATEGORIA:</span> {userData?.tipo}</p>
+                    <p className="text-lg uppercase"><span className="font-bold">CARGO:</span> {userData?.tipo}</p>
                 </div>
             </div>
         </div>
