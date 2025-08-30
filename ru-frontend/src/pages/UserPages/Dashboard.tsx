@@ -50,7 +50,7 @@ export default function Dashboard() {
           Dashboard
         </h1>
       </div>
-      <br/>
+
       <div className="w-full grid grid-cols-2 gap-6 mb-5">
         <MetricCard
           title="Total de Usuários"
