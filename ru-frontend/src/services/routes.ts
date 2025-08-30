@@ -29,11 +29,11 @@ const updateFuncionario = (id: String, funcData: {}) => {
   return api.put(`/funcionario/${id}`, funcData);
 };
 
-const getAllFuncionarios = (page: number) => {
-  return api.get(`/funcionario/?page=${page}`);
+const getAllFuncionarios = (page: number, busca: string) => {
+  return api.get(`/funcionario/admins?page=${page}&tipo_funcionario=funcionario&busca=${busca}`);
 };
-const getAllAdministradores = (page: number) => {
-  return api.get(`/funcionario/admin/?page=${page}`);
+const getAllAdministradores = (page: number, busca: string) => {
+  return api.get(`/funcionario/admins?page=${page}&tipo_funcionario=admin&busca=${busca}`);
 };
 const getFuncionarioById = (id: String) => {
   return api.get(`/funcionario/?id=${id}`);
@@ -73,8 +73,11 @@ const criarCliente = (clienteData : {}) => {
     return api.post(`/cliente`,clienteData);
 }
 
-const getAllClientes = (page:number) => {
-    return api.get(`/cliente/?page=${page}`);
+const getAllClientes = (page:number, busca:string, tipo:string) => {
+    if(tipo !== ""){
+        return api.get(`/cliente/buscar-clientes-todos-campos/?page=${page}&search_term=${busca}&tipo=${tipo}`);
+    }
+    return api.get(`/cliente/buscar-clientes-todos-campos/?page=${page}&search_term=${busca}`);
 }
 
 const getClienteById = (id:String) => {
