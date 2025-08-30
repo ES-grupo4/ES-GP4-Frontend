@@ -3,7 +3,6 @@ import { useState } from "react";
 import UploadIcon from "../../../assets/IconAddFuncionario";
 import routes from "../../../services/routes";
 import validarCPF from "../../../utils/validarCpf";
-import { readExcelFile, type RowData } from "../../../utils/lerPlanilha";
 
 function AdicionarAdministrador(): ReactElement {
   const [cpf, setCpf] = useState("");
@@ -16,11 +15,11 @@ function AdicionarAdministrador(): ReactElement {
     console.log("Administrador a ser registrado:", { cpf, nome, email, senha });
     if (cpf == "" || nome == "" || email == "" || senha == "") {
       alert("Preencha todos os campos!")
-    } else if (!validarCPF(cpf)) {
+    } else if (!validarCPF(cpf)){
       alert("Insira um CPF válido")
     } else {
-      const response = await addAdmin({ cpf: cpf, nome: nome, email: email, senha: senha })
-      if (response.status == 200) {
+      const status = await addAdmin({ cpf: cpf, nome: nome, email: email, senha: senha })
+      if (status) {
         alert(`Administrador ${nome} registrado com sucesso!`);
       } else {
         alert(`Ocorreu um erro ao criar o administrador`);
@@ -28,67 +27,21 @@ function AdicionarAdministrador(): ReactElement {
     }
   };
 
-  const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    try {
-      const jsonData = await readExcelFile(file);
-      await addAdminJson(jsonData);
-    } catch (err) {
-      console.error("Erro ao ler planilha:", err);
+  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files.length > 0) {
+      const fileName = event.target.files[0].name;
+      console.log("Planilha selecionada:", fileName);
+      alert(`Planilha "${fileName}" importada!`);
     }
   };
 
-  const addAdminJson = async (jsonData: RowData[]) => {
-    const errors: string[] = [];
-
-    for (const admin of jsonData) {
-      const msg = verifyAdmin(admin);
-
-      if (msg === "OK") {
-        const response = await addAdmin({
-          cpf: admin["cpf"],
-          nome: admin["nome"],
-          email: admin["email"],
-          senha: admin["senha"]
-        });
-
-        console.log(response);
-
-        if (response.status !== 200) {
-          console.log(response.response.data["detail"]);
-          errors.push(`${admin["cpf"]}: ${response.response.data["detail"]}`);
-        }
-      } else {
-        errors.push(`${admin["cpf"]}: ${msg}`);
-      }
-    } 
-
-    console.log(errors);
-
-    if (errors.length > 0) {
-      alert("Alguns administradores não foram cadastrados:\n" + errors.join("\n"));
-    } else {
-      alert("Todos os administradores foram adicionados com sucesso!");
+  const addAdmin = async (data: { cpf: string, nome: string, email: string, senha: string }) => {
+    console.log({...data,tipo:"admin"})
+    const response = await routes.createAdmin(data);
+    if (response.status == 200) {
+      return true;
     }
-  };
-
-  const verifyAdmin = (adminData: Record<string, unknown>) => {
-    if (adminData["cpf"] == undefined || adminData["nome"] == undefined || adminData["email"] == undefined || adminData["senha"] == undefined) {
-      return "Campos obrigatórios faltando!";
-    } else if (typeof adminData["cpf"] === "string" && !validarCPF(adminData["cpf"])) {
-      return "CPF inválido";
-    }
-    return "OK";
-  }
-
-  const addAdmin = async (data: { cpf: string, nome: string, email: string, senha: string }): Promise<any> => {
-    try {
-      const response = await routes.createAdmin(data);
-      return response;
-    } catch (e) {
-      return e;
-    }
+    return false;
   }
 
   return (
@@ -107,7 +60,7 @@ function AdicionarAdministrador(): ReactElement {
                 htmlFor="file-upload"
                 className="cursor-pointer bg-gray-100 border border-gray-300 rounded-md p-3 flex items-center justify-between text-gray-500 hover:bg-gray-200 transition-colors"
               >
-                <span>Inserir planilha (.xlsx, .csv)</span>
+                <span>Inserir planilha</span>
                 <UploadIcon />
               </label>
               <input
@@ -116,7 +69,7 @@ function AdicionarAdministrador(): ReactElement {
                 type="file"
                 className="sr-only"
                 onChange={handleFileChange}
-                accept=".xlsx, .xls, .csv"
+                accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
               />
             </div>
           </div>

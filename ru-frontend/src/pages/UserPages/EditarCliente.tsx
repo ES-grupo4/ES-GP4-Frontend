@@ -1,234 +1,92 @@
 import { useEffect, useState } from "react"
-import { useNavigate, useParams } from "react-router-dom"
+import { useParams } from "react-router-dom"
 import RemoveButton from "../../components/RemoveButton"
-import routes from "../../services/routes";
 
 export default function EditarCliente() {
 
-    const navigate = useNavigate();
+    const [data, setData] = useState(
+        [ //tableData, no futuro, irá guardar as informações dos funcionários recebidas por requisições http
+            {
+                id: 4,
+                nome: "DESS HOLIDAY",
+                cpf: "122512250-12",
+                email: "roaring.knight@gmail.com"
+            },
+            {
+                id: 5,
+                nome: "ASGORE DREEMUR",
+                cpf: "999999999-99",
+                email: "truck@gmail.com"
+            },
+            {
+                id: 6,
+                nome: "NOELLE HOLLIDAY",
+                cpf: "121212120-12",
+                email: "susie.fancluber@gmail.com"
+            },
+        ])
+
     const id = useParams()["id"] //CPF tirado dos parâmetros do link
     const [found, setFound] = useState(false) //Se o funcionário com o cpf foi encontrado
-    const [clienteData, setClienteData] = useState({ cpf: "", nome: "", matricula: "", tipo: "", tipoGraduacao: "", bolsista: "" })
+    const [ClienteData, setClienteData] = useState({cpf:"" ,nome: "", email: "" })
     useEffect(() => {
-        getAdministradorData()
+        getClienteData()
     }, [])
 
-    const getAdministradorData = async () => { //Recebe os dados do funcionário pelo cpf
-        if (id != null) {
-            const response = await routes.getClienteById(id);
-            const clientes = [response.data];
-            console.log(response)
-
-            var tipoGradTemp = "";
-
-            if (clientes[0]["graduando"] && clientes[0]["pos_graduando"]) {
-                tipoGradTemp = "graduacao_e_pos";
-            } else if (clientes[0]["graduando"]) {
-                tipoGradTemp = "graduacao";
-            } else if (clientes[0]["pos_graduando"]) {
-                tipoGradTemp = "pos_graduacao";
-            } else {
-                tipoGradTemp = "nenhuma";
-            }
-
-            if (clientes.length != 0) {
-                setClienteData({
-                    cpf: clientes[0]["cpf"], nome: clientes[0]["nome"], matricula: clientes[0]["matricula"],
-                    tipo: clientes[0]["tipo"],
-                    tipoGraduacao: tipoGradTemp,
-                    bolsista: clientes[0]["bolsista"] ? "Sim" : 'Nao'
-                })
+    const getClienteData = () => { //Recebe os dados do funcionário pelo cpf
+        for (var i = 0; i < data.length; i++) {
+            if (data[i]["id"].toString() == id) {
+                setClienteData({cpf: data[i]["cpf"] ,nome: data[i]["nome"], email: data[i]["email"] })
                 setFound(true)
-                console.log({
-                    cpf: clientes[0]["cpf"], nome: clientes[0]["nome"], matricula: clientes[0]["matricula"],
-                    tipo: clientes[0]["tipo"],
-                    tipoGraduacao: tipoGradTemp,
-                    bolsista: clientes[0]["bolsista"] ? "Sim" : 'Nao'
-                })
+                break
             }
         }
-
     }
 
-    const onChangeName = (e: React.ChangeEvent<any>) => {
-        setClienteData({
-            cpf: clienteData["cpf"], nome: e.target.value, matricula: clienteData["matricula"],
-            tipo: clienteData["tipo"], tipoGraduacao: clienteData["tipoGraduacao"], bolsista: clienteData["bolsista"]
-        })
-    }
-
-    const onChangeMatricula = (e: React.ChangeEvent<any>) => {
-        setClienteData({
-            cpf: clienteData["cpf"], nome: clienteData["nome"], matricula: e.target.value,
-            tipo: clienteData["tipo"], tipoGraduacao: clienteData["tipoGraduacao"], bolsista: clienteData["bolsista"]
-        })
-    }
-
-    const onChangeTipo = (e: React.ChangeEvent<any>) => {
-        setClienteData({
-            cpf: clienteData["cpf"], nome: clienteData["nome"], matricula: clienteData["matricula"],
-            tipo: e.target.value, tipoGraduacao: clienteData["tipoGraduacao"], bolsista: clienteData["bolsista"]
-        })
-    }
-
-    const onChangeTipoGraduacao = (e: React.ChangeEvent<any>) => {
-        setClienteData({
-            cpf: clienteData["cpf"], nome: clienteData["nome"], matricula: clienteData["matricula"],
-            tipo: clienteData["tipo"], tipoGraduacao: e.target.value, bolsista: clienteData["bolsista"]
-        })
-    }
-
-
-    const onChangeBolsista = (e: React.ChangeEvent<any>) => {
-        setClienteData({
-            cpf: clienteData["cpf"], nome: clienteData["nome"], matricula: clienteData["matricula"],
-            tipo: clienteData["tipo"], tipoGraduacao: clienteData["tipoGraduacao"], bolsista: e.target.value
-        })
-    }
-
-    /*const excluirCliente = async () => {
-        if(id != null){
-            try{
-                const response = await routes.apagarCliente(id);
-                console.log(response)
-                alert("Cliente apagado com sucesso!");
-                navigate(-1);
-            } catch(e){
-                console.log(e);
-                alert("Um erro ocorreu ao apagar o cliente: " + e)
-            }
+        const onChangeName = (e: React.ChangeEvent<any>) => {
+            setClienteData({ cpf: ClienteData["cpf"],nome: e.target.value, email: ClienteData["email"] })
         }
-    }*/
 
-    const salvarAlteracoes = async () => {
-        if (id != null) {
-            var data = {}
-            if (clienteData["nome"] != "") {
-                data = { ...data, nome: clienteData["nome"] }
-            }
-            if (clienteData["matricula"] != "") {
-                data = { ...data, matricula: clienteData["matricula"] }
-            }
-            var graduando = false;
-            var pos_graduando = false;
-            switch (clienteData["tipoGraduacao"]) {
-                case ("graduando"):
-                    graduando = true;
-                    pos_graduando = false;
-                    break;
-                case ("pos_graduando"):
-                    graduando = false;
-                    pos_graduando = true;
-                    break;
-                case ("graduacao_e_pos"):
-                    graduando = true;
-                    pos_graduando = true;
-                    break;
-                default:
-                    graduando = false;
-                    pos_graduando = false;
-                    break;
-            }
-            data = {
-                ...data,
-                bolsista: clienteData["bolsista"] === "Sim" ? true : false,
-                tipo: clienteData["tipo"],
-                graduando: graduando, pos_graduando: pos_graduando
-            }
-            console.log("DATA")
-            console.log(data)
-            const response = await routes.updateCliente(id, data); //const response = await routes.updateCliente(id, data);
-            if (response.status == 200) {
-                alert("Cliente atualizado com sucesso!");
-            } else {
-                alert("Ocorreu um erro ao atualizar o cliente")
-            }
-            console.log(response);
+        const onChangeEmail = (e: React.ChangeEvent<any>) => {
+            setClienteData({ cpf: ClienteData["cpf"],nome: ClienteData["nome"], email: e.target.value })
         }
-    }
 
-    return (
-        <div className="p-4 sm:ml-64">
-            <div className="group flex">
-                <h1 className="font-semibold font-sans text-6xl text-sky-900">Editar Dados</h1>
-            </div>
-            <br />
-            {found ?
-                <div className="bg-white mx-auto my-25 p-5 w-7/10 h-100 rounded-lg">
-                    <span className="text-2xl"><span className="font-bold">CPF:</span> {clienteData["cpf"]}</span>
-                    <div className="mt-20 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-                        <span className="text-2xl font-bold">Nome:</span>
-                        <input type="text" id="name" value={clienteData["nome"]} onChange={onChangeName} className="bg-gray-200 border border-gray-300 text-gray-900 text-m rounded-lg block w-3/4 p-2.5" placeholder="Nome do Funcionário" required />
-                    </div>
-                    <div className="mt-5 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-                        <span className="text-2xl font-bold">Matrícula: </span>
-                        <input type="text" id="name" value={clienteData["matricula"]} onChange={onChangeMatricula} className="bg-gray-200 border border-gray-300 text-gray-900 text-m rounded-lg block w-3/4 p-2.5" placeholder="Matricula do Funcionário" required />
-                    </div>
-                    <div className="flex space-x-4 my-5">
-                        <div className="inline-block relative w-32">
-                            <label
-                                htmlFor="matricula"
-                                className="block text-md font-bold mb-1"
-                            >
-                                Tipo de Cliente:
-                            </label>
-                            <select
-                                value={clienteData["tipo"]}
-                                onChange={onChangeTipo}
-                                className="block w-full px-4 py-2 pr-8 text-gray-700 bg-white border border-gray-300 rounded shadow-md appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                            >
-                                <option key={0} value={"aluno"}>Aluno</option>
-                                <option key={1} value={"professor"}>Professor</option>
-                                <option key={2} value={"tecnico"}>Técnico</option>
-                            </select>
-                            <div className="pointer-events-none absolute mt-8 inset-y-0 right-0 flex items-center px-2 text-gray-700">▼</div>
-                        </div>
-                        <div className="inline-block relative w-48">
-                            <label
-                                htmlFor="matricula"
-                                className="block text-md font-bold mb-1"
-                            >
-                                Formação:
-                            </label>
-                            <select
-                                value={clienteData["tipoGraduacao"]}
-                                onChange={onChangeTipoGraduacao}
-                                className="block w-full px-4 py-2 pr-8 text-gray-700 bg-white border border-gray-300 rounded shadow-md appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                            >
-                                <option key={0} value={"nenhuma"}>Nenhuma</option>
-                                <option key={1} value={"pos_graduacao"}>Pós Graduação</option>
-                                <option key={2} value={"graduacao_e_pos"}>Graduação e Pós</option>
-                                <option key={3} value={"graduacao"}>Graduação</option>
-                            </select>
-                            <div className="pointer-events-none absolute mt-8 inset-y-0 right-0 flex items-center px-2 text-gray-700">▼</div>
-                        </div>
-                        <div className="inline-block relative w-48">
-                            <label
-                                htmlFor="matricula"
-                                className="block text-md font-bold mb-1"
-                            >
-                                Bolsista:
-                            </label>
-                            <select
-                                value={clienteData["bolsista"]}
-                                onChange={onChangeBolsista}
-                                className="block w-full px-4 py-2 pr-8 text-gray-700 bg-white border border-gray-300 rounded shadow-md appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                            >
-                                <option key={0} value={"Nao"}>Não</option>
-                                <option key={1} value={"Sim"}>Sim</option>
-                            </select>
-                            <div className="pointer-events-none absolute mt-8 inset-y-0 right-0 flex items-center px-2 text-gray-700">▼</div>
-                        </div>
-                    </div>
-                    <div className="mt-20 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-                        <button type="button" onClick={salvarAlteracoes} className="cursor-pointer bg-green-700 hover:bg-green-800 focus:ring-4 rounded-lg text-m text-white font-bold  px-5 py-2.5 me-2 mb-2">Salvar Alterações</button>
-                    </div>
+        const excluirCliente = () => {
+            console.log("Excluir Cliente")
+        }
+
+        const salvarAlteracoes = () => {
+            console.log("Salvar Alterações")
+        }
+
+        return (
+            <div className="p-4 sm:ml-64">
+                <div className="group flex">
+                    <h1 className="font-semibold font-sans text-6xl text-sky-900">Editar Dados</h1>
                 </div>
-                :
-                <span className="text-2xl m-auto text-red-500">Não foi possível encontrar Cliente com ID {id}</span>
-            }
+                <br />
+                {found ?
+                    <div className="bg-white mx-auto my-25 p-5 w-7/10 h-100 rounded-lg">
+                        <span className="text-2xl"><span className="font-bold">CPF:</span> {ClienteData["cpf"]}</span>
+                        <div className="mt-20 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+                            <span className="text-2xl font-bold">Nome:</span>
+                            <input type="text" id="name" value={ClienteData["nome"]} onChange={onChangeName} className="bg-gray-200 border border-gray-300 text-gray-900 text-m rounded-lg block w-3/4 p-2.5" placeholder="Nome do Funcionário" required />
+                        </div>
+                        <div className="mt-5 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+                            <span className="text-2xl font-bold">Email: </span>
+                            <input type="text" id="name" value={ClienteData["email"]} onChange={onChangeEmail} className="bg-gray-200 border border-gray-300 text-gray-900 text-m rounded-lg block w-3/4 p-2.5" placeholder="Email do Funcionário" required />
+                        </div>
+
+                        <div className="mt-20 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+                            <button type="button" onClick={salvarAlteracoes} className="cursor-pointer bg-green-700 hover:bg-green-800 focus:ring-4 rounded-lg text-m text-white font-bold  px-5 py-2.5 me-2 mb-2">Salvar Alterações</button>
+                            <RemoveButton onClickFunction={excluirCliente} />
+                        </div>
+                    </div>
+                    :
+                    <span className="text-2xl m-auto text-red-500">Não foi possível encontrar funcionário com ID {id}</span>
+                }
 
 
 
-        </div >)
-}
+            </div >)
+    }

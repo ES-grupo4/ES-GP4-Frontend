@@ -20,7 +20,7 @@ export default function SideNavBar({ admin }: { admin: boolean }) {
                             </Link>
                         </li>
                         <li>
-                            <Link to={UrlRouter.usuario.relatorios.default} className="flex items-center hover:bg-gray-200 group h-15 rounded-4xl">
+                            <Link to="#" className="flex items-center hover:bg-gray-200 group h-15 rounded-4xl">
                                 <svg className="rounded-full bg-yellow-400 size-5 mx-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 21"></svg>
                                 <span className="ms-3 text-black">Relatórios</span>
                             </Link>
@@ -32,7 +32,7 @@ export default function SideNavBar({ admin }: { admin: boolean }) {
                             </Link>
                         </li>
                         <li>
-                            <Link to="/user/compras/" className="flex items-center hover:bg-gray-200 group h-15 rounded-4xl">
+                            <Link to="#" className="flex items-center hover:bg-gray-200 group h-15 rounded-4xl">
                                 <svg className="rounded-full bg-green-600 size-5 mx-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 21"></svg>
                                 <span className="ms-3 text-black">Compras</span>
                             </Link>

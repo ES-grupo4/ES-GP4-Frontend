@@ -1,113 +1,23 @@
 import type { ReactElement, ChangeEvent, FormEvent } from "react";
 import { useState } from "react";
 import UploadIcon from "../../assets/IconAddFuncionario";
-import validarCPF from "../../utils/validarCpf";
-import routes from "../../services/routes";
-import { readExcelFile, type RowData } from "../../utils/lerPlanilha";
 
-export default function AdicionarCliente(): ReactElement {
+function AdicionarCliente(): ReactElement {
   const [cpf, setCpf] = useState("");
   const [nome, setNome] = useState("");
-  const [matricula, setMatricula] = useState("");
-  const [tipo, setTipo] = useState("");
-  const [tipoGraduacao, setTipoGraduacao] = useState("nenhuma");
-  const [bolsista, setBolsista] = useState("Nao");
+  const [email, setEmail] = useState("");
 
-  const handleRegisterSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  const handleRegisterSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (cpf == "" || nome == "" || matricula == "" || tipo == "") {
-      alert("Preencha todos os campos!")
-    } else if (!validarCPF(cpf)) {
-      alert("Insira um CPF válido")
-    } else {
-      const graduando = tipoGraduacao === "graduacao" || tipoGraduacao === "graduacao_e_pos" ? true : false;
-      const pos_graduando = tipoGraduacao === "pos_graduacao" || tipoGraduacao === "graduacao_e_pos" ? true : false;
-      const bolsa = bolsista === "Sim" ? true : false;
-      const response = await addCliente({
-        cpf: cpf, nome: nome, matricula: matricula, tipo: tipo,
-        graduando: graduando, pos_graduando: pos_graduando, bolsista: bolsa
-      })
-      console.log(response)
-      if (response.status == 201) {
-        alert(`Cliente ${nome} registrado com sucesso!`);
-      } else {
-        alert(`Ocorreu um erro ao criar o administrador`);
-      }
-    }
+    console.log("Funcionário a ser registrado:", { cpf, nome, email });
+    alert(`Funcionário ${nome} registrado com sucesso!`);
   };
 
-  const verifyCliente = (clienteData: Record<string, unknown>) => {
-    if (clienteData["cpf"] == undefined || clienteData["nome"] == undefined || clienteData["matricula"] == undefined || clienteData["tipo"] == undefined
-      || clienteData["tipoGraduacao"] == undefined || clienteData["bolsista"] == undefined) {
-      return "Campos obrigatórios faltando!";
-    } else if (typeof clienteData["cpf"] === "string" && !validarCPF(clienteData["cpf"])) {
-      return "CPF inválido";
-    } else if (typeof clienteData["matricula"] === "string" && clienteData["matricula"].length != 9) {
-      return "Matrícula inválida";
-    }
-    return "OK";
-  }
-
-  const addCliente = async (data: {
-    cpf: string; nome: string; matricula: string; tipo: string; graduando: boolean;
-    pos_graduando: boolean; bolsista: boolean
-  }): Promise<any> => {
-    try {
-      const response = await routes.criarCliente(data);
-      return response;
-    } catch (e) {
-      return e;
-    }
-  }
-
-  const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    try {
-      const jsonData = await readExcelFile(file);
-      await addClienteJson(jsonData);
-    } catch (err) {
-      console.error("Erro ao ler planilha:", err);
-    }
-  };
-
-  const addClienteJson = async (jsonData: RowData[]) => {
-    const errors: string[] = [];
-
-    for (const cliente of jsonData) {
-      const msg = verifyCliente(cliente);
-
-      if (msg === "OK") {
-        const graduando = cliente["tipoGraduacao"].toLowerCase() === "graduação" || cliente["tipoGraduacao"].toLowerCase() === "graduação e pós" ? true : false;
-        const pos_graduando = cliente["tipoGraduacao"].toLowerCase() === "pós graduação" || cliente["tipoGraduacao"].toLowerCase() === "graduação e pós" ? true : false;
-        const bolsa = cliente["bolsista"].toLowerCase() === "sim" ? true : false;
-        const response = await addCliente({
-          cpf: cliente["cpf"],
-          nome: cliente["nome"],
-          matricula: cliente["matricula"],
-          tipo: cliente["tipo"].toLowerCase(),
-          graduando: graduando,
-          pos_graduando : pos_graduando,
-          bolsista: bolsa
-        });
-
-        console.log(response);
-
-        if (response.status !== 201) {
-          console.log(response.response.data["detail"]);
-          errors.push(`${cliente["cpf"]}: ${response.response.data["detail"]}`);
-        }
-      } else {
-        errors.push(`${cliente["cpf"]}: ${msg}`);
-      }
-    }
-
-    console.log(errors);
-
-    if (errors.length > 0) {
-      alert("Alguns administradores não foram cadastrados:\n" + errors.join("\n"));
-    } else {
-      alert("Todos os administradores foram adicionados com sucesso!");
+  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files.length > 0) {
+      const fileName = event.target.files[0].name;
+      console.log("Planilha selecionada:", fileName);
+      alert(`Planilha "${fileName}" importada!`);
     }
   };
 
@@ -127,7 +37,7 @@ export default function AdicionarCliente(): ReactElement {
                 htmlFor="file-upload"
                 className="cursor-pointer bg-gray-100 border border-gray-300 rounded-md p-3 flex items-center justify-between text-gray-500 hover:bg-gray-200 transition-colors"
               >
-                <span>Inserir planilha (.xlsx, .csv)</span>
+                <span>Inserir planilha</span>
                 <UploadIcon />
               </label>
               <input
@@ -180,76 +90,19 @@ export default function AdicionarCliente(): ReactElement {
               </div>
               <div>
                 <label
-                  htmlFor="matricula"
+                  htmlFor="email"
                   className="block text-md font-medium text-gray-700 mb-1"
                 >
-                  Matrícula:
+                  Email:
                 </label>
                 <input
-                  type="matricula"
-                  id="matricula"
-                  value={matricula}
-                  onChange={(e) => setMatricula(e.target.value)}
+                  type="email"
+                  id="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className="w-full p-3 bg-gray-100 border border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
-              </div>
-              <div className="flex space-x-4">
-                <div className="inline-block relative w-32">
-                  <label
-                    htmlFor="matricula"
-                    className="block text-md font-medium text-gray-700 mb-1"
-                  >
-                    Tipo de Cliente:
-                  </label>
-                  <select
-                    value={tipo}
-                    onChange={(e) => setTipo(e.target.value)}
-                    className="block w-full px-4 py-2 pr-8 text-gray-700 bg-white border border-gray-300 rounded shadow-md appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  >
-                    <option key={-1} value={""}>Selecionar</option>
-                    <option key={0} value={"aluno"}>Aluno</option>
-                    <option key={1} value={"professor"}>Professor</option>
-                    <option key={2} value={"tecnico"}>Técnico</option>
-                  </select>
-                  <div className="pointer-events-none absolute mt-8 inset-y-0 right-0 flex items-center px-2 text-gray-700">▼</div>
-                </div>
-                <div className="inline-block relative w-48">
-                  <label
-                    htmlFor="matricula"
-                    className="block text-md font-medium text-gray-700 mb-1"
-                  >
-                    Formação:
-                  </label>
-                  <select
-                    value={tipoGraduacao}
-                    onChange={(e) => setTipoGraduacao(e.target.value)}
-                    className="block w-full px-4 py-2 pr-8 text-gray-700 bg-white border border-gray-300 rounded shadow-md appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  >
-                    <option key={0} value={"nenhuma"}>Nenhuma</option>
-                    <option key={1} value={"pos_graduacao"}>Pós Graduação</option>
-                    <option key={2} value={"graduacao_e_pos"}>Graduação e Pós</option>
-                    <option key={3} value={"graduacao"}>Graduação</option>
-                  </select>
-                  <div className="pointer-events-none absolute mt-8 inset-y-0 right-0 flex items-center px-2 text-gray-700">▼</div>
-                </div>
-                <div className="inline-block relative w-48">
-                  <label
-                    htmlFor="matricula"
-                    className="block text-md font-medium text-gray-700 mb-1"
-                  >
-                    Bolsista:
-                  </label>
-                  <select
-                    value={bolsista}
-                    onChange={(e) => setBolsista(e.target.value)}
-                    className="block w-full px-4 py-2 pr-8 text-gray-700 bg-white border border-gray-300 rounded shadow-md appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  >
-                    <option key={0} value={"Nao"}>Não</option>
-                    <option key={1} value={"Sim"}>Sim</option>
-                  </select>
-                  <div className="pointer-events-none absolute mt-8 inset-y-0 right-0 flex items-center px-2 text-gray-700">▼</div>
-                </div>
               </div>
               <div className="pt-2">
                 <button
@@ -267,4 +120,4 @@ export default function AdicionarCliente(): ReactElement {
   );
 }
 
-
+export default AdicionarCliente;
