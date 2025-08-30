@@ -6,11 +6,11 @@ type MetricCardProps = {
 };
 
 const MetricCard = ({ title, value, icon, trend }: MetricCardProps) => (
-  <div className="bg-white rounded-lg shadow p-6 flex items-start">
-    <div className="p-3 rounded-full bg-blue-100 text-blue-600 mr-4">
+  <div className="bg-white rounded-lg shadow p-6 flex items-start w-full h-full">
+    <div className="p-3 rounded-full bg-blue-100 text-blue-600 mr-4 flex-shrink-0">
       {icon}
     </div>
-    <div>
+    <div className="min-w-0 flex-1">
       <p className="text-sm font-medium text-gray-500">{title}</p>
       <p className="text-2xl font-bold text-gray-800">{value}</p>
       {trend && (
