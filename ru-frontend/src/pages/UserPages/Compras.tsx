@@ -1,7 +1,37 @@
-import React, { type ChangeEvent } from 'react';
 import UploadIcon from '../../assets/IconAddFuncionario';
+import React, { useState, type ChangeEvent, useEffect } from 'react';
+import { CompraService } from '../../services/CompraService';
+import type { Compra, Precos } from '../../types/Compra';
 
 export default function Compras() {
+
+    const [compraData, setCompraData] = useState<Compra>({
+        usuario_id: 0,
+        horario: new Date().toISOString(),
+        local: 'Campina Grande',
+        forma_pagamento: 'credito',
+        preco_compra: 0,
+    });
+
+    const [precos, setPrecos] = useState<Precos | null>(null);
+
+    useEffect(() => {
+        // Posteriormente uma chamada dos preços ao backend
+
+        const mockPrecos = {
+            preco_almoco: 1600,
+            preco_meia_almoco: 800,
+            preco_jantar: 1400,
+            preco_meia_jantar: 700,
+        };
+
+        setPrecos(mockPrecos);
+        setCompraData(prevState => ({
+            ...prevState,
+            preco_compra: mockPrecos.preco_almoco
+        }));
+
+    }, []);
 
     const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
         if (event.target.files && event.target.files.length > 0) {
@@ -10,6 +40,49 @@ export default function Compras() {
             alert(`Planilha "${fileName}" importada!`);
         }
     };
+
+    const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        const { name, value } = e.target;
+        let parsedValue = value;
+
+        if (name === 'usuario_id') {
+            const intValue = parseInt(value, 10);
+            if (intValue < 0) return;
+            parsedValue = intValue.toString();
+        }
+
+        setCompraData(prevState => ({
+            ...prevState,
+            [name]: name === 'preco_compra' ? parseInt(parsedValue, 10) : (name === 'usuario_id' ? parseInt(parsedValue, 10) : parsedValue),
+        }));
+    };
+
+    const handleSubmit = async (event: React.FormEvent) => {
+        event.preventDefault();
+
+        if (compraData.usuario_id <= 0){
+            alert("ID de usuário não pode ser igual ou menor que zero");
+            return;
+        } else if (compraData.preco_compra <= 0){
+            alert("O valor de uma refeição não pode ser igual ou menor que zero");
+            return;
+        }
+
+        try {
+            await CompraService.create(compraData);
+            alert('Compra registrada com sucesso!');
+            setCompraData({
+                usuario_id: 0,
+                horario: new Date().toISOString(),
+                local: 'Campina Grande',
+                forma_pagamento: 'credito',
+                preco_compra: precos?.preco_almoco || 0,
+            });
+        } catch (error) {
+            console.error('Erro ao registrar compra:', error);
+            alert('Falha ao registrar a compra. Verifique os dados e tente novamente.');
+        }
+    }
 
     return (
         <div className="p-4 sm:ml-64 flex flex-col min-h-screen">
@@ -41,40 +114,43 @@ export default function Compras() {
                     </div>
                 </div>
 
-                <div className="bg-white p-6 shadow-md rounded-lg">
+                <form onSubmit={handleSubmit} className="bg-white p-6 shadow-md rounded-lg">
                     <h2 className="text-xl font-semibold mb-4">Registrar compra:</h2>
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-gray-700 font-bold mb-1">ID:</label>
-                            <input type="text" className="bg-gray-100 p-2 rounded-md border border-gray-300 w-full focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                            <label className="block text-gray-700 font-bold mb-1">ID do Usuário:</label>
+                            <input 
+                                type="number" 
+                                name="usuario_id"
+                                value={compraData.usuario_id}
+                                onChange={handleChange}
+                                min="0"
+                                className="bg-gray-100 p-2 rounded-md border border-gray-300 w-full focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                            />
                         </div>
-                        <div>
-                            <label className="block text-gray-700 font-bold mb-1">CPF:</label>
-                            <input type="text" className="bg-gray-100 p-2 rounded-md border border-gray-300 w-full focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                        </div>
-
-                        <div>
-                            <label className="block text-gray-700 font-bold mb-1">MAT:</label>
-                            <input type="text" className="bg-gray-100 p-2 rounded-md border border-gray-300 w-full focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                        </div>
-                        <div>
-                            <label className="block text-gray-700 font-bold mb-1">Tipo do Cliente:</label>
-                            <select className="bg-gray-100 p-2 rounded-md border border-gray-300 w-full focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                <option>Normal</option>
-                                <option>Bolsista</option>
-                            </select>
-                        </div>
-
+                        
                         <div>
                             <label className="block text-gray-700 font-bold mb-1">Pagamento:</label>
-                            <select className="bg-gray-100 p-2 rounded-md border border-gray-300 w-full focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                <option>Cartão</option>
-                                <option>Pix</option>
+                            <select 
+                                name="forma_pagamento"
+                                value={compraData.forma_pagamento}
+                                onChange={handleChange}
+                                className="bg-gray-100 p-2 rounded-md border border-gray-300 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            >
+                                <option value="credito">Crédito</option>
+                                <option value="debito">Débito</option>
+                                <option value="pix">Pix</option>
+                                <option value="dinheiro">Dinheiro</option>
                             </select>
                         </div>
                         <div>
                             <label className="block text-gray-700 font-bold mb-1">Local:</label>
-                            <select className="bg-gray-100 p-2 rounded-md border border-gray-300 w-full focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <select 
+                                name="local"
+                                value={compraData.local}
+                                onChange={handleChange}
+                                className="bg-gray-100 p-2 rounded-md border border-gray-300 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            >
                                 <option>Campina Grande</option>
                                 <option>Cajazeiras</option>
                                 <option>Cuité</option>
@@ -87,17 +163,42 @@ export default function Compras() {
 
                         <div>
                             <label className="block text-gray-700 font-bold mb-1">Horário da Compra:</label>
-                            <input type="text" placeholder="xx:xx XX/XX/XX" className="bg-gray-100 p-2 rounded-md border border-gray-300 w-full focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                            <input 
+                                type="datetime-local" 
+                                name="horario"
+                                value={compraData.horario.substring(0, 16)}
+                                onChange={handleChange}
+                                className="bg-gray-100 p-2 rounded-md border border-gray-300 w-full focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-gray-700 font-bold mb-1">Preço da Compra:</label>
+                            <select 
+                                name="preco_compra"
+                                value={compraData.preco_compra}
+                                onChange={handleChange}
+                                className="bg-gray-100 p-2 rounded-md border border-gray-300 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            >
+                                {precos && (
+                                    <>
+                                        <option value={precos.preco_almoco}>Almoço - R$ {precos.preco_almoco / 100}</option>
+                                        <option value={precos.preco_meia_almoco}>Meio Almoço - R$ {precos.preco_meia_almoco / 100}</option>
+                                        <option value={precos.preco_jantar}>Jantar - R$ {precos.preco_jantar / 100}</option>
+                                        <option value={precos.preco_meia_jantar}>Meio Jantar - R$ {precos.preco_meia_jantar / 100}</option>
+                                    </>
+                                )}
+                            </select>
                         </div>
 
                     </div>
 
                     <div className="mt-6 text-center">
-                        <button className="bg-green-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-green-700 transition duration-300">
+                        <button type="submit" className="bg-green-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-green-700 transition duration-300">
                             Registrar
                         </button>
                     </div>
-                </div>
+                </form>
 
             </div>
         </div>
