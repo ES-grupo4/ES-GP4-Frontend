@@ -1,12 +1,21 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MonthYearDropdown from "../../components/MonthDropdown";
 import RelatorioTemplate from "../../components/RelatorioTemplate";
+import routes from "../../services/routes";
 
 export default function Relatorios() {
 
     const [year, setYear] = useState<number>(new Date().getFullYear());
     const [month, setMonth] = useState<number>(new Date().getMonth());
     const [data, setData] = useState({cpf:localStorage.getItem('cpf'), periodStr:`${month}/${year}`});
+
+    useEffect(() => {
+        const getRelatorioData = async () => {
+            const response = await routes.getRelatorio(month,year);
+            console.log(response)
+        }
+        getRelatorioData();
+    })
 
     function handleChange(yearNew: number, monthNew: number): void {
         setData({...data, periodStr: `${monthNew}/${yearNew}`})

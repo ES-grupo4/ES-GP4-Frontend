@@ -22,10 +22,10 @@ const updateFuncionario = (id : String,funcData : {}) => {
 }
 
 const getAllFuncionarios = (page:number, busca: string) => {
-    return api.get(`/funcionario/admins?page=${page}&tipo_funcionario=funcionario&busca=${busca}`);
+    return api.get(`/funcionario/admins?page=${page}&tipo_funcionario=funcionario&busca=${busca}&desativados=${false}`);
 }
 const getAllAdministradores = (page:number, busca: string) => {
-    return api.get(`/funcionario/admins?page=${page}&tipo_funcionario=admin&busca=${busca}`);
+    return api.get(`/funcionario/admins?page=${page}&tipo_funcionario=admin&busca=${busca}&desativados=${false}`);
 }
 
 const getFuncionarioById = (id : String) => {
@@ -73,6 +73,12 @@ const apagarCliente = (id:String) => {
     return api.delete(`/cliente/${id}`)
 }
 
+// Relatorio
+
+const getRelatorio = (month:number,year:number) => {
+    return api.get(`/relatorio/${year}/${month}`)
+}
+
 export default {
     login,
     getAllFuncionarios,
@@ -89,5 +95,6 @@ export default {
     getAllClientes,
     getClienteById,
     updateCliente,
-    apagarCliente
+    apagarCliente,
+    getRelatorio
 }
