@@ -34,7 +34,7 @@ export default function AdicionarCliente(): ReactElement {
       if (response.status == 201) {
         alert(`Cliente ${nome} registrado com sucesso!`);
       } else {
-        alert(`Ocorreu um erro ao criar o administrador`);
+        alert(`Ocorreu um erro ao criar o cliente`);
       }
     }
   };
@@ -108,9 +108,9 @@ export default function AdicionarCliente(): ReactElement {
     console.log(errors);
 
     if (errors.length > 0) {
-      alert("Alguns administradores não foram cadastrados:\n" + errors.join("\n"));
+      alert("Alguns clientes não foram cadastrados:\n" + errors.join("\n"));
     } else {
-      alert("Todos os administradores foram adicionados com sucesso!");
+      alert("Todos os clientes foram adicionados com sucesso!");
     }
   };
 
