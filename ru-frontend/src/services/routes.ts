@@ -56,9 +56,9 @@ const criarCliente = (clienteData : {}) => {
 
 const getAllClientes = (page:number, busca:string, tipo:string) => {
     if(tipo !== ""){
-        return api.get(`/cliente/buscar-clientes-todos-campos/?page=${page}&search_term=${busca}&tipo=${tipo}`);
+        return api.get(`/cliente/buscar-clientes-todos-campos/?page=${page}&termo_busca=${busca}&tipo=${tipo}`);
     }
-    return api.get(`/cliente/buscar-clientes-todos-campos/?page=${page}&search_term=${busca}`);
+    return api.get(`/cliente/buscar-clientes-todos-campos/?page=${page}&termo_busca=${busca}`);
 }
 
 const getClienteById = (id:String) => {
