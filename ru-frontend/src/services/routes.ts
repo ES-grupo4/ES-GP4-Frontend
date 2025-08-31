@@ -47,14 +47,6 @@ const getHistorico = () => {
   return api.get("/historico_acoes/");
 };
 
-const getAlmocos = () => {
-  return api.get("/compra/");
-};
-
-const getJantas = () => {
-  return api.get("/compra/");
-};
-
 const getAdministradorById = (id: String) => {
   return api.get(`/funcionario/admin/?id=${id}`);
 };
@@ -116,6 +108,25 @@ const getInformacoesGerais = () => {
   return api.get("/informacoes-gerais/");
 };
 
+// Compras
+
+const getAlmocos = (week: any) => {
+  return api.get(
+    `/compra/?refeicao=almoço&data_inicio=${week.ini}&data_fim=${week.fim}`
+  );
+};
+
+const getJantas = (week: any) => {
+  return api.get(
+    `/compra/?refeicao=jantar&data_inicio=${week.ini}&data_fim=${week.fim}`,
+    {}
+  );
+};
+
+const getCompras = (week: any) => {
+  return api.get(`/compra/?data_inicio=${week.ini}&data_fim=${week.fim}`);
+};
+
 const setInformacoesGerais = (object: {
   nome_empresa: string;
   preco_almoco: string;
@@ -152,5 +163,6 @@ export default {
   getAlmocos,
   getJantas,
   getInformacoesGerais,
-  setInformacoesGerais
+  setInformacoesGerais,
+  getCompras
 };

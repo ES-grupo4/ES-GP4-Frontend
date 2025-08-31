@@ -1,4 +1,4 @@
-import { FiUsers, FiDollarSign, FiActivity } from "react-icons/fi";
+import { FiUsers, FiActivity } from "react-icons/fi";
 import MetricCard from "../../components/MetricCard";
 import RecentActivity from "../../components/RecentActivityDashboard";
 import UserActivityChart from "../../components/UserActivityChart";
@@ -6,39 +6,89 @@ import MealDistributionChart from "../../components/MealDistributionChart";
 import { useEffect, useState } from "react";
 import routes from "../../services/routes";
 
-const activities = [
-  { id: 1, title: "Novo usuário cadastrado", time: "2 min atrás" },
-  { id: 2, title: "Atualização de cardápio", time: "1 hora atrás" },
-  { id: 3, title: "Relatório mensal gerado", time: "3 horas atrás" },
-];
+interface WeekRange {
+  ini: string;
+  fim: string;
+}
+
+const formatDate = (date: Date): string => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
+const getWeekRange = (date: Date = new Date()): WeekRange => {
+  const currentDate = new Date(date);
+  currentDate.setDate(currentDate.getDate() + 1); // Add one day to the provided date
+  
+  const firstDay = new Date(currentDate);
+  // If the provided date is not Monday, get the previous Monday
+  if (firstDay.getDay() !== 1) {
+    const day = firstDay.getDay();
+    const diff = firstDay.getDate() - day + (day === 0 ? -6 : 1); // Adjust to get Monday
+    firstDay.setDate(diff);
+  }
+
+  // Set time to start of day
+  firstDay.setHours(0, 0, 0, 0);
+
+  // Calculate last day (Friday of the same week)
+  const lastDay = new Date(firstDay);
+  lastDay.setDate(firstDay.getDate() + 4);
+  lastDay.setHours(23, 59, 59, 999);
+
+  return { 
+    ini: formatDate(firstDay), 
+    fim: formatDate(lastDay) 
+  };
+};
 
 export default function Dashboard() {
-  const [semanal, setSemanal] = useState();
-  const [jantar, setJantar] = useState();
-  const [almoco, setAlmoco] = useState<any>(null);
+  const [semanal, setSemanal] = useState([]);
+  const [jantar, setJantar] = useState(0);
+  const [almoco, setAlmoco] = useState(0);
+  const [clientes, setClientes] = useState(0);
   const [historico, setHistorico] = useState<any>([]);
+  const [refeicao, setRefeicao] = useState(0)
 
   useEffect(() => {
     const fetch = async () => {
       let erro = false;
 
-      const historicos = await routes
-        .getHistorico()
+      const historicos = await routes.getHistorico().then((res) => res.data);
+
+      const week = getWeekRange();
+
+      const almocos = await routes
+        .getAlmocos(week)
         .then((res) => res.data)
         .catch(() => (erro = true));
-      // const almocos = await routes
-      //   .getAlmocos()
-      //   .then((res) => res.data)
-      //   .catch(() => (erro = true));
 
-      // const jantas = await routes
-      //   .getJantas()
-      //   .then((res) => res.data)
-      //   .catch(() => (erro = true));
+      const jantas = await routes
+        .getJantas(week)
+        .then((res) => res.data)
+        .catch(() => (erro = true));
+
+      const clientes = await routes
+        .getAllClientes(1, "", "")
+        .then((res) => res.data);
+
+      const semanal = await routes.getCompras(week).then((res) => res.data)
+
+      const refeicaos = await routes.getInformacoesGerais().then(res => res.data)
+
+      console.log(refeicao)
+      console.log(semanal)
 
       if (erro) return;
 
-      setHistorico(historicos)
+      setRefeicao(refeicaos.preco_almoco)
+      setHistorico(historicos);
+      setClientes(clientes.items.length);
+      setJantar(jantas.items.length);
+      setAlmoco(almocos.items.length);
+      setSemanal(semanal.items)
     };
 
     fetch();
@@ -55,22 +105,15 @@ export default function Dashboard() {
       <div className="w-full grid grid-cols-2 gap-6 mb-5">
         <MetricCard
           title="Total de Usuários"
-          value="1,234"
+          value={clientes}
           icon={<FiUsers size={20} />}
-          trend="+12% do mês passado"
-        />
-        <MetricCard
-          title="Faturamento Mensal"
-          value="R$ 24,780"
-          icon={<FiDollarSign size={20} />}
-          trend="+8% do mês passado"
         />
       </div>
 
       {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        <UserActivityChart data={[120, 200, 150, 80, 70, 110, 130]} />
-        <MealDistributionChart almoco={35} jantar={20} />
+        <UserActivityChart data={semanal} />
+        <MealDistributionChart almoco={almoco} jantar={jantar} />
       </div>
 
       {/* Main Content */}
@@ -90,15 +133,11 @@ export default function Dashboard() {
             <div className="space-y-4">
               <div>
                 <p className="text-sm text-gray-500">Média Diária</p>
-                <p className="text-xl font-bold">245 refeições</p>
+                <p className="text-xl font-bold">{semanal.length / 7}</p>
               </div>
               <div>
-                <p className="text-sm text-gray-500">Taxa de Ocupação</p>
-                <p className="text-xl font-bold">78%</p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-500">Próprio do Mês</p>
-                <p className="text-xl font-bold">R$ 4,250</p>
+                <p className="text-sm text-gray-500">Preço Refeição</p>
+                <p className="text-xl font-bold">R$ {refeicao.toFixed(2)}</p>
               </div>
             </div>
           </div>

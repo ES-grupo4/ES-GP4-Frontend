@@ -4,13 +4,15 @@ const RecentActivity = ({ activities }: { activities: any }) => {
   const realAct = [] as any[];
 
   if (activities.length !== 0) {
-    activities.items.forEach((item: any) => realAct.push(item));
+    activities.items.forEach((item: any, i: number) => {
+      if (i < 3) realAct.push(item);
+    });
   }
 
   return (
     <ChartCard title="Atividades Recentes">
       <div className="space-y-4">
-        {activities.map((activity: any) => (
+        {realAct.map((activity: any) => (
           <div
             key={activity.id}
             className="flex items-start pb-3 border-b border-gray-100 last:border-0"

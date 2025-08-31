@@ -17,7 +17,7 @@ const UserActivityChart = ({ data }: { data: any }) => {
     },
     xAxis: {
       type: "category",
-      data: ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"],
+      data: ["Seg", "Ter", "Qua", "Qui", "Sex"],
       axisLine: {
         lineStyle: {
           color: "#E5E7EB",
