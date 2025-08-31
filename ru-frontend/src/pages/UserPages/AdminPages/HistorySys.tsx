@@ -14,7 +14,7 @@ export default function HistorySys() {
     useEffect(() => {
         const getHistorico = async () => {
             try {
-                const response = await routes.getHistorico(month, year, page)
+                const response = await routes.getHistoricoByMonth(month, year, page)
                 setPageQtd(response.data["total_pages"])
                 makeHistTxt(response);
             } catch (e) {
@@ -55,9 +55,9 @@ export default function HistorySys() {
         setPage(e.target.value)
     }
 
-    function handleChange(year: number, month: number): void {
-        setMonth(month);
-        setYear(year);
+    function handleChange(newYear: number, newMonth: number): void {
+        setMonth(newMonth);
+        setYear(newYear);
     }
 
     return (

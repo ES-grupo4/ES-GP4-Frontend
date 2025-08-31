@@ -47,6 +47,11 @@ const getHistorico = () => {
   return api.get("/historico_acoes/");
 };
 
+const getHistoricoByMonth = (month:number,year:number,page:number) => {
+  return api.get(`/historico_acoes/?month=${month}&year=${year}&page=${page}`);
+};
+
+
 const getAdministradorById = (id: String) => {
   return api.get(`/funcionario/admin/?id=${id}`);
 };
@@ -164,5 +169,6 @@ export default {
   getJantas,
   getInformacoesGerais,
   setInformacoesGerais,
-  getCompras
+  getCompras,
+  getHistoricoByMonth
 };
