@@ -8,7 +8,7 @@ export default function Compras() {
     const [compraData, setCompraData] = useState<Compra>({
         usuario_id: 0,
         horario: new Date().toISOString(),
-        local: 'Campina Grande',
+        local: 'Exatas',
         forma_pagamento: 'credito',
         preco_compra: 0,
     });
@@ -74,7 +74,7 @@ export default function Compras() {
             setCompraData({
                 usuario_id: 0,
                 horario: new Date().toISOString(),
-                local: 'Campina Grande',
+                local: 'Exatas',
                 forma_pagamento: 'credito',
                 preco_compra: precos?.preco_almoco || 0,
             });
@@ -151,13 +151,8 @@ export default function Compras() {
                                 onChange={handleChange}
                                 className="bg-gray-100 p-2 rounded-md border border-gray-300 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
                             >
-                                <option>Campina Grande</option>
-                                <option>Cajazeiras</option>
-                                <option>Cuité</option>
-                                <option>Patos</option>
-                                <option>Pombal</option>
-                                <option>Sousa</option>
-                                <option>Sumé</option>
+                                <option>Exatas</option>
+                                <option>Humanas</option>
                             </select>
                         </div>
 
