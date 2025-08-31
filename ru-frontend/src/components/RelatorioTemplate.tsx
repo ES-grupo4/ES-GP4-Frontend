@@ -1,4 +1,3 @@
-
 import {
     Page,
     Text,
@@ -46,7 +45,7 @@ const RelatorioTemplate = ({ data }: { data: any }) => (
                     <Text style={styles.title}>Informações Gerais</Text>
                     <View style={styles.row}>
                         <Text>Nome da empresa/instituição:</Text>
-                        <Text>{"null"}</Text>
+                        <Text>{data["nome_empresa"]}</Text>
                     </View>
                 </View>
 
@@ -80,19 +79,19 @@ const RelatorioTemplate = ({ data }: { data: any }) => (
                     <Text style={styles.title}>Indicadores-Chave</Text>
                     <View style={styles.row}>
                         <Text>Total de clientes registrados:</Text>
-                        <Text>{"null"}</Text>
+                        <Text>{data["clientes_registrados"]["total"]}</Text>
                     </View>
                     <View style={styles.row}>
                         <Text>Total de funcionários ativos:</Text>
-                        <Text>{"null"}</Text>
+                        <Text>{data["funcionarios_ativos"]}</Text>
                     </View>
                     <View style={styles.row}>
                         <Text>Total de refeições vendidas no mês:</Text>
-                        <Text>{"null"}</Text>
+                        <Text>{data["compras_por_tipo"]["total"]}</Text>
                     </View>
                     <View style={styles.row}>
                         <Text>Faturamento bruto no mês (R$):</Text>
-                        <Text>{"null"}</Text>
+                        <Text>{data["faturamento_bruto_mensal"]}</Text>
                     </View>
                 </View>
             </Page>
@@ -103,42 +102,38 @@ const RelatorioTemplate = ({ data }: { data: any }) => (
                     <Text style={styles.title}>Clientes</Text>
                     <View style={styles.row}>
                         <Text>Total cadastrados:</Text>
-                        <Text>{"null"}</Text>
+                        <Text>{data["clientes_registrados"]["total"]}</Text>
                     </View>
                     <View style={styles.row}>
-                        <Text>Nº de bolsistas cadastrados:</Text>
-                        <Text>{"null"}</Text>
+                        <Text>Nº de alunos bolsistas cadastrados:</Text>
+                        <Text>{data["clientes_registrados"]["alunos"]["bolsistas"]}</Text>
                     </View>
-                    <Text>Nº de cadastrados por categoria:</Text>
+                    <Text>Nº de clientes alunos cadastrados por categoria:</Text>
                     <View style={styles.subRow}>
                         <Text>- Em Graduação:</Text>
-                        <Text>{"null"}</Text>
+                        <Text>{data["clientes_registrados"]["alunos"]["em_graduacao"]}</Text>
                     </View>
                     <View style={styles.subRow}>
                         <Text>- Em Pós-Graduação:</Text>
-                        <Text>{"null"}</Text>
+                        <Text>{data["clientes_registrados"]["alunos"]["pos_graduacao"]}</Text>
                     </View>
                     <View style={styles.subRow}>
                         <Text>- Em Graduação e Pós:</Text>
-                        <Text>{"null"}</Text>
-                    </View>
-                    <View style={styles.subRow}>
-                        <Text>- Outros:</Text>
-                        <Text>{"null"}</Text>
+                        <Text>{data["clientes_registrados"]["alunos"]["ambos"]}</Text>
                     </View>
 
                     <Text>Nº de cadastrados por tipo:</Text>
                     <View style={styles.subRow}>
                         <Text>- Alunos:</Text>
-                        <Text>{"null"}</Text>
+                        <Text>{data["clientes_registrados"]["alunos"]["total"]}</Text>
                     </View>
                     <View style={styles.subRow}>
                         <Text>- Professores:</Text>
-                        <Text>{"null"}</Text>
+                        <Text>{data["clientes_registrados"]["professores"]}</Text>
                     </View>
                     <View style={styles.subRow}>
                         <Text>- Técnicos/Servidores:</Text>
-                        <Text>{"null"}</Text>
+                        <Text>{data["clientes_registrados"]["tecnicos"]}</Text>
                     </View>
                 </View>
 
@@ -146,19 +141,19 @@ const RelatorioTemplate = ({ data }: { data: any }) => (
                     <Text style={styles.title}>Funcionários</Text>
                     <View style={styles.row}>
                         <Text>Total de funcionários ativos:</Text>
-                        <Text>{"null"}</Text>
+                        <Text>{data["funcionarios_ativos"]}</Text>
                     </View>
                     <View style={styles.row}>
-                        <Text>Total de administradores:</Text>
-                        <Text>{"null"}</Text>
+                        <Text>Total de funcionários administradores:</Text>
+                        <Text>{data["administradores_ativos"]}</Text>
                     </View>
                     <View style={styles.row}>
                         <Text>Total de funcionários desativados:</Text>
-                        <Text>{"null"}</Text>
+                        <Text>{data["desativados"]}</Text>
                     </View>
                     <View style={styles.row}>
                         <Text>Quantidade de novos funcionários no mês:</Text>
-                        <Text>{"null"}</Text>
+                        <Text>{data["funcionarios_adicionados_mes"]}</Text>
                     </View>
                 </View>
 
@@ -166,41 +161,37 @@ const RelatorioTemplate = ({ data }: { data: any }) => (
                     <Text style={styles.title}>Refeições</Text>
                     <View style={styles.row}>
                         <Text>Quantidade de refeições subsidiadas (bolsistas):</Text>
-                        <Text>{"null"}</Text>
+                        <Text>{data["compras_por_tipo"]["alunos"]["bolsistas"]}</Text>
                     </View>
-                    <Text>Quantidade de refeições adquiridas no mês por categoria de cliente:</Text>
+                    <Text>Quantidade de refeições adquiridas no mês por categoria de graduação dos clientes alunos:</Text>
                     <View style={styles.subRow}>
                         <Text>- Em Graduação:</Text>
-                        <Text>{"null"}</Text>
+                        <Text>{data["compras_por_tipo"]["alunos"]["em_graduacao"]}</Text>
                     </View>
                     <View style={styles.subRow}>
                         <Text>- Em Pós-Graduação:</Text>
-                        <Text>{"null"}</Text>
+                        <Text>{data["compras_por_tipo"]["alunos"]["pos_graduacao"]}</Text>
                     </View>
                     <View style={styles.subRow}>
                         <Text>- Em Graduação e Pós:</Text>
-                        <Text>{"null"}</Text>
-                    </View>
-                    <View style={styles.subRow}>
-                        <Text>- Outros:</Text>
-                        <Text>{"null"}</Text>
+                        <Text>{data["compras_por_tipo"]["alunos"]["ambos"]}</Text>
                     </View>
                     <Text>Quantidade de refeições adquiridas no mês por tipo de cliente:</Text>
                     <View style={styles.subRow}>
                         <Text>- Alunos:</Text>
-                        <Text>{"null"}</Text>
+                        <Text>{data["compras_por_tipo"]["alunos"]["total"]}</Text>
                     </View>
                     <View style={styles.subRow}>
                         <Text>- Professores:</Text>
-                        <Text>{"null"}</Text>
+                        <Text>{data["compras_por_tipo"]["professores"]}</Text>
                     </View>
                     <View style={styles.subRow}>
                         <Text>- Técnicos:</Text>
-                        <Text>{"null"}</Text>
+                        <Text>{data["compras_por_tipo"]["tecnicos"]}</Text>
                     </View>
                     <View style={styles.subRow}>
                         <Text>- Externos:</Text>
-                        <Text>{"null"}</Text>
+                        <Text>{data["compras_por_tipo"]["externos"]}</Text>
                     </View>
 
                 </View>
