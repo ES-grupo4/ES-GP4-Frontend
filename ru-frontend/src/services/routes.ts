@@ -81,7 +81,7 @@ const getRelatorio = (month:number,year:number) => {
 
 // Historico
 const getHistorico = (month:number,year:number, page:number) => {
-    return api.get(`/historico_acoes/?mes=${month}&ano=${year}&page=${page}`) //&page_size=100
+    return api.get(`/historico_acoes/?mes=${month}&ano=${year}&page=${page}&page_size=100`)
 }
 
 export default {
