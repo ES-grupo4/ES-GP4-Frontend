@@ -48,7 +48,7 @@ const getHistorico = () => {
 };
 
 const getHistoricoByMonth = (month:number,year:number,page:number) => {
-  return api.get(`/historico_acoes/?month=${month}&year=${year}&page=${page}`);
+  return api.get(`/historico_acoes/?mes=${month}&ano=${year}&page=${page}&page_size=${100}`);
 };
 
 
