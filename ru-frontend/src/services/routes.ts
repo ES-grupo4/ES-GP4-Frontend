@@ -100,7 +100,7 @@ const apagarCliente = (id: String) => {
 
 const getComprasByCliente = (cliente_id: string, year: number, month: number) => {
     return api.get(`/compra/cliente/${cliente_id}/${year}/${month}`);
-}
+};
 
 const getRelatorio = (month: number, year: number) => {
   return api.get(`/relatorio/${year}/${month}`);
@@ -162,6 +162,7 @@ export default {
   getClienteById,
   updateCliente,
   apagarCliente,
+  getComprasByCliente,
   getRelatorio,
   getHistorico,
   getAlmocos,
