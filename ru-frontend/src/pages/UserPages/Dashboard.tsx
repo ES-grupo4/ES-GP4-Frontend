@@ -1,8 +1,4 @@
-import {
-  FiUsers,
-  FiDollarSign,
-  FiActivity,
-} from "react-icons/fi";
+import { FiUsers, FiDollarSign, FiActivity } from "react-icons/fi";
 import MetricCard from "../../components/MetricCard";
 import RecentActivity from "../../components/RecentActivityDashboard";
 import UserActivityChart from "../../components/UserActivityChart";
@@ -17,27 +13,32 @@ const activities = [
 ];
 
 export default function Dashboard() {
-
   const [semanal, setSemanal] = useState();
   const [jantar, setJantar] = useState();
-  const [almoco, setAlmoco] = useState();
-  const [historico, setHistorico] = useState();
+  const [almoco, setAlmoco] = useState<any>(null);
+  const [historico, setHistorico] = useState<any>([]);
 
   useEffect(() => {
     const fetch = async () => {
-      console.log(localStorage.getItem('token'))
-      
-      const historico = await routes.getHistorico().then(res => res.data)
+      let erro = false;
 
-      const almoco = await routes.getCompras().then(res => res.data)
+      const historicos = await routes
+        .getHistorico()
+        .then((res) => res.data)
+        .catch(() => (erro = true));
+      // const almocos = await routes
+      //   .getAlmocos()
+      //   .then((res) => res.data)
+      //   .catch(() => (erro = true));
 
+      // const jantas = await routes
+      //   .getJantas()
+      //   .then((res) => res.data)
+      //   .catch(() => (erro = true));
 
-      console.log(almoco)
+      if (erro) return;
 
-      console.log(historico)
-
-      console.log()
-
+      setHistorico(historicos)
     };
 
     fetch();
@@ -76,7 +77,7 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Recent Activity */}
         <div className="lg:col-span-2">
-          <RecentActivity activities={activities} />
+          <RecentActivity activities={historico} />
         </div>
 
         {/* Quick Actions */}

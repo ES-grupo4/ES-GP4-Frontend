@@ -30,10 +30,14 @@ const updateFuncionario = (id: String, funcData: {}) => {
 };
 
 const getAllFuncionarios = (page: number, busca: string) => {
-  return api.get(`/funcionario/admins?page=${page}&tipo_funcionario=funcionario&busca=${busca}&desativados=${false}`);
+  return api.get(
+    `/funcionario/admins?page=${page}&tipo_funcionario=funcionario&busca=${busca}&desativados=${false}`
+  );
 };
 const getAllAdministradores = (page: number, busca: string) => {
-  return api.get(`/funcionario/admins?page=${page}&tipo_funcionario=admin&busca=${busca}&desativados=${false}`);
+  return api.get(
+    `/funcionario/admins?page=${page}&tipo_funcionario=admin&busca=${busca}&desativados=${false}`
+  );
 };
 const getFuncionarioById = (id: String) => {
   return api.get(`/funcionario/?id=${id}`);
@@ -43,60 +47,88 @@ const getHistorico = () => {
   return api.get("/historico_acoes/");
 };
 
-const getCompras = (token: string) => {
-
-    api.defaults.headers.common["Authorization"] = token
-
+const getAlmocos = () => {
   return api.get("/compra/");
 };
 
+const getJantas = () => {
+  return api.get("/compra/");
+};
 
-const getAdministradorById = (id : String) => {
-    return api.get(`/funcionario/admin/?id=${id}`);
-}
+const getAdministradorById = (id: String) => {
+  return api.get(`/funcionario/admin/?id=${id}`);
+};
 
-const desativarFuncionarioByCpf = (cpf : String) => {
-    return api.post(`/funcionario/${cpf}/desativar/?data_saida=${ new Date().toISOString().slice(0, 10)}`)
-}
+const desativarFuncionarioByCpf = (cpf: String) => {
+  return api.post(
+    `/funcionario/${cpf}/desativar/?data_saida=${new Date()
+      .toISOString()
+      .slice(0, 10)}`
+  );
+};
 
 const getFuncionarioByCpf = (cpf: String) => {
-    return api.get(`/funcionario/?cpf=${cpf}`);
-}
+  return api.get(`/funcionario/?cpf=${cpf}`);
+};
 
 const getAdministradorByCpf = (cpf: String) => {
-    return api.get(`/funcionario/admin/?cpf=${cpf}`);
-}
+  return api.get(`/funcionario/admin/?cpf=${cpf}`);
+};
 
 //Cliente
 
-const criarCliente = (clienteData : {}) => {
-    return api.post(`/cliente`,clienteData);
-}
+const criarCliente = (clienteData: {}) => {
+  return api.post(`/cliente`, clienteData);
+};
 
-const getAllClientes = (page:number, busca:string, tipo:string) => {
-    if(tipo !== ""){
-        return api.get(`/cliente/buscar-clientes-todos-campos/?page=${page}&search_term=${busca}&tipo=${tipo}`);
-    }
-    return api.get(`/cliente/buscar-clientes-todos-campos/?page=${page}&search_term=${busca}`);
-}
+const getAllClientes = (page: number, busca: string, tipo: string) => {
+  if (tipo !== "") {
+    return api.get(
+      `/cliente/buscar-clientes-todos-campos/?page=${page}&search_term=${busca}&tipo=${tipo}`
+    );
+  }
+  return api.get(
+    `/cliente/buscar-clientes-todos-campos/?page=${page}&search_term=${busca}`
+  );
+};
 
-const getClienteById = (id:String) => {
-    return api.get(`/cliente/id/${id}`);
-}
+const getClienteById = (id: String) => {
+  return api.get(`/cliente/id/${id}`);
+};
 
-const updateCliente = (id:String, clienteData: {}) => {
-    return api.put(`/cliente/id/${id}`,clienteData); //return api.put(`/cliente/?id=${id}`,clienteData);
-}
+const updateCliente = (id: String, clienteData: {}) => {
+  return api.put(`/cliente/id/${id}`, clienteData); //return api.put(`/cliente/?id=${id}`,clienteData);
+};
 
-const apagarCliente = (id:String) => {
-    return api.delete(`/cliente/${id}`)
-}
+const apagarCliente = (id: String) => {
+  return api.delete(`/cliente/${id}`);
+};
 
 // Relatorio
 
-const getRelatorio = (month:number,year:number) => {
-    return api.get(`/relatorio/${year}/${month}`)
-}
+const getRelatorio = (month: number, year: number) => {
+  return api.get(`/relatorio/${year}/${month}`);
+};
+
+// Informacoes Gerais
+
+const getInformacoesGerais = () => {
+  return api.get("/informacoes-gerais/");
+};
+
+const setInformacoesGerais = (object: {
+  nome_empresa: string;
+  preco_almoco: string;
+  preco_meia_almoco: string;
+  preco_jantar: string;
+  preco_meia_jantar: string;
+  inicio_almoco: string;
+  fim_almoco: string;
+  inicio_jantar: string;
+  fim_jantar: string;
+}) => {
+  return api.post("/informacoes-gerais/", object);
+};
 
 export default {
   login,
@@ -106,16 +138,19 @@ export default {
   createFuncionario,
   createAdmin,
   getAllAdministradores,
-    removeFuncionarioByCpf: desativarFuncionarioByCpf,
-    getAdministradorById,
-    getFuncionarioByCpf,
-    getAdministradorByCpf,
-    criarCliente,
-    getAllClientes,
-    getClienteById,
-    updateCliente,
-    apagarCliente,
-    getRelatorio,
+  removeFuncionarioByCpf: desativarFuncionarioByCpf,
+  getAdministradorById,
+  getFuncionarioByCpf,
+  getAdministradorByCpf,
+  criarCliente,
+  getAllClientes,
+  getClienteById,
+  updateCliente,
+  apagarCliente,
+  getRelatorio,
   getHistorico,
-  getCompras,
+  getAlmocos,
+  getJantas,
+  getInformacoesGerais,
+  setInformacoesGerais
 };
