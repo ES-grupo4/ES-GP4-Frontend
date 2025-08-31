@@ -2,78 +2,137 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import SingleMonthCalendar from "../../components/SingleMonthCalendar";
 import MonthYearDropdown from "../../components/MonthDropdown";
+import routes from "../../services/routes";
+
+function formatDateLocal(date: Date): string {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+}
 
 export default function DetalhesCliente() {
-
-
     const [year, setYear] = useState<number>(new Date().getFullYear());
     const [month, setMonth] = useState<number>(new Date().getMonth());
 
     const handleChange = (newYear: number, newMonth: number) => {
         setYear(newYear);
-        setMonth(newMonth);
+        setMonth(newMonth - 1);
     };
 
-    const [highlights, setHighlights] = useState<Record<string, string>>({
-        '2025-06-05': 'yellow',
-        '2025-06-10': 'green',
-        '2025-06-15': 'blue'
-    })
+    const [highlights, setHighlights] = useState<Record<string, string>>({})
 
-    const [data, setData] = useState(
-        [ //tableData, no futuro, irá guardar as informações dos funcionários recebidas por requisições http
-            {
-                id: 4,
-                nome: "DESS HOLIDAY",
-                cpf: "122512250-12",
-                email: "roaring.knight@gmail.com",
-                matricula: "000000000",
-                categoria: "Graduação",
-                bolsista: true,
-                totalMensal: "0"
-            },
-            {
-                id: 5,
-                nome: "ASGORE DREEMUR",
-                cpf: "999999999-99",
-                email: "truck@gmail.com",
-                matricula: "111111111",
-                categoria: "Graduação",
-                bolsista: true,
-                totalMensal: "0"
-            },
-            {
-                id: 6,
-                nome: "NOELLE HOLLIDAY",
-                cpf: "121212120-12",
-                email: "susie.fancluber@gmail.com",
-                matricula: "222222222",
-                categoria: "Graduação",
-                bolsista: true,
-                totalMensal: "0"
-            },
-        ])
+    const { id } = useParams<{ id: string }>();
+    const [found, setFound] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [clienteData, setClienteData] = useState({
+        cpf: "",
+        nome: "",
+        matricula: "",
+        tipo: "",
+        graduando: false,
+        pos_graduando: false,
+        bolsista: false,
+        tipo_graduacao: ""
+    });
 
-    const id = useParams()["id"] //CPF tirado dos parâmetros do link
-    const [found, setFound] = useState(false) //Se o funcionário com o cpf foi encontrado
-    const [clienteData, setClienteData] = useState({ cpf: "", nome: "", email: "", matricula: "", categoria: "", bolsista: false, totalMensal: "" })
     useEffect(() => {
-        getClienteData()
-    }, [])
-
-    const getClienteData = () => { //Recebe os dados do funcionário pelo cpf
-        for (var i = 0; i < data.length; i++) {
-            if (data[i]["id"].toString() == id) {
-                setClienteData({
-                    cpf: data[i]["cpf"], nome: data[i]["nome"], email: data[i]["email"],
-                    matricula: data[i]["matricula"], categoria: data[i]["categoria"], bolsista: data[i]["bolsista"],
-                    totalMensal: data[i]["totalMensal"]
-                })
-                setFound(true)
-                break
+        const getClienteData = async () => {
+            if (!id) {
+                setLoading(false);
+                setFound(false);
+                return;
             }
-        }
+            try {
+                const response = await routes.getClienteById(id);
+                const data = response.data;
+
+                if (data.graduando && data.pos_graduando) {
+                    data.tipo_graduacao = "Graduação e Pós";
+                } else if (data.graduando) {
+                    data.tipo_graduacao = "Graduação";
+                } else if (data.pos_graduando) {
+                    data.tipo_graduacao = "Pós Graduação";
+                } else {
+                    data.tipo_graduacao = "Nenhuma";
+                }
+
+                setClienteData(data);
+                setFound(true);
+            } catch (error) {
+                console.error("Failed to fetch client data:", error);
+                setFound(false);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        getClienteData();
+    }, [id]);
+
+    useEffect(() => {
+        let isActive = true;
+
+        const getCompras = async () => {
+            if (!id) return;
+
+            try {
+                const response = await routes.getComprasByCliente(id, year, month + 1);
+                const compras = response.data;
+
+                if (isActive) {
+                    const dailyPurchases: Record<string, { manha: boolean, noite: boolean }> = {};
+
+                    compras.forEach((compra: { horario: string }) => {
+                        const date = new Date(compra.horario);
+                        const day = formatDateLocal(date);
+                        const hour = date.getHours();
+
+                        if (!dailyPurchases[day]) {
+                            dailyPurchases[day] = { manha: false, noite: false };
+                        }
+
+                        if (hour < 14) {
+                            dailyPurchases[day].manha = true;
+                        } else {
+                            dailyPurchases[day].noite = true;
+                        }
+                    });
+
+                    const newHighlights: Record<string, string> = {};
+                    for (const day in dailyPurchases) {
+                        const { manha, noite } = dailyPurchases[day];
+                        if (manha && noite) {
+                            newHighlights[day] = 'green';
+                        } else if (manha) {
+                            newHighlights[day] = 'yellow';
+                        } else if (noite) {
+                            newHighlights[day] = 'blue';
+                        }
+                    }
+                    setHighlights(newHighlights);
+                    console.log("New highlights generated:", newHighlights);
+                }
+
+            } catch (error) {
+                console.error("Failed to fetch purchase data:", error);
+            }
+        };
+
+        getCompras();
+
+        return () => {
+            isActive = false;
+        };
+    }, [id, year, month]);
+
+    if (loading) {
+        return <div className="p-4 sm:ml-64 flex justify-center items-center h-screen">
+            <h1 className="text-2xl font-semibold">Carregando...</h1>
+        </div>
     }
+
+    console.log("Highlights passed to calendar:", highlights);
 
     return (
         <div className="p-4 sm:ml-64 flex flex-col min-h-screen">
@@ -91,7 +150,7 @@ export default function DetalhesCliente() {
                                 <div className="relative">
                                     <MonthYearDropdown
                                         selectedYear={year}
-                                        selectedMonth={month}
+                                        selectedMonth={month + 1}
                                         onChange={handleChange}
                                         startYear={2000}
                                     />
@@ -106,18 +165,16 @@ export default function DetalhesCliente() {
                         <hr className="my-1 h-0.5 border-t-0 bg-neutral-100" />
                         <div className="flex justify-between items-center mb-6 gap-5">
                             <div className="text-2xl grid grid-cols-1">
-                                <h1><span className="font-bold">Nome: </span>{clienteData["nome"]}</h1>
-                                <h1><span className="font-bold">CPF: </span>{clienteData["cpf"]}</h1>
-                                <h1><span className="font-bold">Email: </span>{clienteData["email"]}</h1>
-                                <h1><span className="font-bold">Matrícula: </span>{clienteData["matricula"]}</h1>
-                                <h1><span className="font-bold">Categoria: </span>{clienteData["categoria"]}</h1>
-                                <h1><span className="font-bold">Bolsista: </span>{clienteData["bolsista"] ? "SIM" : "NÃO"}</h1>
-                                <br />
-                                <h1><span className="font-bold">Gasto total mensal: </span>{clienteData["totalMensal"]}</h1>
+                                <h1><span className="font-bold">Nome: </span>{clienteData.nome}</h1>
+                                <h1><span className="font-bold">CPF: </span>{clienteData.cpf}</h1>
+                                <h1><span className="font-bold">Matrícula: </span>{clienteData.matricula}</h1>
+                                <h1><span className="font-bold">Categoria: </span>{clienteData.tipo.charAt(0).toUpperCase() + clienteData.tipo.slice(1)}</h1>
+                                <h1><span className="font-bold">Vínculo: </span>{clienteData.tipo_graduacao}</h1>
+                                <h1><span className="font-bold">Bolsista: </span>{clienteData.bolsista ? "SIM" : "NÃO"}</h1>
                             </div>
         
                             <div className="w-100">
-                                <SingleMonthCalendar year={year} month={month} highlights={highlights} />
+                                <SingleMonthCalendar year={year} month={month + 1} highlights={highlights} />
                             </div>
 
                             <div className="flex flex-col gap-2">
@@ -139,7 +196,7 @@ export default function DetalhesCliente() {
                     </div>
                 </div>
                 :
-                <span className="text-2xl m-auto text-red-500">Não foi possível encontrar funcionário com ID {id}</span>
+                <span className="text-2xl m-auto text-red-500">Não foi possível encontrar cliente com ID {id}</span>
             }
         </div>
     );

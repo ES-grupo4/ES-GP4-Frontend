@@ -79,6 +79,10 @@ const getRelatorio = (month:number,year:number) => {
     return api.get(`/relatorio/${year}/${month}`)
 }
 
+const getComprasByCliente = (cliente_id: string, year: number, month: number) => {
+    return api.get(`/compra/cliente/${cliente_id}/${year}/${month}`);
+}
+
 // Historico
 const getHistorico = (month:number,year:number, page:number) => {
     return api.get(`/historico_acoes/?mes=${month}&ano=${year}&page=${page}&page_size=100`)
@@ -102,5 +106,6 @@ export default {
     updateCliente,
     apagarCliente,
     getRelatorio,
-    getHistorico
+    getHistorico,
+    getComprasByCliente
 }
