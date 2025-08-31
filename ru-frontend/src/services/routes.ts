@@ -56,9 +56,9 @@ const criarCliente = (clienteData : {}) => {
 
 const getAllClientes = (page:number, busca:string, tipo:string) => {
     if(tipo !== ""){
-        return api.get(`/cliente/buscar-clientes-todos-campos/?page=${page}&search_term=${busca}&tipo=${tipo}`);
+        return api.get(`/cliente/buscar-clientes-todos-campos/?page=${page}&termo_busca=${busca}&tipo=${tipo}`);
     }
-    return api.get(`/cliente/buscar-clientes-todos-campos/?page=${page}&search_term=${busca}`);
+    return api.get(`/cliente/buscar-clientes-todos-campos/?page=${page}&termo_busca=${busca}`);
 }
 
 const getClienteById = (id:String) => {
@@ -79,6 +79,11 @@ const getRelatorio = (month:number,year:number) => {
     return api.get(`/relatorio/${year}/${month}`)
 }
 
+// Historico
+const getHistorico = (month:number,year:number, page:number) => {
+    return api.get(`/historico_acoes/?mes=${month}&ano=${year}&page=${page}&page_size=100`)
+}
+
 export default {
     login,
     getAllFuncionarios,
@@ -96,5 +101,6 @@ export default {
     getClienteById,
     updateCliente,
     apagarCliente,
-    getRelatorio
+    getRelatorio,
+    getHistorico
 }

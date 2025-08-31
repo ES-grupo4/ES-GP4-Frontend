@@ -41,6 +41,7 @@ export default function Clientes() {
             setData(data);
         }
         getAdminData();
+        
     }, [page, filter, categoria])
 
 

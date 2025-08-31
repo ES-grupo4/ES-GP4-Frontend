@@ -1,24 +1,63 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MonthYearDropdown from "../../../components/MonthDropdown";
+import routes from "../../../services/routes";
+import { AxiosResponse } from "axios";
 
 export default function HistorySys() {
 
-    const currentDate = new Date();
-
     const [year, setYear] = useState<number>(new Date().getFullYear());
     const [month, setMonth] = useState<number>(new Date().getMonth());
+    const [histTxt, setHistTxt] = useState("");
+    const [page, setPage] = useState(1)
+    const [pageQtd, setPageQtd] = useState(1)
 
-    for (let i = 0; i < 12; i++) {
-        const date = new Date(currentDate);
-        date.setMonth(currentDate.getMonth() - i);
+    useEffect(() => {
+        const getHistorico = async () => {
+            try {
+                const response = await routes.getHistorico(month, year, page)
+                setPageQtd(response.data["total_pages"])
+                makeHistTxt(response);
+            } catch (e) {
+                setHistTxt("Ocorreu um erro ao resgatar o histórico: " + e);
+            }
+        }
+        getHistorico();
+    }, [year, month, page])
 
-        const displayValue = new Intl.DateTimeFormat('pt-BR', { month: 'long', year: 'numeric' }).format(date);
-        const optionValue = date.toISOString().slice(0, 7);
+    const makeHistTxt = (response: AxiosResponse) => {
+        console.log(response);
+        console.log(response.data["items"].length);
+        console.log(response.data["items"] != undefined)
+        if (response.data["items"] != undefined && response.data["items"].length > 0) {
+            var tempHistTxt = "";
+            response.data["items"].forEach((item: { [x: string]: any; }) => {
+                tempHistTxt += `[${item["data"]}] ${item["ator_nome"]} (id: ${item["ator_id"]}; cpf: ${item["ator_cpf"]}) ${item["acao"]} ${item["alvo_nome"]} (id: ${item["alvo_id"]}; cpf: ${item["alvo_cpf"]})\n`
+            });
+            setHistTxt(tempHistTxt);
+        } else {
+            setHistTxt("[Histórico Vazio!]")
+        }
+    }
 
+    const handleDownload = () => {
+        const blob = new Blob([histTxt], { type: 'text/plain;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `historico_${month}/${year}_pg${page}.txt`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    };
+
+    const changePage = (e: React.ChangeEvent<any>) => {
+        setPage(e.target.value)
     }
 
     function handleChange(year: number, month: number): void {
-        throw new Error("Function not implemented.");
+        setMonth(month);
+        setYear(year);
     }
 
     return (
@@ -27,7 +66,7 @@ export default function HistorySys() {
                 <h1 className="font-semibold font-sans text-6xl text-sky-900">Histórico do Sistema</h1>
             </div>
             <div className="flex-grow flex items-center justify-center">
-                <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-7xl min-h-[700px] flex flex-col">
+                <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-7xl min-h-[600px] flex flex-col">
 
                     <div className="flex justify-between items-center mb-6">
                         <h2 className="text-2xl font-bold text-gray-800">
@@ -41,11 +80,26 @@ export default function HistorySys() {
                                 onChange={handleChange}
                                 startYear={2000}
                             />
+                            {pageQtd != 0 &&
+                                <div>
+                                    Página Selecionada:
+                                    <select
+                                        value={page}
+                                        onChange={changePage}
+                                        className="ml-5 border border-gray-300 rounded-lg px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    >
+                                        {Array.from({ length: pageQtd }, (_, i) => i + 1).map((page) => (
+                                            <option key={page} value={page}>
+                                                {page}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>}
 
                             <button
                                 type="button"
-                                onClick={() => console.log("Botão de imprimir clicado!")}
-                                className="p-2 rounded-full hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                                onClick={handleDownload}
+                                className="cursor-pointer p-2 rounded-full hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                             >
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -61,148 +115,10 @@ export default function HistorySys() {
                         </div>
                     </div>
 
-                    <div className="bg-gray-200 border border-gray-300 rounded-lg p-4 overflow-y-auto flex-grow max-h-120">
-                        <div className="space-y-1">
-                            {/* log ficticio temporario enquanto não tem BD*/}
-                            <p className="font-mono text-sm text-gray-800">
-                                [19/06/2025 21:47] Bolsista 000000000-00 adicionado pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [19/06/2025 21:49] Bolsista 000000000-00 adicionado pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [19/06/2025 21:52] Bolsista 000000000-00 adicionado pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [20/06/2025 21:52] Bolsista 000000000-01 removido pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [20/06/2025 21:52] Relatório ABRIL-2025 emitido pelo funcionário 111111111-11
-                            </p> <p className="font-mono text-sm text-gray-800">
-                                [19/06/2025 21:47] Bolsista 000000000-00 adicionado pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [19/06/2025 21:49] Bolsista 000000000-00 adicionado pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [19/06/2025 21:52] Bolsista 000000000-00 adicionado pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [20/06/2025 21:52] Bolsista 000000000-01 removido pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [20/06/2025 21:52] Relatório ABRIL-2025 emitido pelo funcionário 111111111-11
-                            </p> <p className="font-mono text-sm text-gray-800">
-                                [19/06/2025 21:47] Bolsista 000000000-00 adicionado pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [19/06/2025 21:49] Bolsista 000000000-00 adicionado pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [19/06/2025 21:52] Bolsista 000000000-00 adicionado pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [20/06/2025 21:52] Bolsista 000000000-01 removido pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [20/06/2025 21:52] Relatório ABRIL-2025 emitido pelo funcionário 111111111-11
-                            </p> <p className="font-mono text-sm text-gray-800">
-                                [19/06/2025 21:47] Bolsista 000000000-00 adicionado pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [19/06/2025 21:49] Bolsista 000000000-00 adicionado pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [19/06/2025 21:52] Bolsista 000000000-00 adicionado pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [20/06/2025 21:52] Bolsista 000000000-01 removido pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [20/06/2025 21:52] Relatório ABRIL-2025 emitido pelo funcionário 111111111-11
-                            </p> <p className="font-mono text-sm text-gray-800">
-                                [19/06/2025 21:47] Bolsista 000000000-00 adicionado pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [19/06/2025 21:49] Bolsista 000000000-00 adicionado pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [19/06/2025 21:52] Bolsista 000000000-00 adicionado pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [20/06/2025 21:52] Bolsista 000000000-01 removido pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [20/06/2025 21:52] Relatório ABRIL-2025 emitido pelo funcionário 111111111-11
-                            </p> <p className="font-mono text-sm text-gray-800">
-                                [19/06/2025 21:47] Bolsista 000000000-00 adicionado pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [19/06/2025 21:49] Bolsista 000000000-00 adicionado pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [19/06/2025 21:52] Bolsista 000000000-00 adicionado pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [20/06/2025 21:52] Bolsista 000000000-01 removido pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [20/06/2025 21:52] Relatório ABRIL-2025 emitido pelo funcionário 111111111-11
-                            </p> <p className="font-mono text-sm text-gray-800">
-                                [19/06/2025 21:47] Bolsista 000000000-00 adicionado pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [19/06/2025 21:49] Bolsista 000000000-00 adicionado pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [19/06/2025 21:52] Bolsista 000000000-00 adicionado pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [20/06/2025 21:52] Bolsista 000000000-01 removido pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [20/06/2025 21:52] Relatório ABRIL-2025 emitido pelo funcionário 111111111-11
-                            </p> <p className="font-mono text-sm text-gray-800">
-                                [19/06/2025 21:47] Bolsista 000000000-00 adicionado pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [19/06/2025 21:49] Bolsista 000000000-00 adicionado pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [19/06/2025 21:52] Bolsista 000000000-00 adicionado pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [20/06/2025 21:52] Bolsista 000000000-01 removido pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [20/06/2025 21:52] Relatório ABRIL-2025 emitido pelo funcionário 111111111-11
-                            </p> <p className="font-mono text-sm text-gray-800">
-                                [19/06/2025 21:47] Bolsista 000000000-00 adicionado pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [19/06/2025 21:49] Bolsista 000000000-00 adicionado pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [19/06/2025 21:52] Bolsista 000000000-00 adicionado pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [20/06/2025 21:52] Bolsista 000000000-01 removido pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [20/06/2025 21:52] Relatório ABRIL-2025 emitido pelo funcionário 111111111-11
-                            </p>
-                        </div>
+                    <div className="bg-gray-200 border border-gray-300 rounded-lg p-4 overflow-y-auto flex-grow">
+                        <pre className="whitespace-pre overflow-x-auto min-h-[600px]">{histTxt}</pre>
                     </div>
 
-                    <div className="flex justify-end mt-8">
-                        <button
-                            type="button"
-                            onClick={() => console.log("Botão 'Atualizar' clicado")}
-                            className="inline-flex items-center px-6 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
-                        >
-                            Atualizar
-                        </button>
-                    </div>
                 </div>
             </div>
         </div>
