@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import MonthYearDropdown from "../../components/MonthDropdown";
 import RelatorioTemplate from "../../components/RelatorioTemplate";
 import routes from "../../services/routes";
-import { ErrorResponse } from "react-router-dom";
 import axios, { AxiosError } from "axios";
 
 export default function Relatorios() {
