@@ -16,6 +16,7 @@ function Login({ setLogged }: { setLogged: (logged: boolean) => void }) {
       localStorage.setItem("token", token);
       //localStorage.setItem("tipo", tipo);
       api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      console.log(token)
       setLogged(true);
       navigate("/user/");
     } catch (error) {

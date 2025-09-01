@@ -1,21 +1,70 @@
+import { useEffect, useState } from "react";
+import MonthYearDropdown from "../../../components/MonthDropdown";
+import routes from "../../../services/routes";
+import { AxiosResponse } from "axios";
 
 export default function HistorySys() {
 
-    const monthOptions = [];
-    const currentDate = new Date();
+    const [year, setYear] = useState<number>(new Date().getFullYear());
+    const [month, setMonth] = useState<number>(new Date().getMonth() + 1);
+    const [histTxt, setHistTxt] = useState("");
+    const [page, setPage] = useState(1)
+    const [pageQtd, setPageQtd] = useState(1)
 
-    for (let i = 0; i < 12; i++) {
-        const date = new Date(currentDate);
-        date.setMonth(currentDate.getMonth() - i);
+    useEffect(() => {
+        const getHistorico = async () => {
+            try {
+                const response = await routes.getHistoricoByMonth(month, year, page)
+                setPageQtd(response.data["total_pages"])
+                makeHistTxt(response);
+            } catch (e) {
+                setHistTxt("Ocorreu um erro ao resgatar o histórico: " + e);
+            }
+        }
+        getHistorico();
+    }, [year, month, page])
 
-        const displayValue = new Intl.DateTimeFormat('pt-BR', { month: 'long', year: 'numeric' }).format(date);
-        const optionValue = date.toISOString().slice(0, 7);
+    const makeHistTxt = (response: AxiosResponse) => {
+        console.log(response);
+        console.log(response.data["items"].length);
+        console.log(response.data["items"] != undefined)
+        if (response.data["items"] != undefined && response.data["items"].length > 0) {
+            var tempHistTxt = "";
+            response.data["items"].forEach((item: { [x: string]: any; }) => { 
+                if(item["acao"] === "atualizou informações gerais"){
+                    tempHistTxt += `[${item["data"]}] ${item["ator_nome"]} (id: ${item["ator_id"]}; cpf: ${item["ator_cpf"]}) ${item["acao"]}: nome_empresa=${item["info_adicional"]["nome_empresa"]}; preco_almoco=${item["info_adicional"]["preco_almoco"]}; preco_meia_almoco=${item["info_adicional"]["preco_meia_almoco"]}; preco_jantar=${item["info_adicional"]["preco_jantar"]}; preco_meia_jantar=${item["info_adicional"]["preco_meia_jantar"]};inicio_almoco=${item["info_adicional"]["inicio_almoco"]}; inicio_jantar=${item["info_adicional"]["inicio_jantar"]}; fim_almoco= ${item["info_adicional"]["fim_almoco"]}; fim_jantar= ${item["info_adicional"]["fim_jantar"]}\n`
+                } else if(item["acao"] === "cadastrou compra"){
+                    tempHistTxt += `[${item["data"]}] ${item["ator_nome"]} (id: ${item["ator_id"]}; cpf: ${item["ator_cpf"]}) ${item["acao"]}: usuario_id=${item["info_adicional"]["usuario_id"]}; local=${item["info_adicional"]["local"]}; horario=${item["info_adicional"]["horario"]}; forma_pagamento=${item["info_adicional"]["forma_pagamento"]}; preco_compra=${item["info_adicional"]["preco_compra"]}\n`
+                } 
+                else{
+                    tempHistTxt += `[${item["data"]}] ${item["ator_nome"]} (id: ${item["ator_id"]}; cpf: ${item["ator_cpf"]}) ${item["acao"]} ${item["alvo_nome"]} (id: ${item["alvo_id"]}; cpf: ${item["alvo_cpf"]})\n`
+                }
+            });
+            setHistTxt(tempHistTxt);
+        } else {
+            setHistTxt("[Histórico Vazio!]")
+        }
+    }
 
-        monthOptions.push(
-            <option key={optionValue} value={optionValue}>
-                {displayValue.charAt(0).toUpperCase() + displayValue.slice(1)}
-            </option>
-        );
+    const handleDownload = () => {
+        const blob = new Blob([histTxt], { type: 'text/plain;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `historico_${month}/${year}_pg${page}.txt`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    };
+
+    const changePage = (e: React.ChangeEvent<any>) => {
+        setPage(e.target.value)
+    }
+
+    function handleChange(newYear: number, newMonth: number): void {
+        setMonth(newMonth);
+        setYear(newYear);
     }
 
     return (
@@ -25,7 +74,7 @@ export default function HistorySys() {
             </div>
 
             <div className="flex-grow flex items-center justify-center">
-                <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-7xl min-h-[700px] flex flex-col">
+                <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-7xl min-h-[600px] flex flex-col">
 
                     <div className="flex justify-between items-center mb-6">
                         <h2 className="text-2xl font-bold text-gray-800">
@@ -33,23 +82,32 @@ export default function HistorySys() {
                         </h2>
 
                         <div className="flex items-center gap-4">
-                            <div className="relative">
-                                <select
-                                    className="border border-gray-300 rounded-md py-2 px-3 pr-8 appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                >
-                                    {monthOptions}
-                                </select>
-                                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                                    <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                        <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                                    </svg>
-                                </div>
-                            </div>
+                            <MonthYearDropdown
+                                selectedYear={year}
+                                selectedMonth={month}
+                                onChange={handleChange}
+                                startYear={2000}
+                            />
+                            {pageQtd != 0 &&
+                                <div>
+                                    Página Selecionada:
+                                    <select
+                                        value={page}
+                                        onChange={changePage}
+                                        className="ml-5 border border-gray-300 rounded-lg px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    >
+                                        {Array.from({ length: pageQtd }, (_, i) => i + 1).map((page) => (
+                                            <option key={page} value={page}>
+                                                {page}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>}
 
                             <button
                                 type="button"
-                                onClick={() => console.log("Botão de imprimir clicado!")}
-                                className="p-2 rounded-full hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                                onClick={handleDownload}
+                                className="cursor-pointer p-2 rounded-full hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                             >
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -65,148 +123,10 @@ export default function HistorySys() {
                         </div>
                     </div>
 
-                    <div className="bg-gray-200 border border-gray-300 rounded-lg p-4 overflow-y-auto flex-grow max-h-120">
-                        <div className="space-y-1">
-                            {/* log ficticio temporario enquanto não tem BD*/}
-                            <p className="font-mono text-sm text-gray-800">
-                                [19/06/2025 21:47] Bolsista 000000000-00 adicionado pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [19/06/2025 21:49] Bolsista 000000000-00 adicionado pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [19/06/2025 21:52] Bolsista 000000000-00 adicionado pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [20/06/2025 21:52] Bolsista 000000000-01 removido pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [20/06/2025 21:52] Relatório ABRIL-2025 emitido pelo funcionário 111111111-11
-                            </p> <p className="font-mono text-sm text-gray-800">
-                                [19/06/2025 21:47] Bolsista 000000000-00 adicionado pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [19/06/2025 21:49] Bolsista 000000000-00 adicionado pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [19/06/2025 21:52] Bolsista 000000000-00 adicionado pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [20/06/2025 21:52] Bolsista 000000000-01 removido pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [20/06/2025 21:52] Relatório ABRIL-2025 emitido pelo funcionário 111111111-11
-                            </p> <p className="font-mono text-sm text-gray-800">
-                                [19/06/2025 21:47] Bolsista 000000000-00 adicionado pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [19/06/2025 21:49] Bolsista 000000000-00 adicionado pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [19/06/2025 21:52] Bolsista 000000000-00 adicionado pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [20/06/2025 21:52] Bolsista 000000000-01 removido pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [20/06/2025 21:52] Relatório ABRIL-2025 emitido pelo funcionário 111111111-11
-                            </p> <p className="font-mono text-sm text-gray-800">
-                                [19/06/2025 21:47] Bolsista 000000000-00 adicionado pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [19/06/2025 21:49] Bolsista 000000000-00 adicionado pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [19/06/2025 21:52] Bolsista 000000000-00 adicionado pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [20/06/2025 21:52] Bolsista 000000000-01 removido pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [20/06/2025 21:52] Relatório ABRIL-2025 emitido pelo funcionário 111111111-11
-                            </p> <p className="font-mono text-sm text-gray-800">
-                                [19/06/2025 21:47] Bolsista 000000000-00 adicionado pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [19/06/2025 21:49] Bolsista 000000000-00 adicionado pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [19/06/2025 21:52] Bolsista 000000000-00 adicionado pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [20/06/2025 21:52] Bolsista 000000000-01 removido pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [20/06/2025 21:52] Relatório ABRIL-2025 emitido pelo funcionário 111111111-11
-                            </p> <p className="font-mono text-sm text-gray-800">
-                                [19/06/2025 21:47] Bolsista 000000000-00 adicionado pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [19/06/2025 21:49] Bolsista 000000000-00 adicionado pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [19/06/2025 21:52] Bolsista 000000000-00 adicionado pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [20/06/2025 21:52] Bolsista 000000000-01 removido pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [20/06/2025 21:52] Relatório ABRIL-2025 emitido pelo funcionário 111111111-11
-                            </p> <p className="font-mono text-sm text-gray-800">
-                                [19/06/2025 21:47] Bolsista 000000000-00 adicionado pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [19/06/2025 21:49] Bolsista 000000000-00 adicionado pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [19/06/2025 21:52] Bolsista 000000000-00 adicionado pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [20/06/2025 21:52] Bolsista 000000000-01 removido pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [20/06/2025 21:52] Relatório ABRIL-2025 emitido pelo funcionário 111111111-11
-                            </p> <p className="font-mono text-sm text-gray-800">
-                                [19/06/2025 21:47] Bolsista 000000000-00 adicionado pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [19/06/2025 21:49] Bolsista 000000000-00 adicionado pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [19/06/2025 21:52] Bolsista 000000000-00 adicionado pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [20/06/2025 21:52] Bolsista 000000000-01 removido pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [20/06/2025 21:52] Relatório ABRIL-2025 emitido pelo funcionário 111111111-11
-                            </p> <p className="font-mono text-sm text-gray-800">
-                                [19/06/2025 21:47] Bolsista 000000000-00 adicionado pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [19/06/2025 21:49] Bolsista 000000000-00 adicionado pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [19/06/2025 21:52] Bolsista 000000000-00 adicionado pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [20/06/2025 21:52] Bolsista 000000000-01 removido pelo funcionário 111111111-11
-                            </p>
-                            <p className="font-mono text-sm text-gray-800">
-                                [20/06/2025 21:52] Relatório ABRIL-2025 emitido pelo funcionário 111111111-11
-                            </p>
-                        </div>
+                    <div className="bg-gray-200 border border-gray-300 rounded-lg p-4 overflow-y-auto flex-grow">
+                        <pre className="whitespace-pre overflow-x-auto min-h-[600px]">{histTxt}</pre>
                     </div>
 
-                    <div className="flex justify-end mt-8">
-                        <button
-                            type="button"
-                            onClick={() => console.log("Botão 'Atualizar' clicado")}
-                            className="inline-flex items-center px-6 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
-                        >
-                            Atualizar
-                        </button>
-                    </div>
                 </div>
             </div>
         </div>

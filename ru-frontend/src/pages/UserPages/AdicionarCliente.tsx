@@ -9,15 +9,102 @@ function AdicionarCliente(): ReactElement {
 
   const handleRegisterSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log("Funcionário a ser registrado:", { cpf, nome, email });
-    alert(`Funcionário ${nome} registrado com sucesso!`);
+    if (cpf == "" || nome == "" || matricula == "" || tipo == "") {
+      alert("Preencha todos os campos!")
+    } else if (!validarCPF(cpf)) {
+      alert("Insira um CPF válido")
+    }else if (matricula.length != 9) {
+      alert("Insira uma matrícula válida")
+    }  
+    else {
+      const graduando = tipoGraduacao === "graduacao" || tipoGraduacao === "graduacao_e_pos" ? true : false;
+      const pos_graduando = tipoGraduacao === "pos_graduacao" || tipoGraduacao === "graduacao_e_pos" ? true : false;
+      const bolsa = bolsista === "Sim" ? true : false;
+      const response = await addCliente({
+        cpf: cpf, nome: nome, matricula: matricula, tipo: tipo,
+        graduando: graduando, pos_graduando: pos_graduando, bolsista: bolsa
+      })
+      console.log(response)
+      if (response.status == 201) {
+        alert(`Cliente ${nome} registrado com sucesso!`);
+      } else {
+        alert(`Ocorreu um erro ao criar o cliente`);
+      }
+    }
   };
 
-  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files.length > 0) {
-      const fileName = event.target.files[0].name;
-      console.log("Planilha selecionada:", fileName);
-      alert(`Planilha "${fileName}" importada!`);
+  const verifyCliente = (clienteData: Record<string, unknown>) => {
+    if (clienteData["cpf"] == undefined || clienteData["nome"] == undefined || clienteData["matricula"] == undefined || clienteData["tipo"] == undefined
+      || clienteData["tipoGraduacao"] == undefined || clienteData["bolsista"] == undefined) {
+      return "Campos obrigatórios faltando!";
+    } else if (typeof clienteData["cpf"] === "string" && !validarCPF(clienteData["cpf"])) {
+      return "CPF inválido";
+    } else if (typeof clienteData["matricula"] === "string" && clienteData["matricula"].length != 9) {
+      return "Matrícula inválida";
+    }
+    return "OK";
+  }
+
+  const addCliente = async (data: {
+    cpf: string; nome: string; matricula: string; tipo: string; graduando: boolean;
+    pos_graduando: boolean; bolsista: boolean
+  }): Promise<any> => {
+    try {
+      const response = await routes.criarCliente(data);
+      return response;
+    } catch (e) {
+      return e;
+    }
+  }
+
+  const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      const jsonData = await readExcelFile(file);
+      await addClienteJson(jsonData);
+    } catch (err) {
+      console.error("Erro ao ler planilha:", err);
+    }
+  };
+
+  const addClienteJson = async (jsonData: RowData[]) => {
+    const errors: string[] = [];
+
+    for (const cliente of jsonData) {
+      const msg = verifyCliente(cliente);
+
+      if (msg === "OK") {
+        const graduando = cliente["tipoGraduacao"].toLowerCase() === "graduação" || cliente["tipoGraduacao"].toLowerCase() === "graduação e pós" ? true : false;
+        const pos_graduando = cliente["tipoGraduacao"].toLowerCase() === "pós graduação" || cliente["tipoGraduacao"].toLowerCase() === "graduação e pós" ? true : false;
+        const bolsa = cliente["bolsista"].toLowerCase() === "sim" ? true : false;
+        const response = await addCliente({
+          cpf: cliente["cpf"],
+          nome: cliente["nome"],
+          matricula: cliente["matricula"],
+          tipo: cliente["tipo"].toLowerCase(),
+          graduando: graduando,
+          pos_graduando : pos_graduando,
+          bolsista: bolsa
+        });
+
+        console.log(response);
+
+        if (response.status !== 201) {
+          console.log(response.response.data["detail"]);
+          errors.push(`${cliente["cpf"]}: ${response.response.data["detail"]}`);
+        }
+      } else {
+        errors.push(`${cliente["cpf"]}: ${msg}`);
+      }
+    }
+
+    console.log(errors);
+
+    if (errors.length > 0) {
+      alert("Alguns clientes não foram cadastrados:\n" + errors.join("\n"));
+    } else {
+      alert("Todos os clientes foram adicionados com sucesso!");
     }
   };
 
