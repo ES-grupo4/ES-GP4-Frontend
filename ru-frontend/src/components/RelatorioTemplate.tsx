@@ -91,7 +91,7 @@ const RelatorioTemplate = ({ data }: { data: any }) => (
                     </View>
                     <View style={styles.row}>
                         <Text>Faturamento bruto no mês (R$):</Text>
-                        <Text>{data["faturamento_bruto_mensal"]}</Text>
+                        <Text>{(data["faturamento_bruto_mensal"] / 100).toFixed(2).replace(".", ",")}</Text>
                     </View>
                 </View>
             </Page>

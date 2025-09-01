@@ -45,8 +45,6 @@ export default function AdicionarCliente(): ReactElement {
       return "Campos obrigatórios faltando!";
     } else if (typeof clienteData["cpf"] === "string" && !validarCPF(clienteData["cpf"])) {
       return "CPF inválido";
-    } else if (typeof clienteData["matricula"] === "string" && clienteData["matricula"].length != 9) {
-      return "Matrícula inválida";
     }
     return "OK";
   }

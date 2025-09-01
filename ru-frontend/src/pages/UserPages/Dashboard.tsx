@@ -137,7 +137,7 @@ export default function Dashboard() {
               </div>
               <div>
                 <p className="text-sm text-gray-500">Preço Refeição</p>
-                <p className="text-xl font-bold">R$ {refeicao.toFixed(2)}</p>
+                <p className="text-xl font-bold">R$ {(refeicao / 100).toFixed(2).replace(".", ",")}</p>
               </div>
             </div>
           </div>
