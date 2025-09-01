@@ -6,7 +6,7 @@ import { AxiosResponse } from "axios";
 export default function HistorySys() {
 
     const [year, setYear] = useState<number>(new Date().getFullYear());
-    const [month, setMonth] = useState<number>(new Date().getMonth());
+    const [month, setMonth] = useState<number>(new Date().getMonth() + 1);
     const [histTxt, setHistTxt] = useState("");
     const [page, setPage] = useState(1)
     const [pageQtd, setPageQtd] = useState(1)
