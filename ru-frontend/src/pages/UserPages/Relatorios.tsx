@@ -2,12 +2,12 @@ import { useEffect, useState } from "react";
 import MonthYearDropdown from "../../components/MonthDropdown";
 import RelatorioTemplate from "../../components/RelatorioTemplate";
 import routes from "../../services/routes";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 
 export default function Relatorios() {
     const cpf = localStorage.getItem('cpf')
     const [year, setYear] = useState<number>(new Date().getFullYear());
-    const [month, setMonth] = useState<number>(new Date().getMonth());
+    const [month, setMonth] = useState<number>(new Date().getMonth() + 1);
     const [loaded, setLoaded] = useState(false);
     const [error, setError] = useState(false);
     const [data, setData] = useState({
