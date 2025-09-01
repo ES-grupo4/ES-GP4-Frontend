@@ -4,7 +4,7 @@ import RemoveButton from "../../../components/RemoveButton"
 import routes from "../../../services/routes"
 import { UrlRouter } from "../../../constants/UrlRouter";
 
-export default function EditarFuncionario({ setLogged }: { setLogged: (logged: boolean) => void }) {
+export default function EditarFuncionario({ setLogged }: Readonly<{ setLogged: (logged: boolean) => void }>) {
     const navigate = useNavigate();
     const id = useParams()["id"] //CPF tirado dos parâmetros do link
     const [found, setFound] = useState(false) //Se o funcionário com o cpf foi encontrado
@@ -49,8 +49,8 @@ export default function EditarFuncionario({ setLogged }: { setLogged: (logged: b
     const excluirFuncionario = async () => {
         const localCpf = localStorage.getItem("cpf");
         const confirmationRequired = localCpf === funcionarioData["cpf"];
-        var confirmation = confirmationRequired ? confirm("O usuário a ser desativado é o mesmo que está logado. Prosseguir?") : false;
-        if ((confirmationRequired == false || (confirmationRequired && confirmation)) && id != null) {
+        let confirmation = confirmationRequired ? confirm("O usuário a ser desativado é o mesmo que está logado. Prosseguir?") : false;
+        if ((!confirmationRequired|| (confirmationRequired && confirmation)) && id != null) {
             try {
                 const response = await routes.removeFuncionarioByCpf(funcionarioData["cpf"]);
                 console.log(response);
@@ -74,7 +74,7 @@ export default function EditarFuncionario({ setLogged }: { setLogged: (logged: b
     const salvarAlteracoes = async () => {
         if (id != null) {
             console.log("Salvar Alterações")
-            var data = {}
+            let data = {}
             if (funcionarioData["nome"] != "") {
                 data = { ...data, nome: funcionarioData["nome"] }
             }

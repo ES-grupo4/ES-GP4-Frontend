@@ -8,9 +8,8 @@ import Administradores from "./Administradores";
 import EditarAdministrador from "./EditarAdministrador";
 import AdicionarAdministrador from "./AdicionarAdministrador";
 
-export default function AdminPages({setLogged}: {setLogged: (logged: boolean) => void}) {
+export default function AdminPages({setLogged}: Readonly<{setLogged: (logged: boolean) => void}>) {
     return (
-        <>
             <Routes>
                 <Route path="/administradores" element={<Administradores/>}/>
                 <Route path="/administradores/adicionar" element={<AdicionarAdministrador/>}/>
@@ -23,6 +22,5 @@ export default function AdminPages({setLogged}: {setLogged: (logged: boolean) =>
 
                 <Route path="/funcionarios/novo" element={<AdicionarFuncionario />} />
             </Routes>
-        </>
     )
 }

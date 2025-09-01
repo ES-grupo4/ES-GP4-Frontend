@@ -1,6 +1,6 @@
 import api from "./api.ts";
 
-const login = (cpf: String, senha: String) => {
+const login = (cpf: string, senha: string) => {
   return api.post("/auth/login", {
     cpf,
     senha,
@@ -25,7 +25,7 @@ const createFuncionario = (funcData: {}) => {
   });
 };
 
-const updateFuncionario = (id: String, funcData: {}) => {
+const updateFuncionario = (id: string, funcData: {}) => {
   return api.put(`/funcionario/${id}`, funcData);
 };
 
@@ -39,7 +39,7 @@ const getAllAdministradores = (page: number, busca: string) => {
     `/funcionario/admins?page=${page}&tipo_funcionario=admin&busca=${busca}&desativados=${false}`
   );
 };
-const getFuncionarioById = (id: String) => {
+const getFuncionarioById = (id: string) => {
   return api.get(`/funcionario/?id=${id}`);
 };
 
@@ -52,11 +52,11 @@ const getHistoricoByMonth = (month:number,year:number,page:number) => {
 };
 
 
-const getAdministradorById = (id: String) => {
+const getAdministradorById = (id: string) => {
   return api.get(`/funcionario/admin/?id=${id}`);
 };
 
-const desativarFuncionarioByCpf = (cpf: String) => {
+const desativarFuncionarioByCpf = (cpf: string) => {
   return api.post(
     `/funcionario/${cpf}/desativar/?data_saida=${new Date()
       .toISOString()
@@ -64,11 +64,11 @@ const desativarFuncionarioByCpf = (cpf: String) => {
   );
 };
 
-const getFuncionarioByCpf = (cpf: String) => {
+const getFuncionarioByCpf = (cpf: string) => {
   return api.get(`/funcionario/?cpf=${cpf}`);
 };
 
-const getAdministradorByCpf = (cpf: String) => {
+const getAdministradorByCpf = (cpf: string) => {
   return api.get(`/funcionario/admin/?cpf=${cpf}`);
 };
 
@@ -89,15 +89,15 @@ const getAllClientes = (page: number, busca: string, tipo: string) => {
   );
 };
 
-const getClienteById = (id: String) => {
+const getClienteById = (id: string) => {
   return api.get(`/cliente/id/${id}`);
 };
 
-const updateCliente = (id: String, clienteData: {}) => {
-  return api.put(`/cliente/id/${id}`, clienteData); //return api.put(`/cliente/?id=${id}`,clienteData);
+const updateCliente = (id: string, clienteData: {}) => {
+  return api.put(`/cliente/id/${id}`, clienteData); 
 };
 
-const apagarCliente = (id: String) => {
+const apagarCliente = (id: string) => {
   return api.delete(`/cliente/${id}`);
 };
 

@@ -51,19 +51,28 @@ export default function Compras() {
             parsedValue = intValue.toString();
         }
 
-        setCompraData(prevState => ({
-            ...prevState,
-            [name]: name === 'preco_compra' ? parseInt(parsedValue, 10) : (name === 'usuario_id' ? parseInt(parsedValue, 10) : parsedValue),
-        }));
+        setCompraData(prevState => {
+            let finalValue;
+            if (name === 'preco_compra' || name === 'usuario_id') {
+                finalValue = parseInt(parsedValue, 10);
+            } else {
+                finalValue = parsedValue;
+            }
+
+            return {
+                ...prevState,
+                [name]: finalValue,
+            };
+        });
     };
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
 
-        if (compraData.usuario_id <= 0){
+        if (compraData.usuario_id <= 0) {
             alert("ID de usuário não pode ser igual ou menor que zero");
             return;
-        } else if (compraData.preco_compra <= 0){
+        } else if (compraData.preco_compra <= 0) {
             alert("O valor de uma refeição não pode ser igual ou menor que zero");
             return;
         }
@@ -76,7 +85,7 @@ export default function Compras() {
                 horario: new Date().toISOString(),
                 local: 'Exatas',
                 forma_pagamento: 'credito',
-                preco_compra: precos?.preco_almoco || 0,
+                preco_compra: precos?.preco_almoco ?? 0,
             });
         } catch (error) {
             console.error('Erro ao registrar compra:', error);
@@ -118,20 +127,20 @@ export default function Compras() {
                     <h2 className="text-xl font-semibold mb-4">Registrar compra:</h2>
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-gray-700 font-bold mb-1">ID do Usuário:</label>
-                            <input 
-                                type="number" 
+                            <div className="block text-gray-700 font-bold mb-1">ID do Usuário:</div>
+                            <input
+                                type="number"
                                 name="usuario_id"
                                 value={compraData.usuario_id}
                                 onChange={handleChange}
                                 min="0"
-                                className="bg-gray-100 p-2 rounded-md border border-gray-300 w-full focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                                className="bg-gray-100 p-2 rounded-md border border-gray-300 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
                         </div>
-                        
+
                         <div>
-                            <label className="block text-gray-700 font-bold mb-1">Pagamento:</label>
-                            <select 
+                            <div className="block text-gray-700 font-bold mb-1">Pagamento:</div>
+                            <select
                                 name="forma_pagamento"
                                 value={compraData.forma_pagamento}
                                 onChange={handleChange}
@@ -144,8 +153,8 @@ export default function Compras() {
                             </select>
                         </div>
                         <div>
-                            <label className="block text-gray-700 font-bold mb-1">Local:</label>
-                            <select 
+                            <div className="block text-gray-700 font-bold mb-1">Local:</div>
+                            <select
                                 name="local"
                                 value={compraData.local}
                                 onChange={handleChange}
@@ -157,19 +166,19 @@ export default function Compras() {
                         </div>
 
                         <div>
-                            <label className="block text-gray-700 font-bold mb-1">Horário da Compra:</label>
-                            <input 
-                                type="datetime-local" 
+                            <div className="block text-gray-700 font-bold mb-1">Horário da Compra:</div>
+                            <input
+                                type="datetime-local"
                                 name="horario"
                                 value={compraData.horario.substring(0, 16)}
                                 onChange={handleChange}
-                                className="bg-gray-100 p-2 rounded-md border border-gray-300 w-full focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                                className="bg-gray-100 p-2 rounded-md border border-gray-300 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
                         </div>
 
                         <div>
-                            <label className="block text-gray-700 font-bold mb-1">Preço da Compra:</label>
-                            <select 
+                            <div className="block text-gray-700 font-bold mb-1">Preço da Compra:</div>
+                            <select
                                 name="preco_compra"
                                 value={compraData.preco_compra}
                                 onChange={handleChange}

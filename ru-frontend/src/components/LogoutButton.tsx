@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { UrlRouter } from "../constants/UrlRouter";
 
-export default function LogoutButton({ setLogged }: { setLogged: (logged: boolean) => void }) {
+export default function LogoutButton({ setLogged }: Readonly<{ setLogged: (logged: boolean) => void }>) {
 
     const navigate = useNavigate();
 

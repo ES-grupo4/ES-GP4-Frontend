@@ -11,7 +11,7 @@ import AdicionarCliente from "./AdicionarCliente";
 import DetalhesCliente from "./DetalhesCliente";
 import { UrlRouter } from "../../constants/UrlRouter";
 import Relatorios from "./Relatorios";
-export default function UserPages({setLogged,admin}: {setLogged: (logged: boolean) => void, admin:boolean}) { //Guarda páginas gerais de um usuário/funcionário
+export default function UserPages({setLogged,admin}: Readonly<{setLogged: (logged: boolean) => void, admin:boolean}>) { //Guarda páginas gerais de um usuário/funcionário
 
     return (
         <>

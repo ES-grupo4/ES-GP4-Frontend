@@ -1,20 +1,20 @@
 import { useState, useEffect } from "react";
-import { AxiosResponse } from "axios"; 
+import { AxiosResponse } from "axios";
 import routes from "../../services/routes";
 
 interface UserData {
-  nome: string;
-  cpf: string;
-  email: string;
-  tipo: string; 
+    nome: string;
+    cpf: string;
+    email: string;
+    tipo: string;
 }
 
 interface PaginatedUserResponse {
-  items: UserData[];
-  page: number;
-  page_size: number;
-  total_pages: number;
-  total_in_page: number;
+    items: UserData[];
+    page: number;
+    page_size: number;
+    total_pages: number;
+    total_in_page: number;
 }
 
 export default function MeusDados() {
@@ -40,7 +40,7 @@ export default function MeusDados() {
                     response = await routes.getFuncionarioByCpf(cpf);
                 }
 
-                if (response.data && response.data.items && response.data.items.length > 0) {
+                if (response.data?.items?.[0]) {
                     setUserData(response.data.items[0]);
                 } else {
                     throw new Error("Usuário não encontrado.");
