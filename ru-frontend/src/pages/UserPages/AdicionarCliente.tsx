@@ -19,9 +19,7 @@ export default function AdicionarCliente(): ReactElement {
       alert("Preencha todos os campos!")
     } else if (!validarCPF(cpf)) {
       alert("Insira um CPF válido")
-    }else if (matricula.length != 9) {
-      alert("Insira uma matrícula válida")
-    }  
+    } 
     else {
       const graduando = tipoGraduacao === "graduacao" || tipoGraduacao === "graduacao_e_pos" ? true : false;
       const pos_graduando = tipoGraduacao === "pos_graduacao" || tipoGraduacao === "graduacao_e_pos" ? true : false;
