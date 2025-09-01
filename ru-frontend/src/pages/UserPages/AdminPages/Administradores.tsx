@@ -7,18 +7,23 @@ import routes from "../../../services/routes"
 export default function Administradores() {
 
     const [data, setData] = useState([])
+    const [filter,setFilter] = useState("")
     const [page, setPage] = useState(1)
     const [pageQtd, setPageQtd] = useState(1)
 
     useEffect(() => {
         const getAdminData = async () => {
-            const response = await routes.getAllAdministradores(page);
+            const response = await routes.getAllAdministradores(page, filter);
             const data = response.data["items"].filter((func: { [x: string]: string }) => func["tipo"] == "admin");
-            setPageQtd(response.data["total_pages"]);
+            if(response.data["items"].length == 0){
+                setPageQtd(1);
+            } else{
+                setPageQtd(response.data["total_pages"]);
+            }
             setData(data);
         }
         getAdminData();
-    }, [page])
+    }, [page, filter])
 
     const next = () => {
         if (page === pageQtd) return;
@@ -44,7 +49,7 @@ export default function Administradores() {
             </div>
             <br />
             <EntityTable tableData={data} columns={["id", "nome", "cpf", "email", "data_entrada"]} url={UrlRouter.usuario.administracao.administradores.editar.split(":")[0]} hasChart={false} chartUrl=""
-                page={page} total_pages={pageQtd} prev={prev} next={next} />
+                page={page} total_pages={pageQtd} prev={prev} next={next} setFilter={setFilter} />
 
         </div>)
 }

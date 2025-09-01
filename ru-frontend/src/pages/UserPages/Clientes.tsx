@@ -1,31 +1,14 @@
-import { useState } from "react"
+import { useEffect, useState, type SetStateAction } from "react"
 import EntityTable from "../../components/EntityTable"
 import { UrlRouter } from "../../constants/UrlRouter"
 import { Link } from "react-router-dom"
+import routes from "../../services/routes"
 
 export default function Clientes() {
 
-    const [data, setData] = useState(
-        [ //tableData, no futuro, irá guardar as informações dos funcionários recebidas por requisições http
-            {
-                id: 4,
-                Nome: "DESS HOLIDAY",
-                CPF: "122512250-12",
-                Email: "roaring.knight@gmail.com"
-            },
-            {
-                id: 5,
-                Nome: "ASGORE DREEMUR",
-                CPF: "999999999-99",
-                Email: "truck@gmail.com"
-            },
-            {
-                id: 6,
-                Nome: "NOELLE HOLLIDAY",
-                CPF: "121212120-12",
-                Email: "susie.fancluber@gmail.com"
-            },
-        ])
+    const [data, setData] = useState([])
+    const [filter, setFilter] = useState("")
+    const [categoria, setCategoria] = useState(""); // começa vazio
     const [page, setPage] = useState(1)
     const [pageQtd, setPageQtd] = useState(1)
 
@@ -84,10 +67,11 @@ export default function Clientes() {
                     </svg>
                 </Link>
             </div>
+            
             <br />
-            <EntityTable tableData={data} columns={["id", "Nome", "CPF", "Email"]} url={UrlRouter.usuario.clientes.editar.split(':')[0]}
+            <EntityTable tableData={data} columns={["id", "nome", "cpf", "matricula", "tipo", "tipo_graduacao", "bolsista"]} url={UrlRouter.usuario.clientes.editar.split(':')[0]}
                 hasChart={true} chartUrl={UrlRouter.usuario.clientes.detalhes.split(':')[0]}
-                page={page} total_pages={pageQtd} prev={prev} next={next}/>
+                page={page} total_pages={pageQtd} prev={prev} next={next} setFilter={setFilter} categoria={categoria} setCategoria={setCategoria} />
 
         </div>)
 }
