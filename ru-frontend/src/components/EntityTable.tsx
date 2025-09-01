@@ -14,10 +14,12 @@ export default function EntityTable({ tableData, columns, url, hasChart, chartUr
     useEffect(() => { makeTable(), console.log(tableData) }, [tableData])
 
     const onChangeSearch = (e: React.ChangeEvent<any>) => { // Define valor de busca antes de clicar para buscar
+        e.preventDefault();
         setSearch(e.target.value)
     }
 
-    const handleSearch = () => { // Define o valor do filtro de busca
+    const handleSearch = (e: React.ChangeEvent<any>) => { // Define o valor do filtro de busca
+        e.preventDefault();
         setFilter(search)
     }
 
