@@ -88,13 +88,6 @@ export default function GeneralInfo() {
         preco_meia_jantar: formData.preco_meia_jantar ? formData.preco_meia_jantar.replace(",", ".") : ''
       };
 
-      // Update current info with new values
-      setCurrentInfo(prev => ({
-        ...prev,
-        ...formData
-      }));
-
-      // Prepare data for API
       const newInfo = {
         ...apiInfo,
         ...formattedData
@@ -109,29 +102,43 @@ export default function GeneralInfo() {
         inicio_jantar: string;
         fim_jantar: string;
       };
-
-      // Send data to API
-      const response = await api.setInformacoesGerais(newInfo);
-      console.log('Update successful:', response);
-      
-      // Clear form fields after successful update
-      setFormData({
-        nome_empresa: "",
-        preco_almoco: "",
-        preco_meia_almoco: "",
-        preco_jantar: "",
-        preco_meia_jantar: "",
-        inicio_almoco: "",
-        fim_almoco: "",
-        inicio_jantar: "",
-        fim_jantar: ""
+      let error = false;
+      Object.values(newInfo).forEach(value => {
+        console.log(value);
+        if (value == undefined || value === "") {
+          error = true;
+        }
       });
-      
-      // Show success message or update UI as needed
-      console.log('Information updated successfully');
+      if (error) {
+        alert("Preencha todos os campos!")
+      } else {
+        const response = await api.setInformacoesGerais(newInfo);
+        console.log('Update successful:', response);
+
+        // Clear form fields after successful update
+        setFormData({
+          nome_empresa: "",
+          preco_almoco: "",
+          preco_meia_almoco: "",
+          preco_jantar: "",
+          preco_meia_jantar: "",
+          inicio_almoco: "",
+          fim_almoco: "",
+          inicio_jantar: "",
+          fim_jantar: ""
+        });
+
+        // Show success message or update UI as needed
+        console.log('Information updated successfully');
+        alert("Informações gerais atualizadas com sucesso!")
+        setCurrentInfo(prev => ({
+        ...prev,
+        ...formData
+      }));
+      }
     } catch (error) {
       console.error('Error updating information:', error);
-      // Optionally show error message to user
+      alert("Ouve um erro ao atualizar as informações gerais.")
     }
   };
 
@@ -185,14 +192,14 @@ export default function GeneralInfo() {
                 </p>
                 <p className="text-gray-600">
                   <span className="font-semibold">Horário Almoço:</span>{" "}
-                  {currentInfo.inicio_almoco && currentInfo.fim_almoco 
-                    ? `${currentInfo.inicio_almoco} - ${currentInfo.fim_almoco}` 
+                  {currentInfo.inicio_almoco && currentInfo.fim_almoco
+                    ? `${currentInfo.inicio_almoco} - ${currentInfo.fim_almoco}`
                     : 'Não definido'}
                 </p>
                 <p className="text-gray-600">
                   <span className="font-semibold">Horário Jantar:</span>{" "}
-                  {currentInfo.inicio_jantar && currentInfo.fim_jantar 
-                    ? `${currentInfo.inicio_jantar} - ${currentInfo.fim_jantar}` 
+                  {currentInfo.inicio_jantar && currentInfo.fim_jantar
+                    ? `${currentInfo.inicio_jantar} - ${currentInfo.fim_jantar}`
                     : 'Não definido'}
                 </p>
               </div>
@@ -223,58 +230,58 @@ export default function GeneralInfo() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label htmlFor="preco_almoco" className="block text-sm font-medium text-gray-700 mb-1">
-                      Preço Almoço (R$)
+                      Preço Almoço (Centavos de R$)
                     </label>
                     <input
-                      type="text"
+                      type="number"
                       id="preco_almoco"
                       name="preco_almoco"
                       className="w-full px-3 py-2 border border-gray-300 rounded-md"
                       value={formData.preco_almoco}
                       onChange={handleInputChange}
-                      placeholder="Ex: 10,50"
+                      placeholder="Ex: 10"
                     />
                   </div>
                   <div>
                     <label htmlFor="preco_meia_almoco" className="block text-sm font-medium text-gray-700 mb-1">
-                      Preço Meia Almoço (R$)
+                      Preço Meia Almoço (Centavos de R$)
                     </label>
                     <input
-                      type="text"
+                      type="number"
                       id="preco_meia_almoco"
                       name="preco_meia_almoco"
                       className="w-full px-3 py-2 border border-gray-300 rounded-md"
                       value={formData.preco_meia_almoco}
                       onChange={handleInputChange}
-                      placeholder="Ex: 5,25"
+                      placeholder="Ex: 5"
                     />
                   </div>
                   <div>
                     <label htmlFor="preco_jantar" className="block text-sm font-medium text-gray-700 mb-1">
-                      Preço Jantar (R$)
+                      Preço Jantar (Centavos de R$)
                     </label>
                     <input
-                      type="text"
+                      type="number"
                       id="preco_jantar"
                       name="preco_jantar"
                       className="w-full px-3 py-2 border border-gray-300 rounded-md"
                       value={formData.preco_jantar}
                       onChange={handleInputChange}
-                      placeholder="Ex: 12,00"
+                      placeholder="Ex: 12"
                     />
                   </div>
                   <div>
                     <label htmlFor="preco_meia_jantar" className="block text-sm font-medium text-gray-700 mb-1">
-                      Preço Meia Jantar (R$)
+                      Preço Meia Jantar (Centavos de R$)
                     </label>
                     <input
-                      type="text"
+                      type="number"
                       id="preco_meia_jantar"
                       name="preco_meia_jantar"
                       className="w-full px-3 py-2 border border-gray-300 rounded-md"
                       value={formData.preco_meia_jantar}
                       onChange={handleInputChange}
-                      placeholder="Ex: 6,00"
+                      placeholder="Ex: 6"
                     />
                   </div>
                 </div>

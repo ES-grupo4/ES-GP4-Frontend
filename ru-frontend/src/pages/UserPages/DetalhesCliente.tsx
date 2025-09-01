@@ -137,7 +137,7 @@ export default function DetalhesCliente() {
     return (
         <div className="p-4 sm:ml-64 flex flex-col min-h-screen">
             <div className="group flex">
-                <h1 className="font-semibold font-sans text-6xl text-sky-900">Informações Gerais</h1>
+                <h1 className="font-semibold font-sans text-6xl text-sky-900">Detalhes do Cliente</h1>
             </div>
             {found ?
                 <div className="flex-grow flex items-center justify-center">
