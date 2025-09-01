@@ -5,64 +5,134 @@ export default function GeneralInfo() {
   const [apiInfo, setApiInfo] = useState({});
 
   const [currentInfo, setCurrentInfo] = useState({
-    empresa: "X",
-    preco: "xx,xx",
+    nome_empresa: "",
+    preco_almoco: "",
+    preco_meia_almoco: "",
+    preco_jantar: "",
+    preco_meia_jantar: "",
+    inicio_almoco: "",
+    fim_almoco: "",
+    inicio_jantar: "",
+    fim_jantar: ""
   });
 
-  const [newEmpresa, setNewEmpresa] = useState("");
-  const [newPreco, setNewPreco] = useState("");
+  const [formData, setFormData] = useState({
+    nome_empresa: "",
+    preco_almoco: "",
+    preco_meia_almoco: "",
+    preco_jantar: "",
+    preco_meia_jantar: "",
+    inicio_almoco: "",
+    fim_almoco: "",
+    inicio_jantar: "",
+    fim_jantar: ""
+  });
 
   useEffect(() => {
-    const fetch = async () => {
-      const info = await api.getInformacoesGerais().then((res) => res.data);
-      const cInfo = {
-        empresa: info.nome_empresa,
-        preco: (info.preco_almoco as number).toFixed(2),
-      };
-      setCurrentInfo(cInfo);
-      setApiInfo(info);
+    const fetchData = async () => {
+      try {
+        const info = await api.getInformacoesGerais().then((res) => res.data);
+        setCurrentInfo({
+          nome_empresa: info.nome_empresa || '',
+          preco_almoco: info.preco_almoco ? info.preco_almoco.toString() : '',
+          preco_meia_almoco: info.preco_meia_almoco ? info.preco_meia_almoco.toString() : '',
+          preco_jantar: info.preco_jantar ? info.preco_jantar.toString() : '',
+          preco_meia_jantar: info.preco_meia_jantar ? info.preco_meia_jantar.toString() : '',
+          inicio_almoco: info.inicio_almoco || '',
+          fim_almoco: info.fim_almoco || '',
+          inicio_jantar: info.inicio_jantar || '',
+          fim_jantar: info.fim_jantar || ''
+        });
+        setApiInfo(info);
+      } catch (error) {
+        console.error('Error fetching general info:', error);
+      }
     };
-    fetch();
+    fetchData();
   }, []);
 
-  const handlePriceChange = (value: string) => {
-    const regex = /^[0-9]*(,?[0-9]{0,2})?$/;
-    if (regex.test(value)) {
-      setNewPreco(value);
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    if (name.includes('preco')) {
+      const regex = /^[0-9]*(,?[0-9]{0,2})?$/;
+      if (regex.test(value)) {
+        setFormData(prev => ({
+          ...prev,
+          [name]: value
+        }));
+      }
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value
+      }));
     }
   };
 
+  const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
   const handleUpdate = async () => {
-    // Converte o preço para o formato com ponto
-    const precoParaSalvar = newPreco.replace(",", ".");
-    console.log("Novo Preço para salvar no banco de dados:", precoParaSalvar);
+    try {
+      // Format price values
+      const formattedData = {
+        ...formData,
+        preco_almoco: formData.preco_almoco ? formData.preco_almoco.replace(",", ".") : '',
+        preco_meia_almoco: formData.preco_meia_almoco ? formData.preco_meia_almoco.replace(",", ".") : '',
+        preco_jantar: formData.preco_jantar ? formData.preco_jantar.replace(",", ".") : '',
+        preco_meia_jantar: formData.preco_meia_jantar ? formData.preco_meia_jantar.replace(",", ".") : ''
+      };
 
-    setCurrentInfo({
-      empresa: newEmpresa || currentInfo.empresa,
-      preco: newPreco || currentInfo.preco,
-    });
+      // Update current info with new values
+      setCurrentInfo(prev => ({
+        ...prev,
+        ...formData
+      }));
 
-    const newInfo = {
-      ...apiInfo,
-      nome_empresa: newEmpresa || currentInfo.empresa,
-      preco_almoco: newPreco || currentInfo.preco,
-      preco_jantar: newPreco || currentInfo.preco,
-    } as {
-      nome_empresa: string;
-      preco_almoco: string;
-      preco_meia_almoco: string;
-      preco_jantar: string;
-      preco_meia_jantar: string;
-      inicio_almoco: string;
-      fim_almoco: string;
-      inicio_jantar: string;
-      fim_jantar: string;
-    };
+      // Prepare data for API
+      const newInfo = {
+        ...apiInfo,
+        ...formattedData
+      } as {
+        nome_empresa: string;
+        preco_almoco: string;
+        preco_meia_almoco: string;
+        preco_jantar: string;
+        preco_meia_jantar: string;
+        inicio_almoco: string;
+        fim_almoco: string;
+        inicio_jantar: string;
+        fim_jantar: string;
+      };
 
-    console.log(await api.setInformacoesGerais(newInfo).catch((e) => console.log(e)))
-
-    setNewEmpresa("");
-    setNewPreco("");
+      // Send data to API
+      const response = await api.setInformacoesGerais(newInfo);
+      console.log('Update successful:', response);
+      
+      // Clear form fields after successful update
+      setFormData({
+        nome_empresa: "",
+        preco_almoco: "",
+        preco_meia_almoco: "",
+        preco_jantar: "",
+        preco_meia_jantar: "",
+        inicio_almoco: "",
+        fim_almoco: "",
+        inicio_jantar: "",
+        fim_jantar: ""
+      });
+      
+      // Show success message or update UI as needed
+      console.log('Information updated successfully');
+    } catch (error) {
+      console.error('Error updating information:', error);
+      // Optionally show error message to user
+    }
   };
 
   return (
@@ -92,18 +162,38 @@ export default function GeneralInfo() {
                   Informações atuais
                 </h3>
               </div>
-              <div className="p-4">
-                <p className="text-gray-600 mb-2">
-                  <span className="text-lg font-semibold">
-                    Empresa Responsável:
-                  </span>{" "}
-                  {currentInfo.empresa}
+              <div className="p-4 space-y-4">
+                <p className="text-gray-600">
+                  <span className="font-semibold">Empresa Responsável:</span>{" "}
+                  {currentInfo.nome_empresa || 'Não definido'}
                 </p>
                 <p className="text-gray-600">
-                  <span className="text-lg font-semibold">
-                    Preço da Refeição:
-                  </span>{" "}
-                  R$: {currentInfo.preco}
+                  <span className="font-semibold">Preço Almoço:</span>{" "}
+                  {currentInfo.preco_almoco || 'Não definido'}
+                </p>
+                <p className="text-gray-600">
+                  <span className="font-semibold">Preço Meia Almoço:</span>{" "}
+                  {currentInfo.preco_meia_almoco || 'Não definido'}
+                </p>
+                <p className="text-gray-600">
+                  <span className="font-semibold">Preço Jantar:</span>{" "}
+                  {currentInfo.preco_jantar || 'Não definido'}
+                </p>
+                <p className="text-gray-600">
+                  <span className="font-semibold">Preço Meia Jantar:</span>{" "}
+                  {currentInfo.preco_meia_jantar || 'Não definido'}
+                </p>
+                <p className="text-gray-600">
+                  <span className="font-semibold">Horário Almoço:</span>{" "}
+                  {currentInfo.inicio_almoco && currentInfo.fim_almoco 
+                    ? `${currentInfo.inicio_almoco} - ${currentInfo.fim_almoco}` 
+                    : 'Não definido'}
+                </p>
+                <p className="text-gray-600">
+                  <span className="font-semibold">Horário Jantar:</span>{" "}
+                  {currentInfo.inicio_jantar && currentInfo.fim_jantar 
+                    ? `${currentInfo.inicio_jantar} - ${currentInfo.fim_jantar}` 
+                    : 'Não definido'}
                 </p>
               </div>
             </div>
@@ -115,41 +205,147 @@ export default function GeneralInfo() {
                 </h3>
               </div>
               <div className="p-4 space-y-4">
-                <input
-                  type="text"
-                  value={newEmpresa}
-                  onChange={(e) => setNewEmpresa(e.target.value)}
-                  className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md p-2"
-                  placeholder="Nova Empresa"
-                />
-                <div className="relative rounded-md shadow-sm">
-                  <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                    <span className="text-gray-500 sm:text-sm font-semibold">
-                      R$
-                    </span>
-                  </div>
-
+                <div>
+                  <label htmlFor="nome_empresa" className="block text-sm font-medium text-gray-700 mb-1">
+                    Nome da Empresa
+                  </label>
                   <input
                     type="text"
-                    inputMode="decimal"
-                    value={newPreco}
-                    onChange={(e) => handlePriceChange(e.target.value)}
-                    className="focus:ring-blue-500 focus:border-blue-500 block w-full pl-9 sm:text-sm border-gray-300 rounded-md p-2"
-                    placeholder="Novo Preço"
+                    id="nome_empresa"
+                    name="nome_empresa"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                    value={formData.nome_empresa}
+                    onChange={handleInputChange}
+                    placeholder="Digite o nome da empresa"
                   />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label htmlFor="preco_almoco" className="block text-sm font-medium text-gray-700 mb-1">
+                      Preço Almoço (R$)
+                    </label>
+                    <input
+                      type="text"
+                      id="preco_almoco"
+                      name="preco_almoco"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                      value={formData.preco_almoco}
+                      onChange={handleInputChange}
+                      placeholder="Ex: 10,50"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="preco_meia_almoco" className="block text-sm font-medium text-gray-700 mb-1">
+                      Preço Meia Almoço (R$)
+                    </label>
+                    <input
+                      type="text"
+                      id="preco_meia_almoco"
+                      name="preco_meia_almoco"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                      value={formData.preco_meia_almoco}
+                      onChange={handleInputChange}
+                      placeholder="Ex: 5,25"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="preco_jantar" className="block text-sm font-medium text-gray-700 mb-1">
+                      Preço Jantar (R$)
+                    </label>
+                    <input
+                      type="text"
+                      id="preco_jantar"
+                      name="preco_jantar"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                      value={formData.preco_jantar}
+                      onChange={handleInputChange}
+                      placeholder="Ex: 12,00"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="preco_meia_jantar" className="block text-sm font-medium text-gray-700 mb-1">
+                      Preço Meia Jantar (R$)
+                    </label>
+                    <input
+                      type="text"
+                      id="preco_meia_jantar"
+                      name="preco_meia_jantar"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                      value={formData.preco_meia_jantar}
+                      onChange={handleInputChange}
+                      placeholder="Ex: 6,00"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <h4 className="font-medium text-gray-700 mb-2">Horário do Almoço</h4>
+                    <div className="grid grid-cols-2 gap-2">
+                      <div>
+                        <label htmlFor="inicio_almoco" className="block text-sm text-gray-600 mb-1">Início</label>
+                        <input
+                          type="time"
+                          id="inicio_almoco"
+                          name="inicio_almoco"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                          value={formData.inicio_almoco}
+                          onChange={handleTimeChange}
+                        />
+                      </div>
+                      <div>
+                        <label htmlFor="fim_almoco" className="block text-sm text-gray-600 mb-1">Fim</label>
+                        <input
+                          type="time"
+                          id="fim_almoco"
+                          name="fim_almoco"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                          value={formData.fim_almoco}
+                          onChange={handleTimeChange}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-gray-700 mb-2">Horário do Jantar</h4>
+                    <div className="grid grid-cols-2 gap-2">
+                      <div>
+                        <label htmlFor="inicio_jantar" className="block text-sm text-gray-600 mb-1">Início</label>
+                        <input
+                          type="time"
+                          id="inicio_jantar"
+                          name="inicio_jantar"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                          value={formData.inicio_jantar}
+                          onChange={handleTimeChange}
+                        />
+                      </div>
+                      <div>
+                        <label htmlFor="fim_jantar" className="block text-sm text-gray-600 mb-1">Fim</label>
+                        <input
+                          type="time"
+                          id="fim_jantar"
+                          name="fim_jantar"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                          value={formData.fim_jantar}
+                          onChange={handleTimeChange}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-4 flex justify-end">
+                  <button
+                    className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-md transition-colors"
+                    onClick={handleUpdate}
+                  >
+                    Atualizar Informações
+                  </button>
                 </div>
               </div>
             </div>
-          </div>
-
-          <div className="flex justify-end mt-8">
-            <button
-              type="button"
-              onClick={handleUpdate}
-              className="inline-flex items-center px-6 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
-            >
-              Atualizar
-            </button>
           </div>
         </div>
       </div>
