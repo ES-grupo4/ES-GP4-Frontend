@@ -104,7 +104,7 @@ export default function Dashboard() {
       <br/>
       <div className="w-full grid grid-cols-2 gap-6 mb-5">
         <MetricCard
-          title="Total de Usuários"
+          title="Total de Clientes"
           value={clientes}
           icon={<FiUsers size={20} />}
         />
