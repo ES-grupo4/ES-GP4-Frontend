@@ -69,9 +69,10 @@ export default function HistorySys() {
 
     return (
         <div className="p-4 sm:ml-64 flex flex-col min-h-screen">
-            <div className="group flex mb-6">
+            <div className="group flex">
                 <h1 className="font-semibold font-sans text-6xl text-sky-900">Histórico do Sistema</h1>
             </div>
+
             <div className="flex-grow flex items-center justify-center">
                 <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-7xl min-h-[600px] flex flex-col">
 
