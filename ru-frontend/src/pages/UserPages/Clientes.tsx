@@ -1,4 +1,4 @@
-import { useEffect, useState, type SetStateAction } from "react"
+import { useEffect, useState} from "react"
 import EntityTable from "../../components/EntityTable"
 import { UrlRouter } from "../../constants/UrlRouter"
 import { Link } from "react-router-dom"
@@ -16,14 +16,14 @@ export default function Clientes() {
         const getAdminData = async () => {
             console.log("CATEGORIA:" + categoria)
             const response = await routes.getAllClientes(page, filter, categoria);
-            var data = response.data["items"]
+            let data = response.data["items"]
             console.log(response)
             data.forEach((cliente: { [x: string]: string | boolean }) => {
-                if (cliente["graduando"] == true && cliente["pos_graduando"] == true) {
+                if (cliente["graduando"] && cliente["pos_graduando"]) {
                     cliente["tipo_graduacao"] = "Graduação e Pós"
-                } else if (cliente["graduando"] == true) {
+                } else if (cliente["graduando"]) {
                     cliente["tipo_graduacao"] = "Graduação"
-                } else if (cliente["pos_graduando"] == true) {
+                } else if (cliente["pos_graduando"]) {
                     cliente["tipo_graduacao"] = "Pós Graduação"
                 } else {
                     cliente["tipo_graduacao"] = "Nenhuma"

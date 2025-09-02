@@ -115,6 +115,16 @@ export default function Relatorios() {
         setYear(yearNew);
         setMonth(monthNew);
     }
+
+    let content;
+
+    if (loaded) {
+        content = <RelatorioTemplate data={data} />;
+    } else if (error) {
+        content = <p className="text-center text-red-400">Ocorreu um erro ao resgatar o relatório.</p>;
+    } else {
+        content = <p className="text-center text-gray-500">Carregando relatório...</p>;
+    }
     return (
         <div className="p-4 sm:ml-64">
             <div className="group flex">
@@ -126,7 +136,7 @@ export default function Relatorios() {
 
                     <div className="flex justify-between items-center mb-6">
                         <h2 className="text-2xl font-bold text-gray-800">
-                            Relatório com base em mês e cano
+                            Relatório com base em mês e ano
                         </h2>
 
                         <div className="flex items-center gap-4">
@@ -139,12 +149,7 @@ export default function Relatorios() {
                         </div>
                     </div>
                     <div>
-                        {loaded ? (
-                            <RelatorioTemplate data={data} />
-                        ) : (error ? 
-                            <p className="text-center text-gray-500">Carregando relatório...</p> :
-                            <p className="text-center text-red-400">Ocorreu um erro ao resgatar o relatório.</p>
-                        )}
+                        {content}
                     </div>
                 </div>
             </div>

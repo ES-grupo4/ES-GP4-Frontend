@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react"
-import { useNavigate, useParams } from "react-router-dom"
-import RemoveButton from "../../components/RemoveButton"
+import {useParams } from "react-router-dom"
 import routes from "../../services/routes";
 
 export default function EditarCliente() {
 
-    const navigate = useNavigate();
     const id = useParams()["id"] //CPF tirado dos parâmetros do link
     const [found, setFound] = useState(false) //Se o funcionário com o cpf foi encontrado
     const [clienteData, setClienteData] = useState({ cpf: "", nome: "", matricula: "", tipo: "", tipoGraduacao: "", bolsista: "" })
@@ -19,7 +17,7 @@ export default function EditarCliente() {
             const clientes = [response.data];
             console.log(response)
 
-            var tipoGradTemp = "";
+            let tipoGradTemp = "";
 
             if (clientes[0]["graduando"] && clientes[0]["pos_graduando"]) {
                 tipoGradTemp = "graduacao_e_pos";
@@ -86,58 +84,38 @@ export default function EditarCliente() {
         })
     }
 
-    /*const excluirCliente = async () => {
-        if(id != null){
-            try{
-                const response = await routes.apagarCliente(id);
-                console.log(response)
-                alert("Cliente apagado com sucesso!");
-                navigate(-1);
-            } catch(e){
-                console.log(e);
-                alert("Um erro ocorreu ao apagar o cliente: " + e)
-            }
-        }
-    }*/
+    
 
     const salvarAlteracoes = async () => {
         if (id != null) {
-            var data = {}
+            let data = {}
             if (clienteData["nome"] != "") {
                 data = { ...data, nome: clienteData["nome"] }
             }
             if (clienteData["matricula"] != "") {
                 data = { ...data, matricula: clienteData["matricula"] }
             }
-            var graduando = false;
-            var pos_graduando = false;
+            let graduando = false;
+            let pos_graduando = false;
             switch (clienteData["tipoGraduacao"]) {
                 case ("graduando"):
                     graduando = true;
-                    pos_graduando = false;
                     break;
                 case ("pos_graduando"):
-                    graduando = false;
                     pos_graduando = true;
                     break;
                 case ("graduacao_e_pos"):
                     graduando = true;
                     pos_graduando = true;
                     break;
-                default:
-                    graduando = false;
-                    pos_graduando = false;
-                    break;
             }
             data = {
                 ...data,
-                bolsista: clienteData["bolsista"] === "Sim" ? true : false,
+                bolsista: clienteData["bolsista"] === "Sim",
                 tipo: clienteData["tipo"],
                 graduando: graduando, pos_graduando: pos_graduando
             }
-            console.log("DATA")
-            console.log(data)
-            const response = await routes.updateCliente(id, data); //const response = await routes.updateCliente(id, data);
+            const response = await routes.updateCliente(id, data);
             if (response.status == 200) {
                 alert("Cliente atualizado com sucesso!");
             } else {

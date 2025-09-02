@@ -19,13 +19,11 @@ export default function AdicionarCliente(): ReactElement {
       alert("Preencha todos os campos!")
     } else if (!validarCPF(cpf)) {
       alert("Insira um CPF válido")
-    }else if (matricula.length != 9) {
-      alert("Insira uma matrícula válida")
-    }  
+    } 
     else {
-      const graduando = tipoGraduacao === "graduacao" || tipoGraduacao === "graduacao_e_pos" ? true : false;
-      const pos_graduando = tipoGraduacao === "pos_graduacao" || tipoGraduacao === "graduacao_e_pos" ? true : false;
-      const bolsa = bolsista === "Sim" ? true : false;
+      const graduando = !!(tipoGraduacao === "graduacao" || tipoGraduacao === "graduacao_e_pos");
+      const pos_graduando = !!(tipoGraduacao === "pos_graduacao" || tipoGraduacao === "graduacao_e_pos");
+      const bolsa = bolsista === "Sim";
       const response = await addCliente({
         cpf: cpf, nome: nome, matricula: matricula, tipo: tipo,
         graduando: graduando, pos_graduando: pos_graduando, bolsista: bolsa
@@ -45,8 +43,6 @@ export default function AdicionarCliente(): ReactElement {
       return "Campos obrigatórios faltando!";
     } else if (typeof clienteData["cpf"] === "string" && !validarCPF(clienteData["cpf"])) {
       return "CPF inválido";
-    } else if (typeof clienteData["matricula"] === "string" && clienteData["matricula"].length != 9) {
-      return "Matrícula inválida";
     }
     return "OK";
   }
@@ -81,9 +77,9 @@ export default function AdicionarCliente(): ReactElement {
       const msg = verifyCliente(cliente);
 
       if (msg === "OK") {
-        const graduando = cliente["tipoGraduacao"].toLowerCase() === "graduação" || cliente["tipoGraduacao"].toLowerCase() === "graduação e pós" ? true : false;
-        const pos_graduando = cliente["tipoGraduacao"].toLowerCase() === "pós graduação" || cliente["tipoGraduacao"].toLowerCase() === "graduação e pós" ? true : false;
-        const bolsa = cliente["bolsista"].toLowerCase() === "sim" ? true : false;
+        const graduando = !!(cliente["tipoGraduacao"].toLowerCase() === "graduação" || cliente["tipoGraduacao"].toLowerCase() === "graduação e pós");
+        const pos_graduando = !!(cliente["tipoGraduacao"].toLowerCase() === "pós graduação" || cliente["tipoGraduacao"].toLowerCase() === "graduação e pós");
+        const bolsa = cliente["bolsista"].toLowerCase() === "sim";
         const response = await addCliente({
           cpf: cliente["cpf"],
           nome: cliente["nome"],

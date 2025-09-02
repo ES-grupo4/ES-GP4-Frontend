@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "sonar": "sonar-scanner"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
@@ -34,6 +35,7 @@
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^16.2.0",
     "react-router-dom": "^7.6.3",
+    "sonar-scanner": "^3.1.0",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.34.1",
     "vite": "^7.0.0"

@@ -22,11 +22,12 @@ export async function readExcelFile(file: File): Promise<RowData[]> {
         const jsonData: RowData[] = XLSX.utils.sheet_to_json(worksheet, { raw: false });
         resolve(jsonData);
       } catch (err) {
-        reject(err);
+        console.log(err);
+        reject(new Error("Erro ao ler arquivo."));
       }
     };
 
     reader.onerror = () => reject(new Error("Erro ao carregar arquivo."));
-    reader.readAsBinaryString(file);
+    reader.readAsArrayBuffer(file);
   });
 }

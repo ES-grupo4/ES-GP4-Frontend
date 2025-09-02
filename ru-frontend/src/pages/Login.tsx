@@ -3,24 +3,25 @@ import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import routes from "../services/routes.ts"
 
-function Login({ setLogged }: { setLogged: (logged: boolean) => void }) {
+function Login({ setLogged }: Readonly<{ setLogged: (logged: boolean) => void }>) {
   const navigate = useNavigate();
   const [cpf, setCpf] = useState("");
   const [senha, setSenha] = useState("");
 
   const handleSubmit = async () => {
     try {
-      const response = await routes.login(cpf,senha);
-      const { token, tipo} = response.data;
+      const response = await routes.login(cpf, senha);
+      const { token, tipo } = response.data;
       localStorage.setItem("token", token);
-      localStorage.setItem("cpf",cpf.replace(/\D/g, ""));
+      localStorage.setItem("cpf", cpf.replace(/\D/g, ""));
       localStorage.setItem("tipo", tipo);
       api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-      console.log(token)
+      console.log(token);
       setLogged(true);
       navigate("/user/");
     } catch (error) {
       alert("Usuário ou senha inválidos");
+      throw error; // Rethrowing the error
     }
   };
 

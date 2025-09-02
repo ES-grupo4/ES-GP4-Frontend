@@ -29,14 +29,14 @@ export default function HistorySys() {
         console.log(response.data["items"].length);
         console.log(response.data["items"] != undefined)
         if (response.data["items"] != undefined && response.data["items"].length > 0) {
-            var tempHistTxt = "";
-            response.data["items"].forEach((item: { [x: string]: any; }) => { 
-                if(item["acao"] === "atualizou informações gerais"){
+            let tempHistTxt = "";
+            response.data["items"].forEach((item: { [x: string]: any; }) => {
+                if (item["acao"] === "atualizou informações gerais") {
                     tempHistTxt += `[${item["data"]}] ${item["ator_nome"]} (id: ${item["ator_id"]}; cpf: ${item["ator_cpf"]}) ${item["acao"]}: nome_empresa=${item["info_adicional"]["nome_empresa"]}; preco_almoco=${item["info_adicional"]["preco_almoco"]}; preco_meia_almoco=${item["info_adicional"]["preco_meia_almoco"]}; preco_jantar=${item["info_adicional"]["preco_jantar"]}; preco_meia_jantar=${item["info_adicional"]["preco_meia_jantar"]};inicio_almoco=${item["info_adicional"]["inicio_almoco"]}; inicio_jantar=${item["info_adicional"]["inicio_jantar"]}; fim_almoco= ${item["info_adicional"]["fim_almoco"]}; fim_jantar= ${item["info_adicional"]["fim_jantar"]}\n`
-                } else if(item["acao"] === "cadastrou compra"){
+                } else if (item["acao"] === "cadastrou compra") {
                     tempHistTxt += `[${item["data"]}] ${item["ator_nome"]} (id: ${item["ator_id"]}; cpf: ${item["ator_cpf"]}) ${item["acao"]}: usuario_id=${item["info_adicional"]["usuario_id"]}; local=${item["info_adicional"]["local"]}; horario=${item["info_adicional"]["horario"]}; forma_pagamento=${item["info_adicional"]["forma_pagamento"]}; preco_compra=${item["info_adicional"]["preco_compra"]}\n`
-                } 
-                else{
+                }
+                else {
                     tempHistTxt += `[${item["data"]}] ${item["ator_nome"]} (id: ${item["ator_id"]}; cpf: ${item["ator_cpf"]}) ${item["acao"]} ${item["alvo_nome"]} (id: ${item["alvo_id"]}; cpf: ${item["alvo_cpf"]})\n`
                 }
             });
@@ -89,7 +89,9 @@ export default function HistorySys() {
                             />
                             {pageQtd != 0 &&
                                 <div>
-                                    Página Selecionada:
+                                    <div>
+                                        Página Selecionada:
+                                    </div> 
                                     <select
                                         value={page}
                                         onChange={changePage}

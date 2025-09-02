@@ -3,21 +3,26 @@ import EditIcon from "./EditIcon";
 import { Link } from "react-router-dom";
 import ChartIcon from "./ChartIcon";
 
-export default function EntityTable({ tableData, columns, url, hasChart, chartUrl, page, total_pages, prev, next, setFilter, categoria, setCategoria }: {
+export default function EntityTable({ tableData, columns, url, hasChart, chartUrl, page, total_pages, prev, next, setFilter, categoria, setCategoria }: Readonly<{
     tableData: any, columns: string[], url: string,
     hasChart: boolean, chartUrl: string, page: number, total_pages: number, prev: () => void, next: () => void, setFilter: (str: string) => void,
     categoria?: string, setCategoria?: (str: string) => void
 
-}) {
+}>) {
     const [table, setTable] = useState({ tableHtml: <div></div>, tableData: tableData, showTable: false })
     const [search, setSearch] = useState("")
-    useEffect(() => { makeTable(), console.log(tableData) }, [tableData])
+    useEffect(() => {
+        makeTable();
+        console.log(tableData);
+    }, [tableData])
 
     const onChangeSearch = (e: React.ChangeEvent<any>) => { // Define valor de busca antes de clicar para buscar
+        e.preventDefault();
         setSearch(e.target.value)
     }
 
-    const handleSearch = () => { // Define o valor do filtro de busca
+    const handleSearch = (e: React.ChangeEvent<any>) => { // Define o valor do filtro de busca
+        e.preventDefault();
         setFilter(search)
     }
 
@@ -32,14 +37,14 @@ export default function EntityTable({ tableData, columns, url, hasChart, chartUr
     }
 
     const makeTable = () => { // Contrói a tabela com base nos dados recebidos
-        var thList: React.JSX.Element[] = []
+        let thList: React.JSX.Element[] = []
         columns.forEach(col => {
             thList.push(
                 <th scope="col" className="px-6 py-4" key={col}>
                     {col}
                 </th>)
         });
-        var head = <thead className="text-xs text-gray-700 uppercase bg-gray-300">
+        let head = <thead className="text-xs text-gray-700 uppercase bg-gray-300">
             <tr>
                 {thList}
                 <th scope="col" className="px-6 py-4">
@@ -47,14 +52,21 @@ export default function EntityTable({ tableData, columns, url, hasChart, chartUr
                 </th>
             </tr>
         </thead>
-        var bodyTemp: React.JSX.Element[] = []
-        for (var i = 0; i < tableData.length; i++) {
-            var tdList: React.JSX.Element[] = []
+        let bodyTemp: React.JSX.Element[] = []
+        for (let i = 0; i < tableData.length; i++) {
+            let tdList: React.JSX.Element[] = []
             columns.forEach(col => {
+                let cellContent = tableData[i][col];
+
+                if (typeof cellContent === "boolean") {
+                    cellContent = cellContent ? "Sim" : "Não";
+                }
+
                 tdList.push(
                     <td className="px-6 py-4" key={`${i}-${col}-td`}>
-                        {typeof tableData[i][col] == "boolean" ? tableData[i][col] == true ? "Sim" : "Não" : tableData[i][col]}
-                    </td>)
+                        {cellContent}
+                    </td>
+                );
             });
             bodyTemp.push(
                 <tr className="bg-white divide-gray-200 divide-x-3" key={i}>
@@ -70,8 +82,8 @@ export default function EntityTable({ tableData, columns, url, hasChart, chartUr
                     </td>
                 </tr>)
         }
-        var body = <tbody className="divide-gray-200 divide-y-3 font-semibold text-gray-900">{bodyTemp}</tbody>
-        var tableHtml = <table className="w-full text-sm text-left text-gray-500">{head}{<tbody><tr className="h-2" /></tbody>}{body}</table>
+        let body = <tbody className="divide-gray-200 divide-y-3 font-semibold text-gray-900">{bodyTemp}</tbody>
+        let tableHtml = <table className="w-full text-sm text-left text-gray-500">{head}{<tbody><tr className="h-2" /></tbody>}{body}</table>
         setTable({ tableHtml: tableHtml, tableData: tableData, showTable: true })
     }
 

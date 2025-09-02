@@ -1,5 +1,5 @@
 import './App.css'
-import { BrowserRouter, Navigate, Route, Routes, useNavigate } from 'react-router-dom'
+import { BrowserRouter, Navigate, Route, Routes} from 'react-router-dom'
 import Login from './pages/Login'
 import UserPages from './pages/UserPages/UserPages'
 import { useEffect, useState } from 'react'
@@ -22,14 +22,12 @@ function App() {
   }, [logged,admin]);
 
   return (
-    <>
       <BrowserRouter>
         <Routes>
           <Route path={UrlRouter.login} element={!logged ? <Login setLogged={setLogged}/> : <Navigate to="/user" />}/>
           <Route path="/user/*" element={logged ? <UserPages setLogged={setLogged} admin={admin} /> : <Navigate to={UrlRouter.login} />}/>
         </Routes>
       </BrowserRouter>
-    </>
   )
 }
 

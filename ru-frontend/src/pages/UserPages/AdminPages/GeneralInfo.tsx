@@ -33,15 +33,15 @@ export default function GeneralInfo() {
       try {
         const info = await api.getInformacoesGerais().then((res) => res.data);
         setCurrentInfo({
-          nome_empresa: info.nome_empresa || '',
-          preco_almoco: info.preco_almoco ? info.preco_almoco.toString() : '',
-          preco_meia_almoco: info.preco_meia_almoco ? info.preco_meia_almoco.toString() : '',
-          preco_jantar: info.preco_jantar ? info.preco_jantar.toString() : '',
-          preco_meia_jantar: info.preco_meia_jantar ? info.preco_meia_jantar.toString() : '',
-          inicio_almoco: info.inicio_almoco || '',
-          fim_almoco: info.fim_almoco || '',
-          inicio_jantar: info.inicio_jantar || '',
-          fim_jantar: info.fim_jantar || ''
+          nome_empresa: info.nome_empresa ?? '',
+          preco_almoco: (info.preco_almoco ?? '').toString(),
+          preco_meia_almoco: (info.preco_meia_almoco ?? '').toString(),
+          preco_jantar: (info.preco_jantar ?? '').toString(),
+          preco_meia_jantar: (info.preco_meia_jantar ?? '').toString(),
+          inicio_almoco: info.inicio_almoco ?? '',
+          fim_almoco: info.fim_almoco ?? '',
+          inicio_jantar: info.inicio_jantar ?? '',
+          fim_jantar: info.fim_jantar ?? '',
         });
         setApiInfo(info);
       } catch (error) {
@@ -54,7 +54,7 @@ export default function GeneralInfo() {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     if (name.includes('preco')) {
-      const regex = /^[0-9]*(,?[0-9]{0,2})?$/;
+      const regex = /^\d+(,?\d{1,2})?$/;
       if (regex.test(value)) {
         setFormData(prev => ({
           ...prev,
@@ -132,9 +132,9 @@ export default function GeneralInfo() {
         console.log('Information updated successfully');
         alert("Informações gerais atualizadas com sucesso!")
         setCurrentInfo(prev => ({
-        ...prev,
-        ...formData
-      }));
+          ...prev,
+          ...formData
+        }));
       }
     } catch (error) {
       console.error('Error updating information:', error);

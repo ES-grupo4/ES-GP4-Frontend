@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { UrlRouter } from "../constants/UrlRouter";
 
-export default function SideNavBar({ admin }: { admin: boolean }) {
+export default function SideNavBar({ admin }: Readonly<{ admin: boolean }>) {
     return (
         <div>
             <aside id="default-sidebar" className="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0" aria-label="Sidebar">
@@ -38,7 +38,7 @@ export default function SideNavBar({ admin }: { admin: boolean }) {
                             </Link>
                         </li>
                     </ul>
-                    {admin == true &&
+                    {admin &&
                         <div>
                             <div className="flex items-center">
                                 <hr className="flex-grow border-t border-gray-300" />

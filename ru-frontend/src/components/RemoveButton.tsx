@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function RemoveButton({ onClickFunction, nomeEntidade }: { onClickFunction: () => void, nomeEntidade: String }) {
+export default function RemoveButton({ onClickFunction, nomeEntidade }: Readonly<{ onClickFunction: () => void, nomeEntidade: string }>) {
 
     const [clicked, setClicked] = useState(false);
 
