@@ -79,20 +79,20 @@ export default function DetalhesCliente() {
             try {
                 const response = await routes.getComprasByCliente(id, year, month + 1);
                 const compras = response.data;
-
+                const fimAlmoco = (await routes.getInformacoesGerais()).data["fim_almoco"];
+                const [stringHoras, stringMinutos, stringSegundos] = fimAlmoco.split(':');
                 if (isActive) {
                     const dailyPurchases: Record<string, { manha: boolean, noite: boolean }> = {};
-
                     compras.forEach((compra: { horario: string }) => {
                         const date = new Date(compra.horario);
                         const day = formatDateLocal(date);
-                        const hour = date.getHours();
+                        const dataFimAlmoco = new Date(date.getFullYear(), date.getMonth(), date.getDate(),
+                            parseInt(stringHoras, 10),parseInt(stringMinutos, 10),parseInt(stringSegundos, 10))
 
                         if (!dailyPurchases[day]) {
                             dailyPurchases[day] = { manha: false, noite: false };
                         }
-
-                        if (hour < 14) {
+                        if (date < dataFimAlmoco) {
                             dailyPurchases[day].manha = true;
                         } else {
                             dailyPurchases[day].noite = true;
@@ -116,6 +116,7 @@ export default function DetalhesCliente() {
 
             } catch (error) {
                 console.error("Failed to fetch purchase data:", error);
+                alert("Ocorreu um eror ao buscar os detalhes do cliente:" + error)
             }
         };
 
