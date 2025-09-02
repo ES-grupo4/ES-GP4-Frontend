@@ -2,6 +2,17 @@ import api from './api';
 import type { Compra } from '../types/Compra';
 import type { RowData } from '../utils/lerPlanilha';
 
+const formatDateToString = (date: Date): string => {
+    const pad = (num: number) => String(num).padStart(2, '0');
+    const year = date.getFullYear();
+    const month = pad(date.getMonth() + 1);
+    const day = pad(date.getDate());
+    const hours = pad(date.getHours());
+    const minutes = pad(date.getMinutes());
+    const seconds = pad(date.getSeconds());
+    return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+};
+
 export const CompraService = {
     create: async (compraData: Compra): Promise<any> => {
         const response = await api.post('/compra/', compraData);
@@ -10,9 +21,9 @@ export const CompraService = {
 
     addComprasFromSheet: async (jsonData: RowData[]) => {
         const errors: string[] = [];
-        const comprasValidas: Compra[] = [];
+        const comprasValidas: { compra: Compra; line: number }[] = [];
     
-        for (const row of jsonData) {
+        for (const [index, row] of jsonData.entries()) {
             const originalUserId = row.usuario_id;
     
             const usuario_id = parseInt(String(row.usuario_id), 10);
@@ -33,18 +44,11 @@ export const CompraService = {
             }
     
             if (validationErrors.length > 0) {
-                errors.push(`Linha com ID ${originalUserId || 'desconhecido'}: ${validationErrors.join(', ')}`);
+                errors.push(`Linha ${index + 1} (ID ${originalUserId || 'desconhecido'}): ${validationErrors.join(', ')}`);
                 continue;
             }
     
-            const pad = (num: number) => String(num).padStart(2, '0');
-            const year = dateFromSheet.getFullYear();
-            const month = pad(dateFromSheet.getMonth() + 1);
-            const day = pad(dateFromSheet.getDate());
-            const hours = pad(dateFromSheet.getHours());
-            const minutes = pad(dateFromSheet.getMinutes());
-            const seconds = pad(dateFromSheet.getSeconds());
-            const horarioString = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+            const horarioString = formatDateToString(dateFromSheet);
     
             const compraData: Compra = {
                 usuario_id: usuario_id,
@@ -53,7 +57,7 @@ export const CompraService = {
                 forma_pagamento: forma_pagamento as 'credito' | 'debito' | 'pix' | 'dinheiro',
                 preco_compra: preco_compra,
             };
-            comprasValidas.push(compraData);
+            comprasValidas.push({ compra: compraData, line: index + 1 });
         }
     
         if (errors.length > 0) {
@@ -62,12 +66,12 @@ export const CompraService = {
         }
     
         const transactionErrors: string[] = [];
-        for (const compra of comprasValidas) {
+        for (const { compra, line } of comprasValidas) {
             try {
                 await CompraService.create(compra);
             } catch (e: any) {
                 const errorDetail = e.response?.data?.detail || 'Erro ao criar compra.';
-                transactionErrors.push(`ID ${compra.usuario_id}: ${errorDetail}`);
+                transactionErrors.push(`Linha ${line + 1} (ID ${compra.usuario_id}): ${errorDetail}`);
             }
         }
 
