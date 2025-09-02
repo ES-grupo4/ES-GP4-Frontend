@@ -2,6 +2,7 @@ import UploadIcon from '../../assets/IconAddFuncionario';
 import React, { useState, type ChangeEvent, useEffect } from 'react';
 import { CompraService } from '../../services/CompraService';
 import type { Compra, Precos } from '../../types/Compra';
+import { readExcelFile } from '../../utils/lerPlanilha';
 
 export default function Compras() {
 
@@ -33,12 +34,19 @@ export default function Compras() {
 
     }, []);
 
-    const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-        if (event.target.files && event.target.files.length > 0) {
-            const fileName = event.target.files[0].name;
-            console.log("Planilha selecionada:", fileName);
-            alert(`Planilha "${fileName}" importada!`);
+    const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+    
+        try {
+          const jsonData = await readExcelFile(file);
+          await CompraService.addComprasFromSheet(jsonData);
+        } catch (err) {
+          console.error("Erro ao ler planilha:", err);
+          alert("Ocorreu um erro ao processar a planilha.");
         }
+    
+        event.target.value = "";
     };
 
     const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
