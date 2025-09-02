@@ -3,6 +3,7 @@ import React, { useState, type ChangeEvent, useEffect } from 'react';
 import { CompraService } from '../../services/CompraService';
 import type { Compra, Precos } from '../../types/Compra';
 import { readExcelFile } from '../../utils/lerPlanilha';
+import { InformacoesGeraisService } from '../../services/InformacoesGeraisService';
 
 export default function Compras() {
 
@@ -17,21 +18,28 @@ export default function Compras() {
     const [precos, setPrecos] = useState<Precos | null>(null);
 
     useEffect(() => {
-        // Posteriormente uma chamada dos preços ao backend
+        const fetchPrecos = async () => {
+            try {
+                const precosData = await InformacoesGeraisService.get();
 
-        const mockPrecos = {
-            preco_almoco: 1600,
-            preco_meia_almoco: 800,
-            preco_jantar: 1400,
-            preco_meia_jantar: 700,
+                const precosExtraidos: Precos = {
+                    preco_almoco: precosData.preco_almoco,
+                    preco_meia_almoco: precosData.preco_meia_almoco,
+                    preco_jantar: precosData.preco_jantar,
+                    preco_meia_jantar: precosData.preco_meia_jantar,
+                };
+
+                setPrecos(precosExtraidos);
+                setCompraData(prevState => ({
+                    ...prevState,
+                    preco_compra: precosData.preco_almoco
+                }));
+            } catch (error) {
+                console.error("Erro ao buscar preços:", error);
+            }
         };
 
-        setPrecos(mockPrecos);
-        setCompraData(prevState => ({
-            ...prevState,
-            preco_compra: mockPrecos.preco_almoco
-        }));
-
+        fetchPrecos();
     }, []);
 
     const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
