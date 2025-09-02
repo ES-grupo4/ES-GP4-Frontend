@@ -78,9 +78,6 @@ export default function Dashboard() {
 
       const refeicaos = await routes.getInformacoesGerais().then(res => res.data)
 
-      console.log(refeicao)
-      console.log(semanal)
-
       if (erro) return;
 
       setRefeicao(refeicaos.preco_almoco)
@@ -133,7 +130,7 @@ export default function Dashboard() {
             <div className="space-y-4">
               <div>
                 <p className="text-sm text-gray-500">Média Diária</p>
-                <p className="text-xl font-bold">{semanal.length / 7}</p>
+                <p className="text-xl font-bold">{semanal.length / 5}</p>
               </div>
               <div>
                 <p className="text-sm text-gray-500">Preço Refeição</p>
