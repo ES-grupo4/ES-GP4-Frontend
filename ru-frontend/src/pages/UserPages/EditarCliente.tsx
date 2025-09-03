@@ -133,7 +133,8 @@ export default function EditarCliente() {
             <br />
             {found ?
                 <div className="bg-white mx-auto my-25 p-5 w-7/10 h-100 rounded-lg">
-                    <span className="text-2xl"><span className="font-bold">CPF:</span> {clienteData["cpf"]}</span>
+                    <p className="text-2xl"><span className="font-bold">CPF:</span> {clienteData["cpf"]}</p>
+                    <p className="text-2xl"><span className="font-bold">ID:</span> {id}</p>
                     <div className="mt-20 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
                         <span className="text-2xl font-bold">Nome:</span>
                         <input type="text" id="name" value={clienteData["nome"]} onChange={onChangeName} className="bg-gray-200 border border-gray-300 text-gray-900 text-m rounded-lg block w-3/4 p-2.5" placeholder="Nome do Funcionário" required />
