@@ -9,7 +9,6 @@ export default function EditarAdministrador({setLogged}: Readonly<{setLogged: (l
     const id = useParams()["id"] //CPF tirado dos parâmetros do link
     const [found, setFound] = useState(false) //Se o funcionário com o cpf foi encontrado
     const [administradorData, setAdministradorData] = useState({ cpf: "", nome: "", email: "" })
-    const [changeSenha, setChangeSenha] = useState(false);
     const [novaSenha, setNovaSenha] = useState("");
     useEffect(() => {
         getAdministradorData()
@@ -37,13 +36,7 @@ export default function EditarAdministrador({setLogged}: Readonly<{setLogged: (l
     }
 
     const onChangeSenha = (e: React.ChangeEvent<any>) => {
-        if (changeSenha) {
-            setNovaSenha(e.target.value)
-        }
-    }
-
-    const onChangeSenhaBool = () => {
-        setChangeSenha(!changeSenha);
+        setNovaSenha(e.target.value)
     }
 
     const excluirAdministrador = async () => {
@@ -81,7 +74,7 @@ export default function EditarAdministrador({setLogged}: Readonly<{setLogged: (l
             if (administradorData["email"] != "") {
                 data = { ...data, email: administradorData["email"] }
             }
-            if (changeSenha && novaSenha != "") {
+            if (novaSenha != "") {
                 data = { ...data, senha: novaSenha };
             }
             const response = await routes.updateFuncionario(id, data);
@@ -113,13 +106,9 @@ export default function EditarAdministrador({setLogged}: Readonly<{setLogged: (l
                         <span className="text-2xl font-bold">Email: </span>
                         <input type="text" id="name" value={administradorData["email"]} onChange={onChangeEmail} className="bg-gray-200 border border-gray-300 text-gray-900 text-m rounded-lg block w-3/4 p-2.5" placeholder="Email do Funcionário" required />
                     </div>
-                    <div className="flex items-center mb-4 mt-10">
-                        <input id="default-checkbox" type="checkbox" checked={changeSenha} onChange={onChangeSenhaBool} className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
-                        <label htmlFor="nova_senha" className="ms-2 text-sm font-medium text-gray-900">Nova senha</label>
-                    </div>
                     <div className="mt-5 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
                         <span className="text-2xl font-bold">Nova Senha: </span>
-                        <input type="text" id="senha" disabled={!changeSenha} value={novaSenha} onChange={onChangeSenha} className="bg-gray-200 disabled:bg-gray-500 border border-gray-300 text-gray-900 text-m rounded-lg block w-3/4 p-2.5" placeholder="Nova Senha" required />
+                        <input type="password" id="senha" value={novaSenha} onChange={onChangeSenha} className="bg-gray-200 disabled:bg-gray-500 border border-gray-300 text-gray-900 text-m rounded-lg block w-3/4 p-2.5" placeholder="Nova Senha" required />
                     </div>
                     <div className="mt-20 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
                         <button type="button" onClick={salvarAlteracoes} className="cursor-pointer bg-green-700 hover:bg-green-800 focus:ring-4 rounded-lg text-m text-white font-bold  px-5 py-2.5 me-2 mb-2">Salvar Alterações</button>
