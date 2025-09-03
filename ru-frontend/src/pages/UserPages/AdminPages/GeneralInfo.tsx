@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../../../services/routes.ts";
+import {converterParaReal, converterParaInteiro, normalizar} from "../../../utils/converterCentavos.ts";
 
 export default function GeneralInfo() {
   const [apiInfo, setApiInfo] = useState({});
@@ -32,12 +33,13 @@ export default function GeneralInfo() {
     const fetchData = async () => {
       try {
         const info = await api.getInformacoesGerais().then((res) => res.data);
+        console.log(info)
         setCurrentInfo({
           nome_empresa: info.nome_empresa ?? '',
-          preco_almoco: (info.preco_almoco ?? '').toString(),
-          preco_meia_almoco: (info.preco_meia_almoco ?? '').toString(),
-          preco_jantar: (info.preco_jantar ?? '').toString(),
-          preco_meia_jantar: (info.preco_meia_jantar ?? '').toString(),
+          preco_almoco: converterParaReal(parseInt(info.preco_almoco)),
+          preco_meia_almoco: converterParaReal(parseInt(info.preco_meia_almoco ?? '')),
+          preco_jantar: converterParaReal(parseInt((info.preco_jantar ?? ''))),
+          preco_meia_jantar: converterParaReal(parseInt(info.preco_meia_jantar  ?? '')),
           inicio_almoco: info.inicio_almoco ?? '',
           fim_almoco: info.fim_almoco ?? '',
           inicio_jantar: info.inicio_jantar ?? '',
@@ -54,7 +56,7 @@ export default function GeneralInfo() {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     if (name.includes('preco')) {
-      const regex = /^\d+(,?\d{1,2})?$/;
+      const regex = /^[\d,]+$/;
       if (regex.test(value)) {
         setFormData(prev => ({
           ...prev,
@@ -82,10 +84,10 @@ export default function GeneralInfo() {
       // Format price values
       const formattedData = {
         ...formData,
-        preco_almoco: formData.preco_almoco ? formData.preco_almoco.replace(",", ".") : '',
-        preco_meia_almoco: formData.preco_meia_almoco ? formData.preco_meia_almoco.replace(",", ".") : '',
-        preco_jantar: formData.preco_jantar ? formData.preco_jantar.replace(",", ".") : '',
-        preco_meia_jantar: formData.preco_meia_jantar ? formData.preco_meia_jantar.replace(",", ".") : ''
+        preco_almoco: formData.preco_almoco ? converterParaInteiro(formData.preco_almoco) : '',
+        preco_meia_almoco: formData.preco_meia_almoco ? converterParaInteiro(formData.preco_meia_almoco) : '',
+        preco_jantar: formData.preco_jantar ? converterParaInteiro(formData.preco_jantar) : '',
+        preco_meia_jantar: formData.preco_meia_jantar ? converterParaInteiro(formData.preco_meia_jantar) : ''
       };
 
       const newInfo = {
@@ -133,7 +135,11 @@ export default function GeneralInfo() {
         alert("Informações gerais atualizadas com sucesso!")
         setCurrentInfo(prev => ({
           ...prev,
-          ...formData
+          ...formData,
+          preco_almoco: normalizar(formData["preco_almoco"]),
+          preco_meia_almoco: normalizar(formData["preco_meia_almoco"]),
+          preco_jantar: normalizar(formData["preco_jantar"]),
+          preco_meia_jantar: normalizar(formData["preco_meia_jantar"]),
         }));
       }
     } catch (error) {
@@ -230,58 +236,58 @@ export default function GeneralInfo() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label htmlFor="preco_almoco" className="block text-sm font-medium text-gray-700 mb-1">
-                      Preço Almoço (Centavos de R$)
+                      Preço Almoço
                     </label>
                     <input
-                      type="number"
+                      type="text"
                       id="preco_almoco"
                       name="preco_almoco"
                       className="w-full px-3 py-2 border border-gray-300 rounded-md"
                       value={formData.preco_almoco}
                       onChange={handleInputChange}
-                      placeholder="Ex: 10"
+                      placeholder="Ex: 11,00"
                     />
                   </div>
                   <div>
                     <label htmlFor="preco_meia_almoco" className="block text-sm font-medium text-gray-700 mb-1">
-                      Preço Meia Almoço (Centavos de R$)
+                      Preço Meia Almoço
                     </label>
                     <input
-                      type="number"
+                      type="text"
                       id="preco_meia_almoco"
                       name="preco_meia_almoco"
                       className="w-full px-3 py-2 border border-gray-300 rounded-md"
                       value={formData.preco_meia_almoco}
                       onChange={handleInputChange}
-                      placeholder="Ex: 5"
+                      placeholder="Ex: 5,50"
                     />
                   </div>
                   <div>
                     <label htmlFor="preco_jantar" className="block text-sm font-medium text-gray-700 mb-1">
-                      Preço Jantar (Centavos de R$)
+                      Preço Jantar
                     </label>
                     <input
-                      type="number"
+                      type="text"
                       id="preco_jantar"
                       name="preco_jantar"
                       className="w-full px-3 py-2 border border-gray-300 rounded-md"
                       value={formData.preco_jantar}
                       onChange={handleInputChange}
-                      placeholder="Ex: 12"
+                      placeholder="Ex: 12,00"
                     />
                   </div>
                   <div>
                     <label htmlFor="preco_meia_jantar" className="block text-sm font-medium text-gray-700 mb-1">
-                      Preço Meia Jantar (Centavos de R$)
+                      Preço Meia Jantar
                     </label>
                     <input
-                      type="number"
+                      type="text"
                       id="preco_meia_jantar"
                       name="preco_meia_jantar"
                       className="w-full px-3 py-2 border border-gray-300 rounded-md"
                       value={formData.preco_meia_jantar}
                       onChange={handleInputChange}
-                      placeholder="Ex: 6"
+                      placeholder="Ex: 6,00"
                     />
                   </div>
                 </div>
