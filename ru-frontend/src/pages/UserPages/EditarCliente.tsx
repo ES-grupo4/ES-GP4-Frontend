@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import {useParams } from "react-router-dom"
+import { useParams } from "react-router-dom"
 import routes from "../../services/routes";
 
 export default function EditarCliente() {
@@ -63,10 +63,20 @@ export default function EditarCliente() {
     }
 
     const onChangeTipo = (e: React.ChangeEvent<any>) => {
-        setClienteData({
-            cpf: clienteData["cpf"], nome: clienteData["nome"], matricula: clienteData["matricula"],
-            tipo: e.target.value, tipoGraduacao: clienteData["tipoGraduacao"], bolsista: clienteData["bolsista"]
-        })
+        if (e.target.value === "aluno") {
+            setClienteData({
+                ...clienteData,
+                tipo: e.target.value
+            })
+        } else{
+            setClienteData({
+                ...clienteData,
+                tipoGraduacao : "nenhuma",
+                bolsista : "Nao",
+                tipo: e.target.value
+            })
+        }
+
     }
 
     const onChangeTipoGraduacao = (e: React.ChangeEvent<any>) => {
@@ -84,7 +94,7 @@ export default function EditarCliente() {
         })
     }
 
-    
+
 
     const salvarAlteracoes = async () => {
         if (id != null) {
@@ -133,7 +143,8 @@ export default function EditarCliente() {
             <br />
             {found ?
                 <div className="bg-white mx-auto my-25 p-5 w-7/10 h-100 rounded-lg">
-                    <span className="text-2xl"><span className="font-bold">CPF:</span> {clienteData["cpf"]}</span>
+                    <p className="text-2xl"><span className="font-bold">CPF:</span> {clienteData["cpf"]}</p>
+                    <p className="text-2xl"><span className="font-bold">ID:</span> {id}</p>
                     <div className="mt-20 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
                         <span className="text-2xl font-bold">Nome:</span>
                         <input type="text" id="name" value={clienteData["nome"]} onChange={onChangeName} className="bg-gray-200 border border-gray-300 text-gray-900 text-m rounded-lg block w-3/4 p-2.5" placeholder="Nome do Funcionário" required />
@@ -161,42 +172,43 @@ export default function EditarCliente() {
                             </select>
                             <div className="pointer-events-none absolute mt-8 inset-y-0 right-0 flex items-center px-2 text-gray-700">▼</div>
                         </div>
-                        <div className="inline-block relative w-48">
-                            <label
-                                htmlFor="matricula"
-                                className="block text-md font-bold mb-1"
-                            >
-                                Formação:
-                            </label>
-                            <select
-                                value={clienteData["tipoGraduacao"]}
-                                onChange={onChangeTipoGraduacao}
-                                className="block w-full px-4 py-2 pr-8 text-gray-700 bg-white border border-gray-300 rounded shadow-md appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                            >
-                                <option key={0} value={"nenhuma"}>Nenhuma</option>
-                                <option key={1} value={"pos_graduacao"}>Pós Graduação</option>
-                                <option key={2} value={"graduacao_e_pos"}>Graduação e Pós</option>
-                                <option key={3} value={"graduacao"}>Graduação</option>
-                            </select>
-                            <div className="pointer-events-none absolute mt-8 inset-y-0 right-0 flex items-center px-2 text-gray-700">▼</div>
-                        </div>
-                        <div className="inline-block relative w-48">
-                            <label
-                                htmlFor="matricula"
-                                className="block text-md font-bold mb-1"
-                            >
-                                Bolsista:
-                            </label>
-                            <select
-                                value={clienteData["bolsista"]}
-                                onChange={onChangeBolsista}
-                                className="block w-full px-4 py-2 pr-8 text-gray-700 bg-white border border-gray-300 rounded shadow-md appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                            >
-                                <option key={0} value={"Nao"}>Não</option>
-                                <option key={1} value={"Sim"}>Sim</option>
-                            </select>
-                            <div className="pointer-events-none absolute mt-8 inset-y-0 right-0 flex items-center px-2 text-gray-700">▼</div>
-                        </div>
+                        {clienteData["tipo"] === "aluno" && <>
+                            <div className="inline-block relative w-48">
+                                <label
+                                    htmlFor="matricula"
+                                    className="block text-md font-bold mb-1"
+                                >
+                                    Formação:
+                                </label>
+                                <select
+                                    value={clienteData["tipoGraduacao"]}
+                                    onChange={onChangeTipoGraduacao}
+                                    className="block w-full px-4 py-2 pr-8 text-gray-700 bg-white border border-gray-300 rounded shadow-md appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                >
+                                    <option key={0} value={"nenhuma"}>Nenhuma</option>
+                                    <option key={1} value={"pos_graduacao"}>Pós Graduação</option>
+                                    <option key={2} value={"graduacao_e_pos"}>Graduação e Pós</option>
+                                    <option key={3} value={"graduacao"}>Graduação</option>
+                                </select>
+                                <div className="pointer-events-none absolute mt-8 inset-y-0 right-0 flex items-center px-2 text-gray-700">▼</div>
+                            </div>
+                            <div className="inline-block relative w-48">
+                                <label
+                                    htmlFor="matricula"
+                                    className="block text-md font-bold mb-1"
+                                >
+                                    Bolsista:
+                                </label>
+                                <select
+                                    value={clienteData["bolsista"]}
+                                    onChange={onChangeBolsista}
+                                    className="block w-full px-4 py-2 pr-8 text-gray-700 bg-white border border-gray-300 rounded shadow-md appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                >
+                                    <option key={0} value={"Nao"}>Não</option>
+                                    <option key={1} value={"Sim"}>Sim</option>
+                                </select>
+                                <div className="pointer-events-none absolute mt-8 inset-y-0 right-0 flex items-center px-2 text-gray-700">▼</div>
+                            </div></>}
                     </div>
                     <div className="mt-20 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
                         <button type="button" onClick={salvarAlteracoes} className="cursor-pointer bg-green-700 hover:bg-green-800 focus:ring-4 rounded-lg text-m text-white font-bold  px-5 py-2.5 me-2 mb-2">Salvar Alterações</button>

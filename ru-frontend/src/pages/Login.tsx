@@ -36,7 +36,7 @@ function Login({ setLogged }: Readonly<{ setLogged: (logged: boolean) => void }>
   return (
     <>
       <h1 className="text-6xl font-bold text-center m-20 text-indigo-900">
-        SysAdminRU
+        Gest RU
       </h1>
 
       <div className="flex items-center justify-center bg-gray-100">
