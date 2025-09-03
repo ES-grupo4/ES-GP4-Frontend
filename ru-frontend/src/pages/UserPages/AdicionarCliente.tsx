@@ -19,7 +19,7 @@ export default function AdicionarCliente(): ReactElement {
       alert("Preencha todos os campos!")
     } else if (!validarCPF(cpf)) {
       alert("Insira um CPF válido")
-    } 
+    }
     else {
       const graduando = !!(tipoGraduacao === "graduacao" || tipoGraduacao === "graduacao_e_pos");
       const pos_graduando = !!(tipoGraduacao === "pos_graduacao" || tipoGraduacao === "graduacao_e_pos");
@@ -86,7 +86,7 @@ export default function AdicionarCliente(): ReactElement {
           matricula: cliente["matricula"],
           tipo: cliente["tipo"].toLowerCase(),
           graduando: graduando,
-          pos_graduando : pos_graduando,
+          pos_graduando: pos_graduando,
           bolsista: bolsa
         });
 
@@ -203,7 +203,13 @@ export default function AdicionarCliente(): ReactElement {
                   </label>
                   <select
                     value={tipo}
-                    onChange={(e) => setTipo(e.target.value)}
+                    onChange={(e) => {
+                      if(e.target.value !== "aluno"){
+                        setTipoGraduacao("nenhuma")
+                        setBolsista("Nao")
+                      }
+                      setTipo(e.target.value)
+                    }}
                     className="block w-full px-4 py-2 pr-8 text-gray-700 bg-white border border-gray-300 rounded shadow-md appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   >
                     <option key={-1} value={""}>Selecionar</option>
@@ -213,42 +219,45 @@ export default function AdicionarCliente(): ReactElement {
                   </select>
                   <div className="pointer-events-none absolute mt-8 inset-y-0 right-0 flex items-center px-2 text-gray-700">▼</div>
                 </div>
-                <div className="inline-block relative w-48">
-                  <label
-                    htmlFor="matricula"
-                    className="block text-md font-medium text-gray-700 mb-1"
-                  >
-                    Formação:
-                  </label>
-                  <select
-                    value={tipoGraduacao}
-                    onChange={(e) => setTipoGraduacao(e.target.value)}
-                    className="block w-full px-4 py-2 pr-8 text-gray-700 bg-white border border-gray-300 rounded shadow-md appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  >
-                    <option key={0} value={"nenhuma"}>Nenhuma</option>
-                    <option key={1} value={"pos_graduacao"}>Pós Graduação</option>
-                    <option key={2} value={"graduacao_e_pos"}>Graduação e Pós</option>
-                    <option key={3} value={"graduacao"}>Graduação</option>
-                  </select>
-                  <div className="pointer-events-none absolute mt-8 inset-y-0 right-0 flex items-center px-2 text-gray-700">▼</div>
-                </div>
-                <div className="inline-block relative w-48">
-                  <label
-                    htmlFor="matricula"
-                    className="block text-md font-medium text-gray-700 mb-1"
-                  >
-                    Bolsista:
-                  </label>
-                  <select
-                    value={bolsista}
-                    onChange={(e) => setBolsista(e.target.value)}
-                    className="block w-full px-4 py-2 pr-8 text-gray-700 bg-white border border-gray-300 rounded shadow-md appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  >
-                    <option key={0} value={"Nao"}>Não</option>
-                    <option key={1} value={"Sim"}>Sim</option>
-                  </select>
-                  <div className="pointer-events-none absolute mt-8 inset-y-0 right-0 flex items-center px-2 text-gray-700">▼</div>
-                </div>
+                {tipo === "aluno" && <>
+                  <div className="inline-block relative w-48">
+                    <label
+                      htmlFor="matricula"
+                      className="block text-md font-medium text-gray-700 mb-1"
+                    >
+                      Formação:
+                    </label>
+                    <select
+                      value={tipoGraduacao}
+                      onChange={(e) => {
+                        setTipoGraduacao(e.target.value)
+                      }}
+                      className="block w-full px-4 py-2 pr-8 text-gray-700 bg-white border border-gray-300 rounded shadow-md appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    >
+                      <option key={0} value={"nenhuma"}>Nenhuma</option>
+                      <option key={1} value={"pos_graduacao"}>Pós Graduação</option>
+                      <option key={2} value={"graduacao_e_pos"}>Graduação e Pós</option>
+                      <option key={3} value={"graduacao"}>Graduação</option>
+                    </select>
+                    <div className="pointer-events-none absolute mt-8 inset-y-0 right-0 flex items-center px-2 text-gray-700">▼</div>
+                  </div>
+                  <div className="inline-block relative w-48">
+                    <label
+                      htmlFor="matricula"
+                      className="block text-md font-medium text-gray-700 mb-1"
+                    >
+                      Bolsista:
+                    </label>
+                    <select
+                      value={bolsista}
+                      onChange={(e) => setBolsista(e.target.value)}
+                      className="block w-full px-4 py-2 pr-8 text-gray-700 bg-white border border-gray-300 rounded shadow-md appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    >
+                      <option key={0} value={"Nao"}>Não</option>
+                      <option key={1} value={"Sim"}>Sim</option>
+                    </select>
+                    <div className="pointer-events-none absolute mt-8 inset-y-0 right-0 flex items-center px-2 text-gray-700">▼</div>
+                  </div></>}
               </div>
               <div className="pt-2">
                 <button
