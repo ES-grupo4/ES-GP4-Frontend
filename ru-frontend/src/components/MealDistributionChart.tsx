@@ -16,7 +16,7 @@ const MealDistributionChart = ({ almoco, jantar }: { almoco: any, jantar: any })
     },
     series: [
       {
-        name: "Refeições",
+        name: "Refeições Semanais",
         type: "pie",
         radius: ["40%", "70%"],
         avoidLabelOverlap: false,

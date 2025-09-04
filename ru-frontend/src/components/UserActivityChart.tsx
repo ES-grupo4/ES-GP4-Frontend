@@ -10,7 +10,8 @@ const UserActivityChart = ({ data }: { data: any }) => {
   const serie = [0, 0, 0, 0, 0, 0, 0];
 
   data.forEach((item: any) => {
-    console.log(++serie[getDayOfWeek(item.horario)]);
+    ++serie[getDayOfWeek(item.horario)];
+    console.log(item.horario)
   });
 
   const series = [
