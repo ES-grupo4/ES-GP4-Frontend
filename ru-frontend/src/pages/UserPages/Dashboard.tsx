@@ -35,7 +35,7 @@ const getWeekRange = (date: Date = new Date()): WeekRange => {
 
   // Calculate last day (Friday of the same week)
   const lastDay = new Date(firstDay);
-  lastDay.setDate(firstDay.getDate() + 4);
+  lastDay.setDate(firstDay.getDate() + 6);
   lastDay.setHours(23, 59, 59, 999);
 
   return { 
