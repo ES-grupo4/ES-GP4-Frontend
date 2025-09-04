@@ -1,35 +1,35 @@
 .react-calendar__tile {
   pointer-events: none; /* bloqueia clique */
-  cursor: default;      /* cursor normal */
-  background: none !important;
-  color: inherit !important;
+  cursor: default; /* cursor normal */
+  background: none;
+  color: inherit;
 }
 
 .react-calendar__tile--active {
-  background: none !important;
-  color: inherit !important;
+  background: none;
+  color: inherit;
 }
 
 /* Remove efeito hover */
 .react-calendar__tile:hover {
-  background: none !important;
-  color: inherit !important;
+  background: none;
+  color: inherit;
 }
 
 .highlight-green {
-  background-color: rgba(73, 141, 56, 1) !important;
+  background-color: rgba(73, 141, 56, 1);
   color: white;
   border-radius: 6px;
 }
 
 .highlight-yellow {
-  background-color: rgba(242, 192, 62, 1) !important;
+  background-color: rgba(242, 192, 62, 1);
   color: white;
   border-radius: 6px;
 }
 
 .highlight-blue {
-  background-color: rgba(56, 90, 141, 1) !important;
+  background-color: rgba(56, 90, 141, 1);
   color: white;
   border-radius: 6px;
 }

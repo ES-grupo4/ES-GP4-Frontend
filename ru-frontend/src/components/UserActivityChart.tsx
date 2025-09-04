@@ -1,31 +1,31 @@
-import ReactECharts from "echarts-for-react";
-import ChartCard from "./ChartCard";
+import ReactECharts from 'echarts-for-react'
+import ChartCard from './ChartCard'
 
 const getDayOfWeek = (dateUTC: string): number => {
-  const date = new Date(dateUTC);
-  return date.getUTCDay();
-};
+  const date = new Date(dateUTC)
+  return date.getUTCDay()
+}
 
 const UserActivityChart = ({ data }: { data: any }) => {
-  const serie = [0, 0, 0, 0, 0, 0, 0];
+  const serie = [0, 0, 0, 0, 0, 0, 0]
 
   data.forEach((item: any) => {
-    ++serie[getDayOfWeek(item.horario)];
+    ++serie[getDayOfWeek(item.horario)]
     console.log(item.horario)
-  });
+  })
 
   const series = [
     {
-      name: "Compras",
-      type: "line",
+      name: 'Compras',
+      type: 'line',
       smooth: true,
       data: serie,
       itemStyle: {
-        color: "#3B82F6",
+        color: '#3B82F6',
       },
       areaStyle: {
         color: {
-          type: "linear",
+          type: 'linear',
           x: 0,
           y: 0,
           x2: 0,
@@ -33,69 +33,65 @@ const UserActivityChart = ({ data }: { data: any }) => {
           colorStops: [
             {
               offset: 0,
-              color: "rgba(59, 130, 246, 0.2)",
+              color: 'rgba(59, 130, 246, 0.2)',
             },
             {
               offset: 1,
-              color: "rgba(59, 130, 246, 0.02)",
+              color: 'rgba(59, 130, 246, 0.02)',
             },
           ],
         },
       },
     },
-  ];
+  ]
 
   const option = {
     tooltip: {
-      trigger: "axis",
+      trigger: 'axis',
       axisPointer: {
-        type: "shadow",
+        type: 'shadow',
       },
     },
     grid: {
-      left: "3%",
-      right: "4%",
-      bottom: "3%",
+      left: '3%',
+      right: '4%',
+      bottom: '3%',
       containLabel: true,
     },
     xAxis: {
-      type: "category",
-      data: ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"],
+      type: 'category',
+      data: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
       axisLine: {
         lineStyle: {
-          color: "#E5E7EB",
+          color: '#E5E7EB',
         },
       },
       axisLabel: {
-        color: "#6B7280",
+        color: '#6B7280',
       },
     },
     yAxis: {
-      type: "value",
+      type: 'value',
       axisLine: {
         show: false,
       },
       splitLine: {
         lineStyle: {
-          color: "#F3F4F6",
+          color: '#F3F4F6',
         },
       },
       axisLabel: {
-        color: "#6B7280",
+        color: '#6B7280',
       },
     },
     series: series,
-  };
+  }
 
   return (
-    <ChartCard title="Atividade Semanal">
-      <ReactECharts
-        option={option}
-        style={{ height: "300px" }}
-        opts={{ renderer: "svg" }}
-      />
+    <ChartCard title='Atividade Semanal'>
+      <ReactECharts option={option} style={{ height: '300px' }} opts={{ renderer: 'svg' }} />
     </ChartCard>
-  );
-};
+  )
+}
 
-export default UserActivityChart;
+export default UserActivityChart
