@@ -1,226 +1,251 @@
-import UploadIcon from '../../assets/IconAddFuncionario';
-import React, { useState, type ChangeEvent, useEffect } from 'react';
-import { CompraService } from '../../services/CompraService';
-import type { Compra, Precos } from '../../types/Compra';
-import { readExcelFile } from '../../utils/lerPlanilha';
-import { InformacoesGeraisService } from '../../services/InformacoesGeraisService';
+import React, { type ChangeEvent, useEffect, useState } from "react";
+import UploadIcon from "../../assets/IconAddFuncionario";
+import { CompraService } from "../../services/CompraService";
+import { InformacoesGeraisService } from "../../services/InformacoesGeraisService";
+import type { Compra, Precos } from "../../types/Compra";
+import { readExcelFile } from "../../utils/lerPlanilha";
 
 export default function Compras() {
+	const [compraData, setCompraData] = useState<Compra>({
+		usuario_id: 0,
+		horario: new Date().toISOString(),
+		local: "Exatas",
+		forma_pagamento: "credito",
+		preco_compra: 0,
+	});
 
-    const [compraData, setCompraData] = useState<Compra>({
-        usuario_id: 0,
-        horario: new Date().toISOString(),
-        local: 'Exatas',
-        forma_pagamento: 'credito',
-        preco_compra: 0,
-    });
+	const [precos, setPrecos] = useState<Precos | null>(null);
 
-    const [precos, setPrecos] = useState<Precos | null>(null);
+	useEffect(() => {
+		const fetchPrecos = async () => {
+			try {
+				const precosData = await InformacoesGeraisService.get();
 
-    useEffect(() => {
-        const fetchPrecos = async () => {
-            try {
-                const precosData = await InformacoesGeraisService.get();
+				const precosExtraidos: Precos = {
+					preco_almoco: precosData.preco_almoco,
+					preco_meia_almoco: precosData.preco_meia_almoco,
+					preco_jantar: precosData.preco_jantar,
+					preco_meia_jantar: precosData.preco_meia_jantar,
+				};
 
-                const precosExtraidos: Precos = {
-                    preco_almoco: precosData.preco_almoco,
-                    preco_meia_almoco: precosData.preco_meia_almoco,
-                    preco_jantar: precosData.preco_jantar,
-                    preco_meia_jantar: precosData.preco_meia_jantar,
-                };
+				setPrecos(precosExtraidos);
+				setCompraData((prevState) => ({
+					...prevState,
+					preco_compra: precosData.preco_almoco,
+				}));
+			} catch (error) {
+				console.error("Erro ao buscar preços:", error);
+			}
+		};
 
-                setPrecos(precosExtraidos);
-                setCompraData(prevState => ({
-                    ...prevState,
-                    preco_compra: precosData.preco_almoco
-                }));
-            } catch (error) {
-                console.error("Erro ao buscar preços:", error);
-            }
-        };
+		fetchPrecos();
+	}, []);
 
-        fetchPrecos();
-    }, []);
+	const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
+		const file = event.target.files?.[0];
+		if (!file) return;
 
-    const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0];
-        if (!file) return;
-    
-        try {
-          const jsonData = await readExcelFile(file);
-          await CompraService.addComprasFromSheet(jsonData);
-        } catch (err) {
-          console.error("Erro ao ler planilha:", err);
-          alert("Ocorreu um erro ao processar a planilha.");
-        }
-    
-        event.target.value = "";
-    };
+		try {
+			const jsonData = await readExcelFile(file);
+			await CompraService.addComprasFromSheet(jsonData);
+		} catch (err) {
+			console.error("Erro ao ler planilha:", err);
+			alert("Ocorreu um erro ao processar a planilha.");
+		}
 
-    const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        const { name, value } = e.target;
-        let parsedValue = value;
+		event.target.value = "";
+	};
 
-        if (name === 'usuario_id') {
-            const intValue = parseInt(value, 10);
-            if (intValue < 0) return;
-            parsedValue = intValue.toString();
-        }
+	const handleChange = (
+		e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+	) => {
+		const { name, value } = e.target;
+		let parsedValue = value;
 
-        setCompraData(prevState => {
-            let finalValue;
-            if (name === 'preco_compra' || name === 'usuario_id') {
-                finalValue = parseInt(parsedValue, 10);
-            } else {
-                finalValue = parsedValue;
-            }
+		if (name === "usuario_id") {
+			const intValue = parseInt(value, 10);
+			if (intValue < 0) return;
+			parsedValue = intValue.toString();
+		}
 
-            return {
-                ...prevState,
-                [name]: finalValue,
-            };
-        });
-    };
+		setCompraData((prevState) => {
+			let finalValue;
+			if (name === "preco_compra" || name === "usuario_id") {
+				finalValue = parseInt(parsedValue, 10);
+			} else {
+				finalValue = parsedValue;
+			}
 
-    const handleSubmit = async (event: React.FormEvent) => {
-        event.preventDefault();
+			return {
+				...prevState,
+				[name]: finalValue,
+			};
+		});
+	};
 
-        if (compraData.usuario_id <= 0) {
-            alert("ID de usuário não pode ser igual ou menor que zero");
-            return;
-        } else if (compraData.preco_compra <= 0) {
-            alert("O valor de uma refeição não pode ser igual ou menor que zero");
-            return;
-        }
+	const handleSubmit = async (event: React.FormEvent) => {
+		event.preventDefault();
 
-        try {
-            await CompraService.create(compraData);
-            alert('Compra registrada com sucesso!');
-            setCompraData({
-                usuario_id: 0,
-                horario: new Date().toISOString(),
-                local: 'Exatas',
-                forma_pagamento: 'credito',
-                preco_compra: precos?.preco_almoco ?? 0,
-            });
-        } catch (error) {
-            console.error('Erro ao registrar compra:', error);
-            alert('Falha ao registrar a compra. Verifique os dados e tente novamente.');
-        }
-    }
+		if (compraData.usuario_id <= 0) {
+			alert("ID de usuário não pode ser igual ou menor que zero");
+			return;
+		} else if (compraData.preco_compra <= 0) {
+			alert("O valor de uma refeição não pode ser igual ou menor que zero");
+			return;
+		}
 
-    return (
-        <div className="p-4 sm:ml-64 flex flex-col min-h-screen">
+		try {
+			await CompraService.create(compraData);
+			alert("Compra registrada com sucesso!");
+			setCompraData({
+				usuario_id: 0,
+				horario: new Date().toISOString(),
+				local: "Exatas",
+				forma_pagamento: "credito",
+				preco_compra: precos?.preco_almoco ?? 0,
+			});
+		} catch (error) {
+			console.error("Erro ao registrar compra:", error);
+			alert(
+				"Falha ao registrar a compra. Verifique os dados e tente novamente.",
+			);
+		}
+	};
 
-            <div className="group flex justify-between items-center w-full max-w-4xl mb-8">
-                <h1 className="font-semibold font-sans text-6xl text-sky-900">Adicionar Compra</h1>
-            </div>
+	return (
+		<div className="p-4 sm:ml-64 flex flex-col min-h-screen">
+			<div className="group flex justify-between items-center w-full max-w-4xl mb-8">
+				<h1 className="font-semibold font-sans text-6xl text-sky-900">
+					Adicionar Compra
+				</h1>
+			</div>
 
-            <div className="space-y-6 w-full max-w-4xl mx-auto">
+			<div className="space-y-6 w-full max-w-4xl mx-auto">
+				<div className="bg-white p-6 shadow-md rounded-lg">
+					<h2 className="text-xl font-semibold mb-4">
+						Importar planilha de compras:
+					</h2>
+					<div>
+						<label
+							htmlFor="file-upload"
+							className="cursor-pointer bg-gray-100 border border-gray-300 rounded-md p-3 flex items-center justify-between text-gray-500 hover:bg-gray-200 transition-colors"
+						>
+							<span>Inserir planilha</span>
+							<UploadIcon />
+						</label>
+						<input
+							id="file-upload"
+							name="file-upload"
+							type="file"
+							className="sr-only"
+							onChange={handleFileChange}
+							accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+						/>
+					</div>
+				</div>
 
-                <div className="bg-white p-6 shadow-md rounded-lg">
-                    <h2 className="text-xl font-semibold mb-4">Importar planilha de compras:</h2>
-                    <div>
-                        <label
-                            htmlFor="file-upload"
-                            className="cursor-pointer bg-gray-100 border border-gray-300 rounded-md p-3 flex items-center justify-between text-gray-500 hover:bg-gray-200 transition-colors"
-                        >
-                            <span>Inserir planilha</span>
-                            <UploadIcon />
-                        </label>
-                        <input
-                            id="file-upload"
-                            name="file-upload"
-                            type="file"
-                            className="sr-only"
-                            onChange={handleFileChange}
-                            accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-                        />
-                    </div>
-                </div>
+				<form
+					onSubmit={handleSubmit}
+					className="bg-white p-6 shadow-md rounded-lg"
+				>
+					<h2 className="text-xl font-semibold mb-4">Registrar compra:</h2>
+					<div className="grid grid-cols-2 gap-4">
+						<div>
+							<div className="block text-gray-700 font-bold mb-1">
+								ID do Usuário:
+							</div>
+							<input
+								type="number"
+								name="usuario_id"
+								value={compraData.usuario_id}
+								onChange={handleChange}
+								min="0"
+								className="bg-gray-100 p-2 rounded-md border border-gray-300 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+							/>
+						</div>
 
-                <form onSubmit={handleSubmit} className="bg-white p-6 shadow-md rounded-lg">
-                    <h2 className="text-xl font-semibold mb-4">Registrar compra:</h2>
-                    <div className="grid grid-cols-2 gap-4">
-                        <div>
-                            <div className="block text-gray-700 font-bold mb-1">ID do Usuário:</div>
-                            <input
-                                type="number"
-                                name="usuario_id"
-                                value={compraData.usuario_id}
-                                onChange={handleChange}
-                                min="0"
-                                className="bg-gray-100 p-2 rounded-md border border-gray-300 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            />
-                        </div>
+						<div>
+							<div className="block text-gray-700 font-bold mb-1">
+								Pagamento:
+							</div>
+							<select
+								name="forma_pagamento"
+								value={compraData.forma_pagamento}
+								onChange={handleChange}
+								className="bg-gray-100 p-2 rounded-md border border-gray-300 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+							>
+								<option value="credito">Crédito</option>
+								<option value="debito">Débito</option>
+								<option value="pix">Pix</option>
+								<option value="dinheiro">Dinheiro</option>
+							</select>
+						</div>
+						<div>
+							<div className="block text-gray-700 font-bold mb-1">Local:</div>
+							<select
+								name="local"
+								value={compraData.local}
+								onChange={handleChange}
+								className="bg-gray-100 p-2 rounded-md border border-gray-300 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+							>
+								<option>Exatas</option>
+								<option>Humanas</option>
+							</select>
+						</div>
 
-                        <div>
-                            <div className="block text-gray-700 font-bold mb-1">Pagamento:</div>
-                            <select
-                                name="forma_pagamento"
-                                value={compraData.forma_pagamento}
-                                onChange={handleChange}
-                                className="bg-gray-100 p-2 rounded-md border border-gray-300 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            >
-                                <option value="credito">Crédito</option>
-                                <option value="debito">Débito</option>
-                                <option value="pix">Pix</option>
-                                <option value="dinheiro">Dinheiro</option>
-                            </select>
-                        </div>
-                        <div>
-                            <div className="block text-gray-700 font-bold mb-1">Local:</div>
-                            <select
-                                name="local"
-                                value={compraData.local}
-                                onChange={handleChange}
-                                className="bg-gray-100 p-2 rounded-md border border-gray-300 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            >
-                                <option>Exatas</option>
-                                <option>Humanas</option>
-                            </select>
-                        </div>
+						<div>
+							<div className="block text-gray-700 font-bold mb-1">
+								Horário da Compra:
+							</div>
+							<input
+								type="datetime-local"
+								name="horario"
+								value={compraData.horario.substring(0, 16)}
+								onChange={handleChange}
+								className="bg-gray-100 p-2 rounded-md border border-gray-300 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+							/>
+						</div>
 
-                        <div>
-                            <div className="block text-gray-700 font-bold mb-1">Horário da Compra:</div>
-                            <input
-                                type="datetime-local"
-                                name="horario"
-                                value={compraData.horario.substring(0, 16)}
-                                onChange={handleChange}
-                                className="bg-gray-100 p-2 rounded-md border border-gray-300 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            />
-                        </div>
+						<div>
+							<div className="block text-gray-700 font-bold mb-1">
+								Preço da Compra:
+							</div>
+							<select
+								name="preco_compra"
+								value={compraData.preco_compra}
+								onChange={handleChange}
+								className="bg-gray-100 p-2 rounded-md border border-gray-300 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+							>
+								{precos && (
+									<>
+										<option value={precos.preco_almoco}>
+											Almoço - R$ {precos.preco_almoco / 100}
+										</option>
+										<option value={precos.preco_meia_almoco}>
+											Meio Almoço - R$ {precos.preco_meia_almoco / 100}
+										</option>
+										<option value={precos.preco_jantar}>
+											Jantar - R$ {precos.preco_jantar / 100}
+										</option>
+										<option value={precos.preco_meia_jantar}>
+											Meio Jantar - R$ {precos.preco_meia_jantar / 100}
+										</option>
+									</>
+								)}
+							</select>
+						</div>
+					</div>
 
-                        <div>
-                            <div className="block text-gray-700 font-bold mb-1">Preço da Compra:</div>
-                            <select
-                                name="preco_compra"
-                                value={compraData.preco_compra}
-                                onChange={handleChange}
-                                className="bg-gray-100 p-2 rounded-md border border-gray-300 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            >
-                                {precos && (
-                                    <>
-                                        <option value={precos.preco_almoco}>Almoço - R$ {precos.preco_almoco / 100}</option>
-                                        <option value={precos.preco_meia_almoco}>Meio Almoço - R$ {precos.preco_meia_almoco / 100}</option>
-                                        <option value={precos.preco_jantar}>Jantar - R$ {precos.preco_jantar / 100}</option>
-                                        <option value={precos.preco_meia_jantar}>Meio Jantar - R$ {precos.preco_meia_jantar / 100}</option>
-                                    </>
-                                )}
-                            </select>
-                        </div>
-
-                    </div>
-
-                    <div className="mt-6 text-center">
-                        <button type="submit" className="bg-green-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-green-700 transition duration-300">
-                            Registrar
-                        </button>
-                    </div>
-                </form>
-
-            </div>
-        </div>
-    );
+					<div className="mt-6 text-center">
+						<button
+							type="submit"
+							className="bg-green-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-green-700 transition duration-300"
+						>
+							Registrar
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	);
 }
