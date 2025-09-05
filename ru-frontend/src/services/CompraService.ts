@@ -72,7 +72,7 @@ export const CompraService = {
       try {
         await CompraService.create(compra)
       } catch (e: any) {
-        const errorDetail = e.response?.data?.detail || 'Erro ao criar compra.'
+        const errorDetail = e.response?.data?.detail ?? 'Erro ao criar compra.'
         transactionErrors.push(`Linha ${line + 1} (ID ${compra.usuario_id}): ${errorDetail}`)
       }
     }
