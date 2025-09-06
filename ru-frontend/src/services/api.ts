@@ -2,7 +2,7 @@ import axios from 'axios'
 import { UrlRouter } from '../constants/UrlRouter'
 
 const api = axios.create({
-  baseURL: 'http://localhost:8000',
+  baseURL: 'https://sacceei.lsd.ufcg.edu.br/app',
 })
 
 api.interceptors.response.use(
