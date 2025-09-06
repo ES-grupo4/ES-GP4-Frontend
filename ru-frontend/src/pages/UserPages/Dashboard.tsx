@@ -59,6 +59,7 @@ export default function Dashboard() {
       const historicos = await routes.getHistorico().then((res) => res.data)
 
       const week = getWeekRange()
+      console.log(week)
 
       const almocos = await routes
         .getAlmocos(week)
@@ -69,6 +70,8 @@ export default function Dashboard() {
         .getJantas(week)
         .then((res) => res.data)
         .catch(() => (erro = true))
+
+      console.log(almocos)
 
       const clientes = await routes.getAllClientes(1, '', '').then((res) => res.data)
 

@@ -15,7 +15,7 @@ export default function EditarCliente() {
   })
   useEffect(() => {
     getAdministradorData()
-  }, [getAdministradorData])
+  }, [])
 
   const getAdministradorData = async () => {
     //Recebe os dados do funcionário pelo cpf

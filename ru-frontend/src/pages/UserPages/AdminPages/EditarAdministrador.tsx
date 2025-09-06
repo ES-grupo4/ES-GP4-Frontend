@@ -18,7 +18,7 @@ export default function EditarAdministrador({
   const [novaSenha, setNovaSenha] = useState('')
   useEffect(() => {
     getAdministradorData()
-  }, [getAdministradorData])
+  }, [])
 
   const getAdministradorData = async () => {
     //Recebe os dados do funcionário pelo cpf

@@ -18,7 +18,7 @@ export default function EditarFuncionario({
   const [novaSenha, setNovaSenha] = useState('')
   useEffect(() => {
     getFuncionarioData()
-  }, [getFuncionarioData])
+  }, [])
 
   const getFuncionarioData = async () => {
     //Recebe os dados do funcionário pelo cpf

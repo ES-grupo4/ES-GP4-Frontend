@@ -26,7 +26,7 @@ const createFuncionario = (funcData: {}) => {
 }
 
 const updateFuncionario = (id: string, funcData: {}) => {
-  return api.put(`/funcionario/${id}`, funcData)
+  return api.put(`/funcionario/${id}/`, funcData)
 }
 
 const getAllFuncionarios = (page: number, busca: string) => {
@@ -72,7 +72,7 @@ const getAdministradorByCpf = (cpf: string) => {
 //Cliente
 
 const criarCliente = (clienteData: {}) => {
-  return api.post(`/cliente`, clienteData)
+  return api.post(`/cliente/`, clienteData)
 }
 
 const getAllClientes = (page: number, busca: string, tipo: string) => {

@@ -21,7 +21,7 @@ export default function HistorySys() {
       }
     }
     getHistorico()
-  }, [year, month, page, makeHistTxt])
+  }, [year, month, page])
 
   const makeHistTxt = (response: AxiosResponse) => {
     console.log(response)

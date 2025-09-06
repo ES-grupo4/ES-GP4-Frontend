@@ -39,7 +39,7 @@ export default function EntityTable({
   useEffect(() => {
     makeTable()
     console.log(tableData)
-  }, [tableData, makeTable])
+  }, [tableData])
 
   const onChangeSearch = (e: React.ChangeEvent<any>) => {
     // Define valor de busca antes de clicar para buscar
