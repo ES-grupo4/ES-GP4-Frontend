@@ -75,7 +75,6 @@ export default function Dashboard() {
       const semanal = await routes.getCompras(week).then((res) => res.data)
 
       const refeicaos = await routes.getInformacoesGerais().then((res) => res.data)
-      console.log(refeicaos)
       if (erro) return
 
       setRefeicao({almoco: refeicaos.preco_almoco, janta: refeicaos.preco_jantar})

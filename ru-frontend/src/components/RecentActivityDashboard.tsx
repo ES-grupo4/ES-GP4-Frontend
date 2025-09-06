@@ -5,7 +5,6 @@ const RecentActivity = ({ activities }: { activities: any }) => {
 
   if (activities.length !== 0) {
     activities.items.forEach((item: any, i: number) => {
-      console.log(item)
       if (i < 3) realAct.push(item)
     })
   }
