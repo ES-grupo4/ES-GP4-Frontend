@@ -50,7 +50,7 @@ export default function Dashboard() {
   const [almoco, setAlmoco] = useState(0)
   const [clientes, setClientes] = useState(0)
   const [historico, setHistorico] = useState<any>([])
-  const [refeicao, setRefeicao] = useState(0)
+  const [refeicao, setRefeicao] = useState({almoco:0,janta:0})
 
   useEffect(() => {
     const fetch = async () => {
@@ -59,7 +59,6 @@ export default function Dashboard() {
       const historicos = await routes.getHistorico().then((res) => res.data)
 
       const week = getWeekRange()
-      console.log(week)
 
       const almocos = await routes
         .getAlmocos(week)
@@ -71,17 +70,15 @@ export default function Dashboard() {
         .then((res) => res.data)
         .catch(() => (erro = true))
 
-      console.log(almocos)
-
       const clientes = await routes.getAllClientes(1, '', '').then((res) => res.data)
 
       const semanal = await routes.getCompras(week).then((res) => res.data)
 
       const refeicaos = await routes.getInformacoesGerais().then((res) => res.data)
-
+      console.log(refeicaos)
       if (erro) return
 
-      setRefeicao(refeicaos.preco_almoco)
+      setRefeicao({almoco: refeicaos.preco_almoco, janta: refeicaos.preco_jantar})
       setHistorico(historicos)
       setClientes(clientes.items.length)
       setJantar(jantas.items.length)
@@ -124,13 +121,19 @@ export default function Dashboard() {
             </h3>
             <div className='space-y-4'>
               <div>
-                <p className='text-sm text-gray-500'>Média Diária</p>
-                <p className='text-xl font-bold'>{semanal.length / 5}</p>
+                <p className='text-sm text-gray-500'>Média Diária de Refeições</p>
+                <p className='text-xl font-bold'>{semanal.length / 5} refeições por dia</p>
               </div>
               <div>
-                <p className='text-sm text-gray-500'>Preço Refeição</p>
+                <p className='text-sm text-gray-500'>Preço Refeição (Almoço)</p>
                 <p className='text-xl font-bold'>
-                  R$ {(refeicao / 100).toFixed(2).replace('.', ',')}
+                  R$ {(refeicao["almoco"] / 100).toFixed(2).replace('.', ',')}
+                </p>
+              </div>
+              <div>
+                <p className='text-sm text-gray-500'>Preço Refeição (Jantar)</p>
+                <p className='text-xl font-bold'>
+                  R$ {(refeicao["janta"] / 100).toFixed(2).replace('.', ',')}
                 </p>
               </div>
             </div>

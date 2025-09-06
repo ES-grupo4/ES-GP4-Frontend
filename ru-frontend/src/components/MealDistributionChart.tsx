@@ -39,15 +39,15 @@ const MealDistributionChart = ({ almoco, jantar }: { almoco: any; jantar: any })
           show: false,
         },
         data: [
-          { value: almoco, name: 'Almoço', itemStyle: { color: '#3B82F6' } },
-          { value: jantar, name: 'Jantar', itemStyle: { color: '#10B981' } },
+          { value: almoco, name: 'Almoço', itemStyle: { color: '#F2C03E' } },
+          { value: jantar, name: 'Jantar', itemStyle: { color: '#3B82F6' } },
         ],
       },
     ],
   }
 
   return (
-    <ChartCard title='Distribuição de Refeições'>
+    <ChartCard title='Distribuição de Refeições Semanal'>
       <ReactECharts option={option} style={{ height: '300px' }} opts={{ renderer: 'svg' }} />
     </ChartCard>
   )

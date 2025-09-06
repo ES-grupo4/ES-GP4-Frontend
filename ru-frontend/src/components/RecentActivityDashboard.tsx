@@ -5,6 +5,7 @@ const RecentActivity = ({ activities }: { activities: any }) => {
 
   if (activities.length !== 0) {
     activities.items.forEach((item: any, i: number) => {
+      console.log(item)
       if (i < 3) realAct.push(item)
     })
   }
@@ -19,7 +20,7 @@ const RecentActivity = ({ activities }: { activities: any }) => {
           >
             <div className='w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3'></div>
             <div>
-              <p className='text-sm font-medium'>{activity.acao}</p>
+              <p className='text-sm font-medium'>{`${activity.ator_nome} (id: ${activity.ator_id}; cpf: ${activity.ator_cpf}) ${activity.acao}`}</p>
               <p className='text-xs text-gray-500'>{activity.data}</p>
             </div>
           </div>
